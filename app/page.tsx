@@ -6,6 +6,7 @@ export default async function Home() {
           <div>This is Home Page</div>
           <div>button from daisyUI</div>
           <button className="btn bg-base-300">Click me</button>
+          <div>test git branch</div>
         </div>
       </main>
     </>
