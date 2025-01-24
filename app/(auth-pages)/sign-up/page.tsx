@@ -41,7 +41,7 @@ export default async function Signup(props: {
             minLength={6}
             required
           />
-          <Label htmlFor="isProvider">Select your role</Label>
+          <Label htmlFor="isProvider">Register as a provider?</Label>
           <Input type="checkbox" name="isProvider" />
           <SubmitButton formAction={signUpAction} pendingText="Signing up...">
             Sign up
