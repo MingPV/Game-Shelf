@@ -52,7 +52,7 @@ export const updateSession = async (request: NextRequest) => {
     }
 
     if(user_data){
-      if (request.nextUrl.pathname.startsWith("/admin") && !user_data[0].is_admin) {
+      if (request.nextUrl.pathname.startsWith("/admin-homepage") && !user_data[0].is_admin) {
         return NextResponse.redirect(new URL("/", request.url));
       }
     }
