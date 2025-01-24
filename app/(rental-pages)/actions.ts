@@ -1,0 +1,3 @@
+// function in (rental-pages)
+
+
