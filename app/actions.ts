@@ -7,9 +7,17 @@ import { redirect } from "next/navigation";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
+  const username = formData.get("username")?.toString();
   const password = formData.get("password")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
+  const isProviderCheckBox = formData.get("isProvider");
+  let isProvider = false;
+  
+
+  if(isProviderCheckBox == "on"){
+    isProvider = true;
+  }
 
   if (!email || !password) {
     return encodedRedirect(
@@ -19,7 +27,7 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data:authData,error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -31,9 +39,27 @@ export const signUpAction = async (formData: FormData) => {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
+
+    // Try inserting the user into the public.user table
+
+    if(authData?.user?.id){
+      
+      const { data, error } = await supabase
+        .from('users')
+        .insert([
+          {  
+            email: email,
+            username: username,
+            isProvider: isProvider,
+          },
+        ])
+
+        console.log("error :",error)
+    }
+
     return encodedRedirect(
       "success",
-      "/sign-up",
+      "/",
       "Thanks for signing up!",
     );
   }
