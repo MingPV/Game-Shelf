@@ -3,7 +3,9 @@ import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
-
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { IoNotifications } from "react-icons/io5";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -21,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={""} suppressHydrationWarning>
-      <body className="bg-neutral-900 text-foreground">
+      <body className="bg-gs_bg_gradient text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -30,19 +32,55 @@ export default function RootLayout({
         >
           <main className="min-h-screen flex flex-col items-center">
             <div className="flex-1 w-full flex flex-col  items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16 bg-neutral-800">
-                <div className="w-full max-w-5xl flex justify-between items-center p-3  text-sm">
-                  <Link href="/"> GameShelf </Link>
-                  <div className="flex flex-row">
-                    <div className="flex flex-row gap-4 items-center px-4">
-                      {" "}
-                      <div className="text-xs">Home</div>
-                      <div className="text-xs">Explore</div>
-                      <div className="text-xs">Personal Collection</div>
-                      <div className="text-xs">Drops</div>
-                      <div className="text-xs">More</div>
+              <nav className="w-full flex justify-center  h-16">
+                <div className="w-full max-w-[95vw] flex justify-center items-center p-3  text-sm ">
+                  <div className="navbar ">
+                    <div className="flex flex-row gap-4 w-full">
+                      <Link href="/" className="text-xl font-bold">
+                        GameShelf
+                      </Link>
+                      <Input
+                        placeholder="Search Board game by name or desc ..."
+                        className="rounded-full border border-1-gs_white"
+                      />
                     </div>
-                    <AuthButton />
+                    <div className="flex-none flex flex-row justify-evenly items-center px-4 ">
+                      <ul className="menu menu-horizontal px-1">
+                        <li>
+                          <Link href="/">Home</Link>
+                        </li>
+                        <li>
+                          <Link href="/">Explore</Link>
+                        </li>
+                        <li>
+                          <Link href="/">Personal Collection</Link>
+                        </li>
+                        <li>
+                          <Link href="/">Drops</Link>
+                        </li>
+
+                        <li>
+                          <details>
+                            <summary>More</summary>
+                            <ul className="rounded-t-none p-2 bg-opacity-30">
+                              <li>
+                                <Link href="/">Stats</Link>
+                              </li>
+                              <li>
+                                <Link href="/">Edit profile</Link>
+                              </li>
+                            </ul>
+                          </details>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="w-full flex flex-row  justify-end gap-4">
+                      <IoNotifications className="text-gs_white text-xl" />
+                      <Button className="border border-gs_white rounded-lg px-4 py-2">
+                        Wallet
+                      </Button>
+                      <AuthButton />
+                    </div>
                   </div>
                 </div>
               </nav>

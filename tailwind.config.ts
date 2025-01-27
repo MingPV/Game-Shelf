@@ -19,15 +19,15 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        'gs_bg_gradient': 'linear-gradient(to bottom right, #984D38, #181e41)',
-        'gs_purple_gradient' : 'linear-gradient(to top right, #671AE4, #B75CFF)',
+        gs_bg_gradient: "linear-gradient(to right, #984D38, #181e41)",
+        gs_purple_gradient: "linear-gradient(to top right, #671AE4, #B75CFF)",
       },
       colors: {
-        gs_purple: '#B75CFF',
-        gs_black: '#070707',
-        gs_white: '#FFFFFF',
-        gs_red: '#FF2525',
-        gs_green: '#359368',
+        gs_purple: "#B75CFF",
+        gs_black: "#070707",
+        gs_white: "#FFFFFF",
+        gs_red: "#FF2525",
+        gs_green: "#359368",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -83,7 +83,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),require('daisyui'),],
+  plugins: [require("tailwindcss-animate"), require("daisyui")],
   daisyui: {
     themes: ["dracula"],
   },
