@@ -11,11 +11,11 @@ export const signUpAction = async (formData: FormData) => {
   const password = formData.get("password")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
-  const isProviderCheckBox = formData.get("isProvider");
+  const isProviderSelected = formData.get("isProvider");
   let isProvider = false;
   
 
-  if(isProviderCheckBox == "on"){
+  if(isProviderSelected == "true"){
     isProvider = true;
   }
 
