@@ -158,3 +158,40 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/");
 };
+
+export const checkUsernameUnique = async (username: string) => {
+  if(username === "" || username === null){
+    return null;
+  }
+  
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("username", username);
+
+  if (error) {
+    return false;
+  }
+
+  return data.length === 0;
+
+}
+
+export const checkEmailUnique = async (email: string) => {
+  if(email === "" || email === null){
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email);
+
+  if (error) {
+    return false;
+  }
+
+  return data.length === 0;
+}
