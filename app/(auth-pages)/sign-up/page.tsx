@@ -12,7 +12,6 @@ export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [isEmailUnique, setIsEmailUnique] = useState<boolean|null>(null);
   const [isUsernameUnique, setIsUsernameUnique] = useState<boolean|null>(null);
 
@@ -66,9 +65,13 @@ export default function Signup() {
     setUsername(newUsername);
     const isUnique = await checkUsernameUnique(newUsername);
     setIsUsernameUnique(isUnique);
+    if(isEmailUnique === false){
+      setError("This email is already used");
+      return;
+    }
     if(isUnique === false){
       setError("This username is already used");
-    } 
+    }
   };
 
   return (
@@ -169,7 +172,11 @@ export default function Signup() {
               <button type="submit" className="btn bg-gs_black hover:bg-gs_black hover:bg-opacity-60 hover:border-none">
                 Create  Account
               </button>
-              {error && <p className="text-gs_red">{error}</p>}
+              {error.length > 0 && (
+                <div className="text-red-500">
+                  <p>{error}</p>
+                </div>
+              )}
             </form>
           </div>
         </div>
