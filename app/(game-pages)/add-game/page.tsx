@@ -53,7 +53,7 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
               <Label htmlFor="description">Description</Label>
               <Input name="description" placeholder="Description" required />
               <Label htmlFor="bg_picture">Picture URL</Label>
-              <Input name="bg_picture" placeholder="Picture URL" required />
+              <input name="bg_picture" type="file" required />
               <Label htmlFor="price">Price</Label>
               <Input name="price" placeholder="Price" required />
               <SubmitButton formAction={addGameAction} pendingText="Adding...">
