@@ -75,7 +75,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center w-full">
       {/* Left Session */}
       <div className="flex flex-1 justify-center items-center  text-white p-8">
         <div className="text-center space-y-6">
