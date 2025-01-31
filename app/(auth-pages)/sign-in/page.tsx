@@ -80,17 +80,17 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
               <div className="divider text-gray-400 py-5">or</div>
               
               <div className="flex flex-col gap-3">
-              <button className="btn border-none w-full flex items-center justify-start pl-7 rounded-full bg-white text-gray-800 border-gray-300 hover:bg-gray-200 py-3">
+              <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-white text-gray-800 border-gray-300 hover:bg-gray-200 py-3">
                 <FcGoogle className="w-6 h-6 shrink-0" />
                 <span className="ml-3">Continue With Google</span>
               </button>
 
-              <button className="btn border-none w-full flex items-center justify-start pl-7 rounded-full bg-blue-600 text-white hover:bg-blue-700 py-3">
+              <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-blue-600 text-white hover:bg-blue-700 py-3">
                 <FaFacebook className="w-6 h-6 shrink-0" />
                 <span className="ml-3">Continue With Facebook</span>
               </button>
 
-              <button className="btn border-none w-full flex items-center justify-start pl-7 rounded-full bg-black text-white hover:bg-gray-800 py-3">
+              <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-black text-white hover:bg-gray-800 py-3">
                 <FaApple className="w-6 h-6 shrink-0" />
                 <span className="ml-3">Continue With Apple</span>
               </button>
