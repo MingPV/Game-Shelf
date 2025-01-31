@@ -1,7 +1,20 @@
+"use server";
+
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import {
+  addGameAction,
+  updateGameAction,
+  deleteGameAction,
+  selectGameAction,
+  selectAllGamesAction,
+} from "../actions";
+import { FormMessage, Message } from "@/components/form-message";
+import { SubmitButton } from "@/components/submit-button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-export default async function Home() {
+export default async function Home(props: { searchParams: Promise<Message> }) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -11,11 +24,85 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
+  const searchParams = await props.searchParams;
+  if ("message" in searchParams) {
+    return (
+      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
+        <FormMessage message={searchParams} />
+      </div>
+    );
+  }
+  console.log("ming1");
+  console.log(await selectAllGamesAction());
+  console.log(await selectGameAction("1"));
+
   return (
     <>
       <main className="flex-1 flex flex-col gap-6 px-4">
         <div className="flex flex-col items-center justify-center font-bold">
           <div>for adding games</div>
+          <form className="flex flex-col min-w-64 max-w-64 mx-auto">
+            <h1 className="text-2xl font-medium">Add Game</h1>
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+              <Label htmlFor="boardgame_name">Boardgame Name</Label>
+              <Input
+                name="boardgame_name"
+                placeholder="Boardgame Name"
+                required
+              />
+              <Label htmlFor="description">Description</Label>
+              <Input name="description" placeholder="Description" required />
+              <Label htmlFor="bg_picture">Picture URL</Label>
+              <Input name="bg_picture" placeholder="Picture URL" required />
+              <Label htmlFor="price">Price</Label>
+              <Input name="price" placeholder="Price" required />
+              <SubmitButton formAction={addGameAction} pendingText="Adding...">
+                Add Game
+              </SubmitButton>
+            </div>
+          </form>
+          <form className="flex flex-col min-w-64 max-w-64 mx-auto">
+            <h1 className="text-2xl font-medium">Update Game</h1>
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+              <Label htmlFor="id">Game ID</Label>
+              <Input
+                name="id"
+                placeholder="Game ID (must auto fill and hidden this input field)"
+                required
+              />
+              <Label htmlFor="boardgame_name">Boardgame Name</Label>
+              <Input name="boardgame_name" placeholder="Boardgame Name" />
+              <Label htmlFor="description">Description</Label>
+              <Input name="description" placeholder="Description" />
+              <Label htmlFor="bg_picture">Picture URL</Label>
+              <Input name="bg_picture" placeholder="Picture URL" />
+              <Label htmlFor="price">Price</Label>
+              <Input name="price" placeholder="Price" />
+              <SubmitButton
+                formAction={updateGameAction}
+                pendingText="Updating..."
+              >
+                Update Game
+              </SubmitButton>
+            </div>
+          </form>
+          <form className="flex flex-col min-w-64 max-w-64 mx-auto">
+            <h1 className="text-2xl font-medium">Delete Game</h1>
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+              <Label htmlFor="id">Game ID</Label>
+              <Input
+                name="id"
+                placeholder="Game ID must be auto fill"
+                required
+              />
+              <SubmitButton
+                formAction={deleteGameAction}
+                pendingText="Deleting..."
+              >
+                Delete Game
+              </SubmitButton>
+            </div>
+          </form>
         </div>
       </main>
     </>
