@@ -11,11 +11,11 @@ export const signUpAction = async (formData: FormData) => {
   const password = formData.get("password")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
-  const isProviderCheckBox = formData.get("isProvider");
+  const isProviderSelected = formData.get("isProvider");
   let isProvider = false;
   
 
-  if(isProviderCheckBox == "on"){
+  if(isProviderSelected == "true"){
     isProvider = true;
   }
 
@@ -158,3 +158,40 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/");
 };
+
+export const checkUsernameUnique = async (username: string) => {
+  if(username === "" || username === null){
+    return null;
+  }
+  
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("username", username);
+
+  if (error) {
+    return false;
+  }
+
+  return data.length === 0;
+
+}
+
+export const checkEmailUnique = async (email: string) => {
+  if(email === "" || email === null){
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email);
+
+  if (error) {
+    return false;
+  }
+
+  return data.length === 0;
+}
