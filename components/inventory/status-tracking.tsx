@@ -22,7 +22,7 @@ export const StatusTracking = ({
       <li>
         <div className="flex-start flex items-center pt-2 md:block md:pt-0">
           <div className="-ms-[5px] me-3 h-8 w-8 rounded-full bg-gs_white md:-mt-4 md:me-0 md:ms-0 flex items-center justify-center">
-            <FaHourglassStart className="text-gs_black text-slate-500" />
+            <FaHourglassStart className=" text-slate-500" />
           </div>
           <p className="mt-2 text-sm text-bg_white opacity-80 font-bold">
             Reservation
@@ -37,7 +37,7 @@ export const StatusTracking = ({
       <li>
         <div className="flex-start flex items-center pt-2 md:block md:pt-0">
           <div className="-ms-[5px] me-3 h-8 w-8 rounded-full bg-gs_white md:-mt-4 md:me-0 md:ms-0 flex items-center justify-center">
-            <FaPlayCircle className="text-gs_black text-slate-500" />
+            <FaPlayCircle className=" text-slate-500" />
           </div>
           <p className="mt-2 text-sm text-bg_white opacity-80 font-bold">
             Start Date
@@ -52,7 +52,7 @@ export const StatusTracking = ({
       <li>
         <div className="flex-start flex items-center pt-2 md:block md:pt-0">
           <div className="-ms-[5px] me-3 h-8 w-8 rounded-full bg-gs_white md:-mt-4 md:me-0 md:ms-0 flex items-center justify-center">
-            <IoIosTime className="text-gs_black text-slate-500" />
+            <IoIosTime className=" text-slate-500" />
           </div>
           <p className="mt-2 text-sm text-bg_white opacity-80 font-bold">
             End Date
