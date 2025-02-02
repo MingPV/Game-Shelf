@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import ProviderCard from "./provider-card";
 
 interface userData {
   uid: string;
@@ -17,6 +18,24 @@ interface userData {
   created_at: string;
   admin_id: Number;
   is_admin: boolean;
+}
+
+const mock_provider : userData = {
+  uid: "0001",
+  email: "provider@gmail.com",
+  username: "Username",
+  profilePicture: "",
+  phoneNumber: "02-222-2222",
+  paymentMethod: "ABC Bank",
+  isProvider: true,
+  is_verified: false,
+  is_disabled: false,
+  location: "254 Phaya Thai Rd, Wang Mai, Pathum Wan, Bangkok 10330",
+  credentials: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+  maxQuota: 10,
+  created_at: new Date().toLocaleString(),
+  admin_id: 1,
+  is_admin: false,
 }
 
 export default async function Home() {
@@ -44,9 +63,13 @@ export default async function Home() {
 
   return (
     <>
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <div className="flex flex-col items-center justify-center font-bold">
-          <div>manage provider page</div>
+      <main className="flex-1 flex flex-col items-center gap-6 px-4 w-full">
+        <div className="flex flex-col items-center justify-center w-10/12">
+          <div className="text-2xl font-bold pb-2">Manage Provider Page</div>
+          <div className="flex flex-col bg-white bg-opacity-10 mt-4 p-4 rounded-md w-full"> 
+            <div className="text-lg pb-4 font-bold"> Provider Verification Requests </div>
+            <ProviderCard params={mock_provider} />
+          </div>
         </div>
       </main>
     </>

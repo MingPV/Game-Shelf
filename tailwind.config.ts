@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        gs_bg_gradient: "linear-gradient(to right, #984D38, #181e41)",
+        gs_bg_gradient: "linear-gradient(to bottom right, #984D38 0%, #181e41 63%)",
         gs_purple_gradient: "linear-gradient(to top right, #671AE4, #B75CFF)",
       },
       colors: {
