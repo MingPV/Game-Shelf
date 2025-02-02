@@ -1,3 +1,4 @@
+import GameCard from "@/components/game-card";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -13,10 +14,13 @@ export default async function Home() {
 
   return (
     <>
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <div className="flex flex-col items-center justify-center font-bold">
-          <div>Searching games page</div>
+      <main className="flex-1 flex flex-col gap-6 px-4 w-full items-center">
+        <div className="flex flex-row space-x-6">
+          <GameCard/>
+          <GameCard/>
+          <GameCard/>
         </div>
+        <div>hello</div>
       </main>
     </>
   );
