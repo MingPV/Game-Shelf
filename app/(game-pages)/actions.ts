@@ -124,3 +124,21 @@ export const selectAllGamesAction = async () => {
 
   return data;
 };
+
+export const selectGamesByPageAction = async (page: number) => {
+  const supabase = await createClient();
+  const itemsPerPage = 30;
+  const from = (page - 1) * itemsPerPage;
+  const to = from + itemsPerPage - 1;
+
+  const { data, error } = await supabase
+    .from("boardgames")
+    .select("*")
+    .range(from, to);
+
+  if (error) {
+    throw new Error("Failed to fetch boardgames.");
+  }
+
+  return data;
+};

@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { SearchItems } from "@/components/search-items";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -14,9 +15,7 @@ export default async function Home() {
   return (
     <>
       <main className="flex-1 flex flex-col gap-6 px-4">
-        <div className="flex flex-col items-center justify-center font-bold">
-          <div>Searching games page</div>
-        </div>
+        <SearchItems />
       </main>
     </>
   );
