@@ -15,3 +15,11 @@ export interface userData {
     admin_id: Number;
     is_admin: boolean;
 }
+
+export interface verificationRequests {
+    provider_id: string;
+    status: string;
+    approver: Number;
+    created_at: string;
+    users: userData;
+}
