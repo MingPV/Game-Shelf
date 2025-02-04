@@ -8,9 +8,9 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 
 export const updateVerificationRequest = async (formData: FormData) => {
-  const provider_id = formData.get("id")?.toString();
+  const provider_id = formData.get("provider_id")?.toString();
   const status = formData.get("status")?.toString();
-  const admin_id = formData.get("admin_id")?.toString();
+  const admin_id = Number(formData.get("admin_id"));
 
   const supabase = await createClient();
 
@@ -27,13 +27,13 @@ export const updateVerificationRequest = async (formData: FormData) => {
     encodedRedirect("error", "/", "Failed to update verification request.");
   }
 
-  return encodedRedirect("success", "/", "Update verification request success.");
+  // return encodedRedirect("success", "/", "Update verification request success.");
 };
 
 export const deleteVerificationRequest = async (formData: FormData) => {
   const supabase = await createClient();
 
-  const provider_id = formData.get("id")?.toString();
+  const provider_id = formData.get("provider_id")?.toString();
 
   const { data, error } = await supabase
     .from("verification_requests")
@@ -44,7 +44,7 @@ export const deleteVerificationRequest = async (formData: FormData) => {
     encodedRedirect("error", "/", "Failed to delete verification request.");
   }
 
-  return encodedRedirect("success", "/", "Delete verification request success.");
+  // return encodedRedirect("success", "/", "Delete verification request success.");
 };
 
 export const selectVerificationRequest = async (provider_id: string) => {

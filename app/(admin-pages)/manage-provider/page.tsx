@@ -1,7 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import ProviderCard from "./provider-card";
-import { selectAllVerificationRequest } from "../actions";
+import VerificationList from "@/components/admin-pages/verification-list";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -26,25 +25,12 @@ export default async function Home() {
     admin_id = user_data[0].admin_id;
   }
 
-  const res = await selectAllVerificationRequest();
-  console.log("All verification requests\n", res);
-
   return (
     <>
       <main className="flex-1 flex flex-col items-center gap-6 px-4 w-full">
         <div className="flex flex-col items-center justify-center w-10/12">
           <div className="text-2xl font-bold pb-2">Manage Provider Page</div>
-          <div className="flex flex-col bg-white bg-opacity-10 mt-4 p-4 rounded-md w-full"> 
-            <div className="text-lg pb-4 font-bold"> Provider Verification Requests </div>
-            <div className="flex flex-col gap-4 w-full">
-              {
-                res.map((item, index) => (
-                  <ProviderCard key={index} params={item} />
-                ))
-                
-              }
-            </div>
-          </div>
+          <VerificationList />
         </div>
       </main>
     </>
