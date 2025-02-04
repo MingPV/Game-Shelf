@@ -17,9 +17,9 @@ export const addGameAction = async (formData: FormData) => {
 
   const fileName = randomUUID();
 
-  console.log("test555");
-  console.log(bg_picture);
-  console.log(supabase.auth);
+  // console.log("test555");
+  // console.log(bg_picture);
+  // console.log(supabase.auth);
 
   const { error: uploadError } = await supabase.storage
     .from("boardgame_pictures")
@@ -119,26 +119,26 @@ export const selectAllGamesAction = async () => {
     throw new Error("Failed to fetch boardgames.");
   }
 
-  console.log("testttttt");
-  console.log(data);
+  // console.log("testttttt");
+  // console.log(data);
 
   return data;
 };
 
-export const selectGamesByPageAction = async (page: number) => {
+export const selectGamesByPageAndNameAction = async (page: number,name: string, itemsPerPage: number) => {
   const supabase = await createClient();
-  const itemsPerPage = 30;
   const from = (page - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("boardgames")
-    .select("*")
+    .select("*", { count : 'exact'} )
+    .like('bg_name',`%${name}%`)
     .range(from, to);
 
   if (error) {
     throw new Error("Failed to fetch boardgames.");
   }
 
-  return data;
+  return {data,count};
 };

@@ -1,7 +1,7 @@
-import GameCard from "@/components/game-card";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SearchItems } from "@/components/search-items";
+import GameCard from "@/components/game-card";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -15,9 +15,8 @@ export default async function Home() {
 
   return (
     <>
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <SearchItems />
-        <GameCard/>
+      <main className="flex-1 flex flex-col gap-6 px-4 w-full">
+        <SearchItems/>
       </main>
     </>
   );
