@@ -1,6 +1,7 @@
 import Counter from "@/components/counter";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -38,7 +39,10 @@ export default async function Home() {
           <div>{user?.email}</div>
           <div>
             {user_data_value?.isProvider ? (
-              <div>You are Provider</div>
+              <div className="flex flex-col items-center gap-2">
+                You are Provider 
+                <Link className="btn btn-outline btn-primary" href="/provider-form">Request For Verification</Link>
+              </div>
             ) : (
               <div>You are Customer</div>
             )}

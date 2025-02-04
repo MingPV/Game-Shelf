@@ -75,6 +75,18 @@ export const selectAllVerificationRequest = async () => {
   return data;
 };
 
+export const selectAllUnverifiedVerificationRequest = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("verification_requests").select("*, users(*)").neq("status", "verified");
+
+  if (error) {
+    throw new Error("Failed to fetch verification requests.");
+  }
+
+  return data;
+};
+
 export const selectVerificationRequestByPageAction = async (page: number) => {
   const supabase = await createClient();
   const itemsPerPage = 30;
