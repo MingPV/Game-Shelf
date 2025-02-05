@@ -6,6 +6,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 
 export const addGameAction = async (formData: FormData) => {
   const boardgame_name = formData.get("boardgame_name")?.toString();
@@ -54,27 +55,61 @@ export const addGameAction = async (formData: FormData) => {
 export const updateGameAction = async (formData: FormData) => {
   const boardgame_name = formData.get("boardgame_name")?.toString();
   const description = formData.get("description")?.toString();
-  const bg_picture = formData.get("bg_picture")?.toString();
+  const bg_picture = formData.get("bg_picture") as File;
   const price = formData.get("price")?.toString();
   const id = formData.get("id")?.toString();
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("boardgames")
-    .update({
-      bg_name: boardgame_name,
-      description: description,
-      bg_picture: bg_picture,
-      price: price,
-    })
-    .eq("id", id);
+  let publicBoardgamePictureURL = null;
+  let error_message2;
 
-  if (error) {
-    encodedRedirect("error", "/", "Failed to update boardgame.");
+  console.log("testttttttt");
+  console.log(formData);
+
+  if (bg_picture) {
+    const fileName = randomUUID();
+    const { error: uploadError } = await supabase.storage
+      .from("boardgame_pictures")
+      .upload(fileName, bg_picture);
+    if (uploadError) {
+      console.log("Upload file error.", uploadError);
+      return;
+    }
+
+    publicBoardgamePictureURL = supabase.storage
+      .from("boardgame_pictures")
+      .getPublicUrl(fileName).data.publicUrl;
+
+    const { data, error: error_message } = await supabase
+      .from("boardgames")
+      .update({
+        bg_name: boardgame_name,
+        description: description,
+        bg_picture: publicBoardgamePictureURL || undefined,
+        price: price,
+      })
+      .eq("id", id);
+    error_message2 = error_message;
+  } else {
+    const { data, error: error_message } = await supabase
+      .from("boardgames")
+      .update({
+        bg_name: boardgame_name,
+        description: description,
+
+        price: price,
+      })
+      .eq("id", id);
+    error_message2 = error_message;
   }
 
-  return encodedRedirect("success", "/", "Update boardgame success.");
+  if (error_message2) {
+    encodedRedirect("error", "/", "Failed to update boardgame.");
+  }
+  revalidatePath("/");
+  // return encodedRedirect("success", "/", "Update boardgame success.");
+  return;
 };
 
 export const deleteGameAction = async (formData: FormData) => {
