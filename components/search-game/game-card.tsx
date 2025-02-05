@@ -1,6 +1,5 @@
 'use client'
 
-import Image from "next/image";
 import { useState } from "react";
 
 export default function GameCard({name,price,img}:{name:string,price:number,img:string}) {
@@ -19,7 +18,7 @@ export default function GameCard({name,price,img}:{name:string,price:number,img:
                 <p className="text-center font-semibold text-xl">{name}</p>
                 <p className="text-right mt-1">{price} Bath/day</p>
             </div>
-            <button className="bg-gs_purple_gradient border font-semibold px-4 w-4/5 rounded-lg py-1 self-end" onClick={()=>alert('clicked!')}>Details</button>
+            <button className="bg-gs_purple_gradient border font-semibold px-4 w-4/5 rounded-xl py-1 self-end" onClick={()=>alert('clicked!')}>Details</button>
         </div>
     )
 }

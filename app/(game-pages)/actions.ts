@@ -125,7 +125,7 @@ export const selectAllGamesAction = async () => {
   return data;
 };
 
-export const selectGamesByPageAndNameAction = async (page: number,name: string, itemsPerPage: number) => {
+export const selectGamesByFilterAction = async (name: string, price: [number,number], page: number, itemsPerPage: number) => {
   const supabase = await createClient();
   const from = (page - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
@@ -134,6 +134,8 @@ export const selectGamesByPageAndNameAction = async (page: number,name: string, 
     .from("boardgames")
     .select("*", { count : 'exact'} )
     .like('bg_name',`%${name}%`)
+    .gte('price',price[0])
+    .lte('price',price[1])
     .range(from, to);
 
   if (error) {

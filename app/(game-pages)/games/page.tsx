@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { SearchItems } from "@/components/search-items";
-import GameCard from "@/components/game-card";
+import { SearchItems } from "@/components/search-game/search-items";
+import GameCard from "@/components/search-game/game-card";
 
 export default async function Home() {
   const supabase = await createClient();
