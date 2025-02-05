@@ -1,86 +1,87 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { FaRegTimesCircle, FaRegCheckCircle } from "react-icons/fa";
+import { useState, useEffect } from "react";
+// import Link from "next/link";
+// import { FaRegTimesCircle, FaRegCheckCircle } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/client";
+import { updateProviderAction } from "../actions";
 
 export default function Signup() {
-  const [isProvider, setIsProvider] = useState<boolean | null>(null);
+  // const [isProvider, setIsProvider] = useState<boolean | null>(null);
+  // const [error, setError] = useState("");
+  // const [phoneNumber, setPhoneNumber] = useState("");
+  // const [location, setLocation] = useState("");
+  // const [paymentMethod, setPaymentMethod] = useState("");
+  // const [credentials, setCredential] = useState("");
+
+  // const [username, setUsername] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [isEmailUnique, setIsEmailUnique] = useState<boolean | null>(null);
+  // const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(
+  //   null
+  // );
+
+  const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [credentials, setCredential] = useState("");
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isEmailUnique, setIsEmailUnique] = useState<boolean | null>(null);
-  const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(
-    null
-  );
+  useEffect(() => {
+      async function fetchUserId() {
+          const supabase = createClient();
+          const { data: { user }, error } = await supabase.auth.getUser();
 
-  const handleSubmit = (event: React.FormEvent) => {
+          if (error || !user) {
+              setError("Failed to fetch user data.");
+              return;
+          }
+          
+          setUserId(user.id);
+      }
+
+      fetchUserId();
+  }, []);
+
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError("");
-
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setError("Valid email is required");
-      return;
+    // setError("");
+    const formData = new FormData(event.currentTarget);
+    if (userId) {
+      formData.append("userId", userId);
+      updateProviderAction(formData);
     }
 
-    if (!username) {
-      setError("Username is required");
-      return;
-    }
+    // if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    //   setError("Valid email is required");
+    //   return;
+    // }
 
-    if (!password || password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
+    // if (!username) {
+    //   setError("Username is required");
+    //   return;
+    // }
 
-    if (isProvider === null) {
-      setError("Please select a role");
-      return;
-    }
+    // if (!password || password.length < 6) {
+    //   setError("Password must be at least 6 characters long");
+    //   return;
+    // }
 
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("isProvider", isProvider.toString());
+    // if (isProvider === null) {
+    //   setError("Please select a role");
+    //   return;
+    // }
+
+    // const formData = new FormData();
+    // formData.append("username", username);
+    // formData.append("email", email);
+    // formData.append("password", password);
+    // formData.append("isProvider", isProvider.toString());
     // signUpAction(formData);
   };
 
-//   const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-//     setError("");
-//     const newEmail = e.target.value;
-//     setEmail(newEmail);
-//     const isUnique = await checkEmailUnique(newEmail);
-//     setIsEmailUnique(isUnique);
-//     if (isUnique === false) {
-//       setError("This email is already used");
-//     }
-//   };
 
-//   const handleUsernameChange = async (
-//     e: React.ChangeEvent<HTMLInputElement>
-//   ) => {
-//     setError("");
-//     const newUsername = e.target.value;
-//     setUsername(newUsername);
-//     const isUnique = await checkUsernameUnique(newUsername);
-//     setIsUsernameUnique(isUnique);
-//     if (isEmailUnique === false) {
-//       setError("This email is already used");
-//       return;
-//     }
-//     if (isUnique === false) {
-//       setError("This username is already used");
-//     }
-//   };
 
   return (
     <div className="flex justify-center items-center w-full pt-4">
@@ -92,8 +93,8 @@ export default function Signup() {
                     className="flex flex-col min-w-64 gap-5 placeholder:text-gs_white"
                     onSubmit={handleSubmit}
                 >
-                    <Label htmlFor="bg_picture">Profile Image</Label>
-                    <input name="bg_picture" type="file" />
+                    <Label htmlFor="profile_image">Profile Image</Label>
+                    <input name="profile_image" type="file" />
 
                     <Label htmlFor="phone_number">Phone Number</Label>
                     <Input name="phone_number" placeholder="Phone Number" required />
