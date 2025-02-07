@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { url } from "inspector";
+import { revalidatePath } from "next/cache";
 
 export const updateProviderAction = async (formData: FormData) => {
   const profile_image = formData.get("profile_image") as File;
@@ -15,9 +16,6 @@ export const updateProviderAction = async (formData: FormData) => {
   const payment_method = formData.get("payment_method")?.toString();
   const credentials = formData.get("credentials") as File;
   const userId = formData.get("userId")?.toString();
-
-  console.log("Update Provider");
-  console.log(formData);
 
   const supabase = await createClient();
 
@@ -30,9 +28,9 @@ export const updateProviderAction = async (formData: FormData) => {
 
   console.log(user);
 
-  let publicProfileImageURL = "";
+  let publicProfileImageURL = null;
 
-  if (profile_image) {
+  if (profile_image.size > 0) {
     const profileName = randomUUID();
 
     const { error: uploadError } = await supabase.storage
@@ -55,7 +53,7 @@ export const updateProviderAction = async (formData: FormData) => {
 
     const { error: uploadError } = await supabase.storage
         .from("credentials")
-        .upload(credName, profile_image);
+        .upload(credName, credentials);
         
     if (uploadError) {
         console.log("Upload file error.", uploadError);
@@ -68,17 +66,21 @@ export const updateProviderAction = async (formData: FormData) => {
 
     console.log("credentials:", publicCredentialsImageURL);
 
+  const updateData: Record<string, any> = {};
+
+  if (publicProfileImageURL) updateData.profilePicture = publicProfileImageURL;
+  if (phone_number) updateData.phoneNumber = phone_number;
+  if (payment_method) updateData.paymentMethod = payment_method;
+  if (location) updateData.location = location;
+  if (publicCredentialsImageURL) updateData.credentials = publicCredentialsImageURL;
+
   const { data, error } = await supabase
     .from("users")
-    .update({
-      profilePicture: publicCredentialsImageURL,
-      phoneNumber: phone_number,
-      paymentMethod: payment_method,
-      credentials: publicCredentialsImageURL,
-    })
+    .update(updateData)
     .eq("uid", userId);
 
   if (error) {
+    console.log("Update Provider Error:", error);
     encodedRedirect("error", "/", "Failed to update provider.");
   }
 

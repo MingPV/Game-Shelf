@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -31,6 +32,7 @@ export default async function Home() {
           <div>Welcome back admin number : {admin_id}</div>
           <button className="btn bg-base-300">Click me</button>
           <div>{user?.email}</div>
+          <Link className="mt-2 btn btn-outline btn-primary" href="/manage-provider">Manage Provider</Link>
         </div>
       </main>
     </>

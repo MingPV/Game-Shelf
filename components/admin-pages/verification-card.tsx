@@ -43,7 +43,7 @@ export default function VerificationCard({params, admin_id, onRemove} : {params:
         </div>
         <div> <span className="font-bold pr-1">Email:</span> { params.users.email } </div>
         <div> <span className="font-bold pr-1">Phone:</span> { params.users.phoneNumber } </div>
-        <div> <span className="font-bold pr-1">Location:</span> <a className="underline" href={ params.users.location }> { params.users.location } </a></div>
+        <div> <span className="font-bold pr-1">Location:</span> { params.users.location } </div>
         <div> <span className="font-bold pr-1">Payment Method:</span> { params.users.paymentMethod } </div>
         <div> <span className="font-bold pr-1">Credential:</span> <a className="underline" href={ params.users.credentials }> { params.users.credentials } </a></div>
     

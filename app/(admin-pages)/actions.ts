@@ -5,7 +5,31 @@
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
+
+export const addVerificationRequest = async (formData: FormData) => {
+  const provider_id = formData.get("provider_id")?.toString();
+  console.log("Add Verification:", formData, "\nProvider Id:", provider_id);
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("verification_requests")
+    .insert([
+      {
+        provider_id: provider_id,
+        status: "pending",
+      },
+    ]);
+
+  if (error) {
+    console.log("Add Verification Request Error:", error);
+    encodedRedirect("error", "/", "Failed to add verification request.");
+  }
+
+  // return encodedRedirect("success", "/", "Add boardgame success.");
+};
 
 export const updateVerificationRequest = async (formData: FormData) => {
   const provider_id = formData.get("provider_id")?.toString();
@@ -54,7 +78,7 @@ export const selectVerificationRequest = async (provider_id: string) => {
     .from("verification_requests")
     .select("*")
     .eq("provider_id", provider_id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     throw new Error("Failed to fetch verification request.");

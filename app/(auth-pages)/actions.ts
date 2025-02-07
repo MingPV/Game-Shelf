@@ -56,25 +56,6 @@ export const signUpAction = async (formData: FormData) => {
         .select()
 
         console.log("error :",error)
-
-        // If the user is a provider
-        // Try inserting the user into the verification request table
-        if (isProvider && data && data.length > 0) {
-          // console.log("created a new account!\n", data);
-          // console.log("Uid:", data[0].uid);
-          const provider_id = data[0].uid;
-          
-          const { error: request_error } = await supabase
-            .from('verification_requests')
-            .insert([
-              { 
-                provider_id: provider_id, 
-                status: "pending", 
-              },
-            ])
-
-          console.log("Provider Verification Request Error :", request_error);
-        }
     }
 
     return encodedRedirect(

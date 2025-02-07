@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/client";
 import { updateProviderAction } from "../actions";
+import { addVerificationRequest } from "@/app/(admin-pages)/actions";
 
 export default function Signup() {
   // const [isProvider, setIsProvider] = useState<boolean | null>(null);
@@ -47,41 +48,16 @@ export default function Signup() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // setError("");
-    const formData = new FormData(event.currentTarget);
+    const formDataUser = new FormData(event.currentTarget);
     if (userId) {
-      formData.append("userId", userId);
-      updateProviderAction(formData);
+      formDataUser.append("userId", userId);
+      updateProviderAction(formDataUser);
+
+      const formDataVerifyReq = new FormData();
+      formDataVerifyReq.append("provider_id", userId);
+      addVerificationRequest(formDataVerifyReq);
     }
-
-    // if (!email || !/\S+@\S+\.\S+/.test(email)) {
-    //   setError("Valid email is required");
-    //   return;
-    // }
-
-    // if (!username) {
-    //   setError("Username is required");
-    //   return;
-    // }
-
-    // if (!password || password.length < 6) {
-    //   setError("Password must be at least 6 characters long");
-    //   return;
-    // }
-
-    // if (isProvider === null) {
-    //   setError("Please select a role");
-    //   return;
-    // }
-
-    // const formData = new FormData();
-    // formData.append("username", username);
-    // formData.append("email", email);
-    // formData.append("password", password);
-    // formData.append("isProvider", isProvider.toString());
-    // signUpAction(formData);
   };
-
-
 
   return (
     <div className="flex justify-center items-center w-full pt-4">
@@ -94,18 +70,23 @@ export default function Signup() {
                     onSubmit={handleSubmit}
                 >
                     <Label htmlFor="profile_image">Profile Image</Label>
-                    <input name="profile_image" type="file" />
+                    <input name="profile_image" type="file" accept="image/*" />
 
-                    <Label htmlFor="phone_number">Phone Number</Label>
-                    <Input name="phone_number" placeholder="Phone Number" required />
+                    <Label htmlFor="phone_number">Phone Number *</Label>
+                    <Input 
+                        name="phone_number" 
+                        pattern="0\d-\d{3}-\d{4}|0\d{2}-\d{3}-\d{4}"
+                        placeholder="0X-XXX-XXXX or 0XX-XXX-XXXX" 
+                        required 
+                    />
 
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location">Location *</Label>
                     <Input name="location" placeholder="Location" required />
 
-                    <Label htmlFor="payment_method">Payment Method</Label>
+                    <Label htmlFor="payment_method">Payment Method *</Label>
                     <Input name="payment_method" placeholder="Payment Method" required />
 
-                    <Label htmlFor="credentials">Creadentials</Label>
+                    <Label htmlFor="credentials">Creadentials *</Label>
                     <input name="credentials" type="file" required />
                     
                     <button
