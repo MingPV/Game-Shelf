@@ -17,10 +17,6 @@ export const addGameAction = async (formData: FormData) => {
 
   const fileName = randomUUID();
 
-  // console.log("test555");
-  // console.log(bg_picture);
-  // console.log(supabase.auth);
-
   const { error: uploadError } = await supabase.storage
     .from("boardgame_pictures")
     .upload(fileName, bg_picture);
@@ -94,7 +90,7 @@ export const deleteGameAction = async (formData: FormData) => {
   return encodedRedirect("success", "/", "Delete boardgame success.");
 };
 
-export const selectGameAction = async (id: string) => {
+export const selectGameAction = async (id: Number) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -119,28 +115,30 @@ export const selectAllGamesAction = async () => {
     throw new Error("Failed to fetch boardgames.");
   }
 
-  // console.log("testttttt");
-  // console.log(data);
-
   return data;
 };
 
-export const selectGamesByFilterAction = async (name: string, price: [number,number], page: number, itemsPerPage: number) => {
+export const selectGamesByFilterAction = async (
+  name: string,
+  price: [number, number],
+  page: number,
+  itemsPerPage: number
+) => {
   const supabase = await createClient();
   const from = (page - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
   const { data, error, count } = await supabase
     .from("boardgames")
-    .select("*", { count : 'exact'} )
-    .like('bg_name',`%${name}%`)
-    .gte('price',price[0])
-    .lte('price',price[1])
+    .select("*", { count: "exact" })
+    .like("bg_name", `%${name}%`)
+    .gte("price", price[0])
+    .lte("price", price[1])
     .range(from, to);
 
   if (error) {
     throw new Error("Failed to fetch boardgames.");
   }
 
-  return {data,count};
+  return { data, count };
 };
