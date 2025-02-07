@@ -16,6 +16,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailUnique, setIsEmailUnique] = useState<boolean | null>(null);
+  const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null);
   const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(
     null
   );
@@ -25,7 +26,7 @@ export default function Signup() {
     setError("");
 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setError("Valid email is required");
+      setError("Email is required");
       return;
     }
 
@@ -60,6 +61,14 @@ export default function Signup() {
     setIsEmailUnique(isUnique);
     if (isUnique === false) {
       setError("This email is already used");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(newEmail)) {
+      setIsEmailValid(false);
+      setError("Email is invalid");
+    } else {
+      setIsEmailValid(true);
+      setError("");
     }
   };
 
@@ -139,13 +148,13 @@ export default function Signup() {
                   onChange={handleEmailChange}
                   className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                 />
-                {isEmailUnique === true && (
+                {isEmailUnique === true && isEmailValid == true && (
                   <FaRegCheckCircle className="absolute right-2 text-gs_green" />
                 )}
-                {isEmailUnique === false && (
+                {(isEmailUnique === false || isEmailValid == false) && (
                   <FaRegTimesCircle className="absolute right-2 text-gs_red" />
                 )}
-                {isEmailUnique === null && <></>}
+                {(isEmailUnique === null || isEmailValid == null) && <></>}
               </div>
 
               <div className="relative flex items-center gap-2">
