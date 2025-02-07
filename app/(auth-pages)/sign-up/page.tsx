@@ -205,11 +205,13 @@ export default function Signup() {
               >
                 Create Account
               </button>
-              {error.length > 0 && (
-                <div className="text-red-500">
-                  <p>{error}</p>
-                </div>
-              )}
+              <div className="h-12">
+                {error.length > 0 && (
+                  <div className="text-red-500">
+                    <p>{error}</p>
+                  </div>
+                )}
+              </div>
             </form>
           </div>
         </div>
