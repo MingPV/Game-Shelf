@@ -7,6 +7,7 @@ export interface Boardgame {
   bg_picture: string;
   price: number;
   created_at: string;
+  status: string
 }
 
 export interface RentingRequest {
