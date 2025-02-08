@@ -55,6 +55,9 @@ export const updateSession = async (request: NextRequest) => {
       if (request.nextUrl.pathname.startsWith("/admin-homepage") && !user_data[0].is_admin) {
         return NextResponse.redirect(new URL("/", request.url));
       }
+      if (request.nextUrl.pathname.startsWith("/manage-provider") && !user_data[0].is_admin) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
     }
     
 

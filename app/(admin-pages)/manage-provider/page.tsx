@@ -1,64 +1,31 @@
-"use client";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import VerificationList from "@/components/admin-pages/verification-list";
 
-import { useEffect, useState } from "react";
-import VerificationCard from "@/components/admin-pages/verification-card";
-import { createClient } from "@/utils/supabase/client";
-import { verificationRequests } from "@/app/types/user";
-import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
+export default async function ManageProvider() {
+  const supabase = await createClient();
+  let admin_id = null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export default function VerificationList() {
-  const [adminId, setAdminId] = useState<number | null>(null);
-  const [requests, setRequests] = useState<verificationRequests[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: user_data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
 
-  useEffect(() => {
-      async function fetchData() {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
 
-        if (user) {
-          const { data: userData, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("uid", user.id)
-            .single();
-
-          if (userData && userData.is_admin) {
-            setAdminId(userData.admin_id);
-
-            const res = await selectAllUnverifiedVerificationRequest();
-
-            setRequests(res || []);
-            setIsLoading(false);
-          }
-        }
-      }
-      fetchData();
-  }, []);
-
-  const handleRemove = async (provider_id: string) => {
-      setRequests((prev) => prev.filter((req) => req.provider_id !== provider_id));
-  };
+  if (user_data) {
+    if (!user_data[0].is_admin) {
+      redirect("/");
+    }
+    admin_id = user_data[0].admin_id;
+  }
 
   return (
-    <>
-      <main className="flex-1 flex flex-col items-center gap-6 px-4 w-full">
-        <div className="flex flex-col items-center justify-center w-10/12">
-          <div className="text-2xl font-bold pb-2">Manage Provider Page</div>
-          <div className="flex flex-col bg-white bg-opacity-10 mt-4 p-4 rounded-md w-full mb-4">
-            <div className="text-lg pb-4 font-bold">Provider Verification Requests</div>
-            <div className="flex flex-col gap-4 w-full items-center">
-              {requests.length > 0 ? (
-                  requests.map((item) => (
-                      adminId && <VerificationCard key={item.provider_id} params={item} admin_id={adminId} onRemove={handleRemove} />
-                  ))
-              ) : (
-                  (isLoading ? <p>Loading ...</p> : <p>No verification requests</p>)
-              )}
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
+    <VerificationList adminId={admin_id}/>
   );
 }
