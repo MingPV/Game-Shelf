@@ -24,7 +24,7 @@ export default async function ProviderForm() {
     if (user_data[0].is_admin) {
       redirect("/admin-homepage");
     } else if (!user_data[0].isProvider) {
-      redirect("/");
+      redirect("/home");
     } else {
       //  select index 0 of array [user_data] => user_data
       user_data_value = user_data[0];
@@ -34,9 +34,7 @@ export default async function ProviderForm() {
   }
 
   const req = await selectVerificationRequest(user_data_value.uid);
-  if (req) redirect("/");
+  if (req) redirect("/home");
 
-  return (
-    <ProviderFormCard providerId={user_data_value} />
-  );
+  return <ProviderFormCard providerId={user_data_value} />;
 }

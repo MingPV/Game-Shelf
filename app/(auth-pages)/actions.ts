@@ -13,9 +13,8 @@ export const signUpAction = async (formData: FormData) => {
   const origin = (await headers()).get("origin");
   const isProviderSelected = formData.get("isProvider");
   let isProvider = false;
-  
 
-  if(isProviderSelected == "true"){
+  if (isProviderSelected == "true") {
     isProvider = true;
   }
 
@@ -23,11 +22,11 @@ export const signUpAction = async (formData: FormData) => {
     return encodedRedirect(
       "error",
       "/sign-up",
-      "Email and password are required",
+      "Email and password are required"
     );
   }
 
-  const { data:authData,error } = await supabase.auth.signUp({
+  const { data: authData, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -39,30 +38,24 @@ export const signUpAction = async (formData: FormData) => {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-
     // Try inserting the user into the public.user table
 
-    if(authData?.user?.id){
-      
+    if (authData?.user?.id) {
       const { data, error } = await supabase
-        .from('users')
+        .from("users")
         .insert([
-          {  
+          {
             email: email,
             username: username,
             isProvider: isProvider,
           },
         ])
-        .select()
+        .select();
 
-        console.log("error :",error)
+      console.log("error :", error);
     }
 
-    return encodedRedirect(
-      "success",
-      "/",
-      "Thanks for signing up!",
-    );
+    return encodedRedirect("success", "/home", "Thanks for signing up!");
   }
 };
 
@@ -80,7 +73,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/");
+  return redirect("/home");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -102,7 +95,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
     return encodedRedirect(
       "error",
       "/forgot-password",
-      "Could not reset password",
+      "Could not reset password"
     );
   }
 
@@ -113,7 +106,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Check your email for a link to reset your password.",
+    "Check your email for a link to reset your password."
   );
 };
 
@@ -127,7 +120,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password and confirm password are required",
+      "Password and confirm password are required"
     );
   }
 
@@ -135,7 +128,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Passwords do not match",
+      "Passwords do not match"
     );
   }
 
@@ -147,7 +140,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password update failed",
+      "Password update failed"
     );
   }
 
@@ -157,14 +150,14 @@ export const resetPasswordAction = async (formData: FormData) => {
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/");
+  return redirect("/home");
 };
 
 export const checkUsernameUnique = async (username: string) => {
-  if(username === "" || username === null){
+  if (username === "" || username === null) {
     return null;
   }
-  
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("users")
@@ -176,11 +169,10 @@ export const checkUsernameUnique = async (username: string) => {
   }
 
   return data.length === 0;
-
-}
+};
 
 export const checkEmailUnique = async (email: string) => {
-  if(email === "" || email === null){
+  if (email === "" || email === null) {
     return null;
   }
 
@@ -195,4 +187,4 @@ export const checkEmailUnique = async (email: string) => {
   }
 
   return data.length === 0;
-}
+};

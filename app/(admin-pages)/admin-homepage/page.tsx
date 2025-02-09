@@ -20,7 +20,7 @@ export default async function Home() {
 
   if (user_data) {
     if (!user_data[0].is_admin) {
-      redirect("/");
+      redirect("/home");
     }
     admin_id = user_data[0].admin_id;
   }
@@ -32,7 +32,12 @@ export default async function Home() {
           <div>Welcome back admin number : {admin_id}</div>
           <button className="btn bg-base-300">Click me</button>
           <div>{user?.email}</div>
-          <Link className="mt-2 btn btn-outline btn-primary" href="/manage-provider">Manage Provider</Link>
+          <Link
+            className="mt-2 btn btn-outline btn-primary"
+            href="/manage-provider"
+          >
+            Manage Provider
+          </Link>
         </div>
       </main>
     </>

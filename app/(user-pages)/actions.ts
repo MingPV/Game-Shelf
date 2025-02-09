@@ -84,8 +84,8 @@ export const updateProviderAction = async (formData: FormData) => {
 
   if (error) {
     console.log("Update Provider Error:", error);
-    encodedRedirect("error", "/", "Failed to update provider.");
+    encodedRedirect("error", "/home", "Failed to update provider.");
   }
 
-  return encodedRedirect("success", "/", "Update provider success.");
+  return encodedRedirect("success", "/home", "Update provider success.");
 };

@@ -20,12 +20,10 @@ export default async function ManageProvider() {
 
   if (user_data) {
     if (!user_data[0].is_admin) {
-      redirect("/");
+      redirect("/home");
     }
     admin_id = user_data[0].admin_id;
   }
 
-  return (
-    <VerificationList adminId={admin_id}/>
-  );
+  return <VerificationList adminId={admin_id} />;
 }

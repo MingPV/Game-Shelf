@@ -41,10 +41,10 @@ export const addGameAction = async (formData: FormData) => {
   ]);
 
   if (error) {
-    encodedRedirect("error", "/", "Failed to add boardgame.");
+    encodedRedirect("error", "/home", "Failed to add boardgame.");
   }
 
-  return encodedRedirect("success", "/", "Add boardgame success.");
+  return encodedRedirect("success", "/home", "Add boardgame success.");
 };
 
 export const updateGameAction = async (formData: FormData) => {
@@ -67,10 +67,10 @@ export const updateGameAction = async (formData: FormData) => {
     .eq("id", id);
 
   if (error) {
-    encodedRedirect("error", "/", "Failed to update boardgame.");
+    encodedRedirect("error", "/home", "Failed to update boardgame.");
   }
 
-  return encodedRedirect("success", "/", "Update boardgame success.");
+  return encodedRedirect("success", "/home", "Update boardgame success.");
 };
 
 export const deleteGameAction = async (formData: FormData) => {
@@ -84,10 +84,10 @@ export const deleteGameAction = async (formData: FormData) => {
     .eq("id", id);
 
   if (error) {
-    encodedRedirect("error", "/", "Failed to delete boardgame.");
+    encodedRedirect("error", "/home", "Failed to delete boardgame.");
   }
 
-  return encodedRedirect("success", "/", "Delete boardgame success.");
+  return encodedRedirect("success", "/home", "Delete boardgame success.");
 };
 
 export const selectGameAction = async (id: Number) => {

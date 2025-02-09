@@ -14,18 +14,16 @@ export const addVerificationRequest = async (formData: FormData) => {
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("verification_requests")
-    .insert([
-      {
-        provider_id: provider_id,
-        status: "pending",
-      },
-    ]);
+  const { data, error } = await supabase.from("verification_requests").insert([
+    {
+      provider_id: provider_id,
+      status: "pending",
+    },
+  ]);
 
   if (error) {
     console.log("Add Verification Request Error:", error);
-    encodedRedirect("error", "/", "Failed to add verification request.");
+    encodedRedirect("error", "/home", "Failed to add verification request.");
   }
 
   // return encodedRedirect("success", "/", "Add boardgame success.");
@@ -40,15 +38,15 @@ export const updateVerificationRequest = async (formData: FormData) => {
 
   const { data, error } = await supabase
     .from("verification_requests")
-    .update({ 
-        status: status, 
-        approver: admin_id,
+    .update({
+      status: status,
+      approver: admin_id,
     })
     .eq("provider_id", provider_id)
-    .select()
+    .select();
 
   if (error) {
-    encodedRedirect("error", "/", "Failed to update verification request.");
+    encodedRedirect("error", "/home", "Failed to update verification request.");
   }
 
   // return encodedRedirect("success", "/", "Update verification request success.");
@@ -65,7 +63,7 @@ export const deleteVerificationRequest = async (formData: FormData) => {
     .eq("provider_id", provider_id);
 
   if (error) {
-    encodedRedirect("error", "/", "Failed to delete verification request.");
+    encodedRedirect("error", "/home", "Failed to delete verification request.");
   }
 
   // return encodedRedirect("success", "/", "Delete verification request success.");
@@ -90,7 +88,9 @@ export const selectVerificationRequest = async (provider_id: string) => {
 export const selectAllVerificationRequest = async () => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("verification_requests").select("*, users(*)");
+  const { data, error } = await supabase
+    .from("verification_requests")
+    .select("*, users(*)");
 
   if (error) {
     throw new Error("Failed to fetch verification requests.");
@@ -102,7 +102,10 @@ export const selectAllVerificationRequest = async () => {
 export const selectAllUnverifiedVerificationRequest = async () => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("verification_requests").select("*, users(*)").neq("status", "verified");
+  const { data, error } = await supabase
+    .from("verification_requests")
+    .select("*, users(*)")
+    .neq("status", "verified");
 
   if (error) {
     throw new Error("Failed to fetch verification requests.");
@@ -128,4 +131,3 @@ export const selectVerificationRequestByPageAction = async (page: number) => {
 
   return data;
 };
-
