@@ -125,8 +125,11 @@ export const deleteGameAction = async (formData: FormData) => {
   if (error) {
     encodedRedirect("error", "/", "Failed to delete boardgame.");
   }
+  console.log("delete ", id);
 
-  return encodedRedirect("success", "/", "Delete boardgame success.");
+  // return encodedRedirect("success", "/", "Delete boardgame success.");
+  revalidatePath("/");
+  return;
 };
 
 export const selectGameAction = async (id: string) => {

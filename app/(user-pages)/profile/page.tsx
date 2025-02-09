@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { StatusTracking } from "../../../components/inventory/status-tracking"; // Ensure the path is correct
 import { RentingRequest } from "@/app/types/game"; // Ensure the type is correct
 import ModalUpdateBg from "@/components/inventory/modal-update-bg";
+import DeleteBoardgame from "@/components/inventory/delete-bg";
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -14,7 +15,7 @@ export default async function Home() {
   }
 
   const rentingRequest: RentingRequest = {
-    id: 1,
+    id: 17,
     start_date: "2021-07-01",
     end_date: "2021-07-08",
     status: "pending",
@@ -23,7 +24,7 @@ export default async function Home() {
     created_at: "2021-07-01",
   };
   const boardgame = {
-    id: 1,
+    id: 10,
     provier_id: "1",
     bg_name: "Catan",
     description:
@@ -40,6 +41,7 @@ export default async function Home() {
           <div>user profile page</div>
           <StatusTracking rentingRequest={rentingRequest} />{" "}
           <ModalUpdateBg boardgame={boardgame} />
+          <DeleteBoardgame boardgameId={boardgame.id} />
           {/* Ensure the prop is passed correctly */}
         </div>
       </main>
