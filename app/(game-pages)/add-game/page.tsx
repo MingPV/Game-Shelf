@@ -32,9 +32,6 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
       </div>
     );
   }
-  console.log("ming1");
-  console.log(await selectAllGamesAction());
-  console.log(await selectGameAction("1"));
 
   return (
     <>

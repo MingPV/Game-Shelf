@@ -39,8 +39,6 @@ export default async function TrackingPage() {
 
     // Filters
     .eq("provider_id", user?.id);
-  console.log("abababaabababababba");
-  console.log(boardgames);
 
   return (
     <>
