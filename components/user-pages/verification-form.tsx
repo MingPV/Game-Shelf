@@ -15,6 +15,9 @@ export default function ProviderFormCard({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    setIsSubmitting(true);
+
     const formDataUser = new FormData(event.currentTarget);
 
     if (providerId) {
@@ -39,9 +42,6 @@ export default function ProviderFormCard({
           <form
             className="flex flex-col min-w-64 gap-5 placeholder:text-gs_white"
             onSubmit={handleSubmit}
-            onClick={() => {
-              setIsSubmitting(true);
-            }}
           >
             <Label htmlFor="profile_image">Profile Image</Label>
             <input name="profile_image" type="file" accept="image/*" />
