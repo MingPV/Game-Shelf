@@ -122,10 +122,17 @@ export const selectGamesByFilterAction = async (
   name: string,
   price: [number, number],
   page: number,
-  itemsPerPage: number
+  itemsPerPage: number,
+  maxPage: number
 ) => {
+  let page_to_fetch = page;
+
+  if (page > maxPage) {
+    page_to_fetch = 1;
+  }
+
   const supabase = await createClient();
-  const from = (page - 1) * itemsPerPage;
+  const from = (page_to_fetch - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
   const { data, error, count } = await supabase
@@ -137,6 +144,8 @@ export const selectGamesByFilterAction = async (
     .range(from, to);
 
   if (error) {
+    console.log("error22222");
+    console.log(error);
     throw new Error("Failed to fetch boardgames.");
   }
 

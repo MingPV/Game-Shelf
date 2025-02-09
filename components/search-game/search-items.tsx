@@ -22,11 +22,17 @@ export function SearchItems() {
 
   const fetchGames = async () => {
     setIsFetching(true);
+
+    if (page > maxPage) {
+      setPage(1);
+    }
+
     const { data, count } = await selectGamesByFilterAction(
       searchValue,
       price,
       page,
-      itemsPerPage
+      itemsPerPage,
+      maxPage
     );
     setGames(data);
     setCount(count || 1);
