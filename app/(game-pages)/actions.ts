@@ -103,8 +103,8 @@ export const updateGameAction = async (formData: FormData) => {
   if (error_message2) {
     encodedRedirect("error", "/", "Failed to update boardgame.");
   }
-  revalidatePath("/");
-  // return encodedRedirect("success", "/", "Update boardgame success.");
+  // revalidatePath("/");
+  return encodedRedirect("success", "/home", "Update boardgame success.");
   return;
 };
 

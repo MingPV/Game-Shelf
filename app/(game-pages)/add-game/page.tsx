@@ -72,7 +72,7 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
               <Label htmlFor="description">Description</Label>
               <Input name="description" placeholder="Description" />
               <Label htmlFor="bg_picture">Picture URL</Label>
-              <Input name="bg_picture" placeholder="Picture URL" />
+              <input name="bg_picture" type="file" />
               <Label htmlFor="price">Price</Label>
               <Input name="price" placeholder="Price" />
               <SubmitButton
