@@ -12,6 +12,20 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let profile_url =
+    "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+
+  const { data: user_data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+
+  if (user_data) {
+    if (user_data[0].profilePicture) {
+      profile_url = user_data[0].profilePicture;
+    }
+  }
+
   if (!hasEnvVars) {
     return (
       <>
@@ -50,12 +64,34 @@ export default async function AuthButton() {
   }
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
-          Sign out
-        </Button>
-      </form>
+      <div className="dropdown dropdown-end">
+        <div
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-circle avatar"
+        >
+          <div className="w-10 rounded-full">
+            <img alt="Tailwind CSS Navbar component" src={profile_url} />
+          </div>
+        </div>
+        <ul
+          tabIndex={0}
+          className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+        >
+          <li>
+            <a className="justify-between" href="/profile">
+              Profile
+              <span className="badge">New</span>
+            </a>
+          </li>
+          <li>
+            <a href="/account-settings">Settings</a>
+          </li>
+          <li>
+            <a onClick={signOutAction}>Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
   ) : (
     <div className="flex gap-2">
