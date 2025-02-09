@@ -8,7 +8,7 @@ import {
   updateVerificationRequest,
   deleteVerificationRequest,
 } from "../../app/(admin-pages)/actions";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function VerificationCard({
   params,

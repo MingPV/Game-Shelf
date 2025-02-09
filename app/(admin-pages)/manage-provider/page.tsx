@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import VerificationList from "@/components/admin-pages/verification-list";
+import { Suspense } from "react";
 
 export default async function ManageProvider() {
   const supabase = await createClient();

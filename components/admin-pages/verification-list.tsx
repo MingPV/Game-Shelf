@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import VerificationCard from "@/components/admin-pages/verification-card";
 import { verificationRequests } from "@/app/types/user";
 import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
+import LoadingCard from "./loading-card";
 
 export default function VerificationList({ adminId }: { adminId: number }) {
   const [requests, setRequests] = useState<verificationRequests[]>([]);
@@ -48,7 +49,13 @@ export default function VerificationList({ adminId }: { adminId: number }) {
                     )
                 )
               ) : isLoading ? (
-                <p>Loading ...</p>
+                <>
+                  <LoadingCard />
+                  <LoadingCard />
+                  <LoadingCard />
+                  <LoadingCard />
+                  <LoadingCard />
+                </>
               ) : (
                 <p>No verification requests</p>
               )}
