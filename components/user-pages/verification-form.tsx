@@ -11,15 +11,19 @@ export default function ProviderFormCard({
 }: {
   providerId: string;
 }) {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formDataUser = new FormData(event.currentTarget);
+
     if (providerId) {
       formDataUser.append("userId", providerId);
       updateProviderAction(formDataUser);
 
       const formDataVerifyReq = new FormData();
       formDataVerifyReq.append("provider_id", providerId);
+
       addVerificationRequest(formDataVerifyReq);
     }
   };
@@ -35,6 +39,9 @@ export default function ProviderFormCard({
           <form
             className="flex flex-col min-w-64 gap-5 placeholder:text-gs_white"
             onSubmit={handleSubmit}
+            onClick={() => {
+              setIsSubmitting(true);
+            }}
           >
             <Label htmlFor="profile_image">Profile Image</Label>
             <input name="profile_image" type="file" accept="image/*" />
@@ -72,7 +79,7 @@ export default function ProviderFormCard({
                 type="submit"
                 className="btn rounded-full bg-gs_purple_gradient hover:bg-opacity-60 border-none w-min px-16"
               >
-                Submit
+                {isSubmitting ? "Sending.." : "Submit"}
               </button>
             </div>
           </form>

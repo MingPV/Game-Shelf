@@ -36,5 +36,5 @@ export default async function ProviderForm() {
   const req = await selectVerificationRequest(user_data_value.uid);
   if (req) redirect("/home");
 
-  return <ProviderFormCard providerId={user_data_value} />;
+  return <ProviderFormCard providerId={user_data_value.uid} />;
 }

@@ -25,8 +25,6 @@ export const addVerificationRequest = async (formData: FormData) => {
     console.log("Add Verification Request Error:", error);
     encodedRedirect("error", "/home", "Failed to add verification request.");
   }
-
-  // return encodedRedirect("success", "/", "Add boardgame success.");
 };
 
 export const updateVerificationRequest = async (formData: FormData) => {
@@ -48,8 +46,6 @@ export const updateVerificationRequest = async (formData: FormData) => {
   if (error) {
     encodedRedirect("error", "/home", "Failed to update verification request.");
   }
-
-  // return encodedRedirect("success", "/", "Update verification request success.");
 };
 
 export const deleteVerificationRequest = async (formData: FormData) => {

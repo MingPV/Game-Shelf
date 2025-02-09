@@ -8,6 +8,7 @@ import {
   updateVerificationRequest,
   deleteVerificationRequest,
 } from "../../app/(admin-pages)/actions";
+import { useEffect, useState } from "react";
 
 export default function VerificationCard({
   params,
@@ -18,6 +19,8 @@ export default function VerificationCard({
   admin_id: number;
   onRemove: (provider_id: string) => void;
 }) {
+  const [profileURL, setProfileURL] = useState("/mock_provider.jpeg");
+
   const handleDeny = () => {
     onRemove(params.provider_id);
     const formData = new FormData();
@@ -34,19 +37,20 @@ export default function VerificationCard({
     updateVerificationRequest(formData);
   };
 
+  useEffect(() => {
+    if (params.users.profilePicture) {
+      setProfileURL(params.users.profilePicture);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col justify-center rounded-sm border border-white border-opacity-60 p-4 w-full">
       <div className="flex justify-between items-center pb-2">
         <div className="flex gap-2 items-center font-bold">
           <div className="flex relative h-7 w-7 rounded-full">
-            <Image
+            <img
               alt="provider profile"
-              src={
-                params.users.profilePicture
-                  ? params.users.profilePicture
-                  : mock_provider
-              }
-              fill
+              src={profileURL}
               sizes="28px"
               className="rounded-full"
             />

@@ -10,25 +10,35 @@ export default function VerificationButton({
   provider_id: string;
 }) {
   const [sentVerifyReq, setSentVerifyReq] = useState<string>("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleCheckVerification = async () => {
+    setIsVerifying(true);
+    const req = await selectVerificationRequest(provider_id);
+    setIsVerifying(false);
+    if (req) setSentVerifyReq(req.status);
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const req = await selectVerificationRequest(provider_id);
-        if (req) setSentVerifyReq(req.status);
-      } catch (error) {
-        console.error("Error fetching verification request:", error);
-      }
-    }
-    fetchData();
+    handleCheckVerification();
   }, []);
 
   return (
     <div>
       {sentVerifyReq === "pending" && (
-        <div className="border rounded-md p-2 text-info border-info">
-          Waiting For Verification
-        </div>
+        <>
+          <div className="flex flex-row gap-2">
+            <div className="border rounded-md p-2 text-info border-info">
+              Waiting For Verification
+            </div>
+            <button
+              className="btn btn-ghost btn-outline"
+              onClick={handleCheckVerification}
+            >
+              {isVerifying ? <div>Checking</div> : <div>Check</div>}
+            </button>
+          </div>
+        </>
       )}
       {sentVerifyReq === "verified" && (
         <div className="border rounded-md p-2 text-green-400 border-green-400">

@@ -64,6 +64,12 @@ export const updateSession = async (request: NextRequest) => {
       ) {
         return NextResponse.redirect(new URL("/home", request.url));
       }
+      if (
+        request.nextUrl.pathname.startsWith("/home") &&
+        user_data[0].is_admin
+      ) {
+        return NextResponse.redirect(new URL("/admin-homepage", request.url));
+      }
     }
 
     // console.log(request.url)
