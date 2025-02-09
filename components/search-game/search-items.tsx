@@ -6,6 +6,7 @@ import GameCard from "./game-card";
 import { Input } from "../ui/input";
 import PriceFilter from "./price-filter";
 import ItemsPerPageFilter from "./items-per-page-filter";
+import LoadingGameCard from "./loading-card";
 
 export function SearchItems() {
   const [itemsPerPage, setItemPerPage] = useState(3);
@@ -17,7 +18,10 @@ export function SearchItems() {
   const [price, setPrice] = useState<[number, number]>([0, 1000]);
   const [filtered, setFiltered] = useState(false);
 
+  const [isFetching, setIsFetching] = useState(true);
+
   const fetchGames = async () => {
+    setIsFetching(true);
     const { data, count } = await selectGamesByFilterAction(
       searchValue,
       price,
@@ -27,6 +31,7 @@ export function SearchItems() {
     setGames(data);
     setCount(count || 1);
     console.log(data);
+    setIsFetching(false);
   };
 
   useEffect(() => {
@@ -98,16 +103,38 @@ export function SearchItems() {
             <p>games/page</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-4  items-center justify-center">
-          {games.map((game) => (
-            <GameCard
-              name={game.bg_name}
-              price={game.price}
-              img={game.bg_picture || "/mock_user.jpeg"}
-              key={game.id}
-            />
-          ))}
-        </div>
+        {isFetching ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-4  items-center justify-center">
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+              <LoadingGameCard />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-4  items-center justify-center">
+              {games.map((game) => (
+                <GameCard
+                  name={game.bg_name}
+                  price={game.price}
+                  img={game.bg_picture || "/mock_user.jpeg"}
+                  key={game.id}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         <p>
           {page} / {maxPage}
         </p>
