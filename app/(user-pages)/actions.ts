@@ -89,3 +89,17 @@ export const updateProviderAction = async (formData: FormData) => {
 
   return encodedRedirect("success", "/home", "Update provider success.");
 };
+
+//getAllproviders
+export const getProviders = async ()=> {
+  const supabase = await createClient();
+  let { data: users, error } = await supabase
+  .from('users')
+  .select("*")
+  // Filters
+  .eq('isProvider', 'TRUE');       
+  if (error){
+    alert(error.message);
+  }
+  return users;
+}
