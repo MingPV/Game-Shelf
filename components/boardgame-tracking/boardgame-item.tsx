@@ -8,6 +8,7 @@ import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";
 import BoardGameCard from "./boardgame-card";
+import Skeleton from "./skeleton";
 
 export function BoardgameItems({ provider_id }: { provider_id: string }) {
   const [boardgames, setBoardgames] = useState<Boardgame[]>([]);
@@ -101,11 +102,18 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
         </div>
 
         {isFetching ? (
-          <></>
+          <>
+            <div className="w-full mx-auto bg-gs_white/20 rounded-2xl p-1">
+              <Skeleton/>
+              <Skeleton/>
+              <Skeleton/>
+              <Skeleton/>
+            </div>
+          </>
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="w-full lg:w-4/5 mx-auto bg-gs_white/20 rounded-2xl p-1 lg:p-5">
+              <div className="w-full lg:w-[70%] mx-auto bg-gs_white/20 rounded-2xl p-1 lg:p-5">
                 {boardgames?.map((boardgame, index) => (
                   <BoardGameCard
                     key={index}
