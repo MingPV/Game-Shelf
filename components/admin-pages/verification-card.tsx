@@ -82,12 +82,12 @@ export default function VerificationCard({
         {" "}
         <span className="font-bold pr-1">Credential:</span>{" "}
         <a
-          className="underline bg-gs_white/40 px-4 py-2"
+          className="btn btn-xs text-slate-900 btn-info text-sm opacity-90"
           href={params.users.credentials}
         >
           {" "}
           {/* {params.users.credentials}{" "} */}
-          credentail
+          download {"⤓"}
         </a>
       </div>
 
