@@ -1,10 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Boardgame } from "@/app/types/game";
+import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
-import { updateGameAction } from "@/app/(game-pages)/actions";
+import {
+  updateGameAction,
+  selectAllBoardgameType,
+} from "@/app/(game-pages)/actions";
 import { Label } from "../ui/label";
+import { get } from "http";
 
 export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
   console.log(boardgame);
@@ -14,6 +18,7 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
   const [description, setDescription] = useState<string>(boardgame.description);
   const [price, setPrice] = useState<number>(boardgame.price);
   const [picture, setPicture] = useState<File>();
+  const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>();
 
   const handleClickUpdate = () => {
     formData.append("id", boardgame.id.toString());
@@ -21,6 +26,14 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
     formData.append("description", description);
     formData.append("price", price.toString());
     formData.append("bg_picture", picture as File);
+    const checkedTypes = Array.from(
+      document.querySelectorAll('input[name="boardgame_type"]:checked')
+    ).map((checkbox) => (checkbox as HTMLInputElement).value);
+
+    // Append the checked types to the formData
+    checkedTypes.forEach((type) => {
+      formData.append("boardgame_type", type); // Use '[]' for multiple values with the same name
+    });
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -62,9 +75,19 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
     });
   };
 
+  const getBoardgameType = async () => {
+    const data = await selectAllBoardgameType();
+
+    setBoardgameTypes(data);
+  };
+
+  useEffect(() => {
+    getBoardgameType();
+  }, []);
+
   return (
     <>
-      <label htmlFor="my_modal_6" className="btn">
+      <label htmlFor="my_modal_6" className="btn  btn-outline">
         edit condition
       </label>
 
@@ -121,6 +144,18 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
                 onChange={(e) => setPrice(parseInt(e.target.value))}
                 className="bg-gs_white bg-opacity-10"
               />
+              <div className="flex flex-col gap-2">
+                {boardgameTypes?.map((type, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name="boardgame_type"
+                      value={type.bg_type_id}
+                    />
+                    <p>{type.bg_type}</p>
+                  </div>
+                ))}
+              </div>
               <div className="flex flex-row gap-2 items-center justify-end ">
                 <label
                   htmlFor="my_modal_6"

@@ -55,7 +55,7 @@ export default function DeleteBoardgame({
   };
 
   return (
-    <button className="btn btn-primary-content" onClick={handleDelete}>
+    <button className="btn btn-outline" onClick={handleDelete}>
       Delete
     </button>
   );

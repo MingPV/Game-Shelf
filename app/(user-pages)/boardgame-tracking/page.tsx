@@ -1,7 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import BoardGameCard from "@/components/boardgame-tracking/bg-tracking-card";
-
+import BoardGameCard from "@/components/boardgame-tracking/boardgame-card";
+import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
+import { BoardgameItems } from "@/components/boardgame-tracking/boardgame-item";
 export default async function TrackingPage() {
   const supabase = await createClient();
 
@@ -33,38 +34,16 @@ export default async function TrackingPage() {
     }
   }
 
-  const { data: boardgames } = await supabase
-    .from("boardgames")
-    .select("*")
-
-    // Filters
-    .eq("provider_id", user?.id);
-
   return (
     <>
       <main>
         {user_data ? (
-          <div className="flex justify-center w-screen text-3xl">
+          <div className="flex justify-center  text-3xl">
             {user_data[0].username}'s Board game
           </div>
         ) : null}
-        <div className="border-b border-white w-3/5 mx-auto mb-5 pb-2">
-          board game type
-        </div>
 
-        {/*card mapping*/}
-        <div className="w-3/5 mx-auto bg-gradient-to-l from-slate-700 to-stone-600 rounded-2xl p-5">
-          {boardgames?.map((boardgame) => (
-            <BoardGameCard
-              key={boardgame.id}
-              name={boardgame.bg_name}
-              picture={boardgame.bg_picture}
-              status={boardgame.status}
-              price={boardgame.price}
-              description={boardgame.description}
-            />
-          ))}
-        </div>
+        <BoardgameItems provider_id={user?.id} />
       </main>
     </>
   );

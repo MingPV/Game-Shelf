@@ -1,26 +1,45 @@
 "use client";
 
 import { useState } from "react";
+import { Boardgame } from "@/app/types/game";
+import { TbCurrencyBaht } from "react-icons/tb";
+
+type BoardgameType = {
+  [key: string]: string;
+};
 
 export default function GameCard({
-  name,
-  price,
-  img,
+  boardgame,
+  boardgame_type,
 }: {
-  name: string;
-  price: number;
-  img: string;
+  boardgame: Boardgame;
+  boardgame_type: BoardgameType;
 }) {
   const [filled, setFilled] = useState<boolean>(false);
-
+  // console.log("from game card", boardgame);
+  // console.log("boardgame_type", boardgame_type);
   return (
-    <div className="flex flex-col p-3 h-80 w-56 bg-white/10 rounded-xl items-center space-y-2">
+    <div className="flex flex-col p-3 h-96 w-64 bg-white/10 rounded-xl items-center space-y-2">
       <div className="h-[65%] w-full rounded-xl relative">
-        <img src={img} alt={name} className="rounded-xl" />
-        <button
-          className="absolute bottom-1 left-1 hover:scale-110"
-          onClick={() => setFilled(!filled)}
-        >
+        <img
+          src={boardgame.bg_picture}
+          alt={boardgame.bg_name}
+          className="rounded-xl w-56 h-54"
+        />
+      </div>
+      <div className="h-1/5 w-full flex-col">
+        <p className="text-center font-semibold text-xl">{boardgame.bg_name}</p>
+        <p className="text-right mt-1 text-sm opacity-70">
+          {boardgame.price}
+          <span>
+            <TbCurrencyBaht />
+          </span>
+          /day
+        </p>
+      </div>
+
+      <div className="flex flex-row w-full gap-2">
+        <button className="hover:scale-110" onClick={() => setFilled(!filled)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill={filled ? "red" : "none"}
@@ -36,17 +55,20 @@ export default function GameCard({
             />
           </svg>
         </button>
+        <div className="flex">
+          {boardgame.types?.map((type, index) => (
+            <p key={index} className="p-2 border border-gs_white">
+              {boardgame_type[type] || "Unknown Type"}
+            </p>
+          ))}
+        </div>
+        <button
+          className="w-full font-semibold text-sm px-4 w-4/5 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
+          onClick={() => alert("clicked!")}
+        >
+          Details
+        </button>
       </div>
-      <div className="h-1/5 w-full flex-col">
-        <p className="text-center font-semibold text-xl">{name}</p>
-        <p className="text-right mt-1 text-sm opacity-70">{price} Bath/day</p>
-      </div>
-      <button
-        className="font-semibold text-sm px-4 w-4/5 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
-        onClick={() => alert("clicked!")}
-      >
-        Details
-      </button>
     </div>
   );
 }
