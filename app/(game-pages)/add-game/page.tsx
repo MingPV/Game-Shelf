@@ -6,8 +6,7 @@ import {
   addGameAction,
   updateGameAction,
   deleteGameAction,
-  selectGameAction,
-  selectAllGamesAction,
+  selectAllBoardgameType,
 } from "../actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
@@ -16,6 +15,7 @@ import { Label } from "@/components/ui/label";
 
 export default async function Home(props: { searchParams: Promise<Message> }) {
   const supabase = await createClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -32,6 +32,8 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
       </div>
     );
   }
+  const boardgameTypes = await selectAllBoardgameType();
+  console.log("boardgame types ", boardgameTypes);
 
   return (
     <>
@@ -53,6 +55,20 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
               <input name="bg_picture" type="file" required />
               <Label htmlFor="price">Price</Label>
               <Input name="price" placeholder="Price" required />
+              <Label htmlFor="boardgame_type">Boardgame Type</Label>
+              <div className="flex flex-col gap-2">
+                {boardgameTypes.map((type, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name="boardgame_type"
+                      value={type.bg_type_id}
+                      defaultChecked={type !== ""}
+                    />
+                    <p>{type.bg_types}</p>
+                  </div>
+                ))}
+              </div>
               <SubmitButton formAction={addGameAction} pendingText="Adding...">
                 Add Game
               </SubmitButton>
