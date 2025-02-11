@@ -19,23 +19,35 @@ export default function GameCard({
   // console.log("from game card", boardgame);
   // console.log("boardgame_type", boardgame_type);
   return (
-    <div className="flex flex-col p-3 h-96 w-64 bg-white/10 rounded-xl items-center space-y-2">
-      <div className="h-[65%] w-full rounded-xl relative">
-        <img
-          src={boardgame.bg_picture}
-          alt={boardgame.bg_name}
-          className="rounded-xl w-56 h-54"
-        />
-      </div>
-      <div className="h-1/5 w-full flex-col">
-        <p className="text-center font-semibold text-xl">{boardgame.bg_name}</p>
-        <p className="text-right mt-1 text-sm opacity-70">
-          {boardgame.price}
-          <span>
-            <TbCurrencyBaht />
-          </span>
-          /day
-        </p>
+    <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 justify-between">
+      <div className="flex flex-col gap-1">
+        <div className="h-56 w-full rounded-xl ">
+          <img
+            src={boardgame.bg_picture}
+            alt={boardgame.bg_name}
+            className="rounded-xl w-full h-56"
+          />
+        </div>
+
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row justify-between text-xs text-gs_white/50 w-full">
+            <p>name</p>
+            <p>baht / day</p>
+          </div>
+        </div>
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row justify-between text-md text-gs_white w-full">
+            <p>{boardgame.bg_name}</p>
+            <p>{boardgame.price}</p>
+          </div>
+        </div>
+        <div className="flex text-xs flex-wrap w-full gap-1 ">
+          {boardgame.types?.map((type, index) => (
+            <p key={index} className="p-1 rounded-sm bg-gs_white/20">
+              {boardgame_type[type] || "Unknown Type"}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-row w-full gap-2">
@@ -55,13 +67,7 @@ export default function GameCard({
             />
           </svg>
         </button>
-        <div className="flex">
-          {boardgame.types?.map((type, index) => (
-            <p key={index} className="p-2 border border-gs_white">
-              {boardgame_type[type] || "Unknown Type"}
-            </p>
-          ))}
-        </div>
+
         <button
           className="w-full font-semibold text-sm px-4 w-4/5 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
           onClick={() => alert("clicked!")}

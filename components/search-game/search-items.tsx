@@ -102,53 +102,58 @@ export function SearchItems() {
       </div> */}
       <div className="flex flex-col min-w-64 items-center w-full space-y-4 mt-4">
         {/* <h1 className="text-2xl font-medium mb-4">Boardgames</h1> */}
-        <div className="flex flex-row  space-x-2 my-4 ">
-          <div className="min-w-36 text-center self-center ">{count} games</div>
-          <Input
-            placeholder="Search Board game by name"
-            value={searchValue}
-            className="px-8 py-5 rounded-full border border-neutral-700 hover:border-gs_white min-w-[40vw] bg-neutral-700 text-neutral-400"
-            type="text"
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              setFiltered(true);
-            }}
-          />
-          <button
-            onClick={clearFilter}
-            disabled={filtered === false}
-            className="btn btn-sm self-center"
-          >
-            Clear Filters
-          </button>
-        </div>
-        <div className="flex flex-row items-center gap-16  ">
-          <div className="flex flex-row relative gap-2 items-center">
-            <PriceFilter price={price} handleChange={setRange} />
-            <p>
-              {price[0]} - {price[1]} Bath/day
-            </p>
-          </div>
-          <div className="flex flex-row relative justify-end gap-2 items-center">
-            <ItemsPerPageFilter
-              itemPerPage={itemsPerPage}
-              handleChange={(value: number) => {
-                setItemPerPage(value);
+        <div className="flex flex-col gap-4 items-start  justify-start">
+          <div className="flex gap-4 w-full justify-between items-center">
+            <Input
+              placeholder="Search Board game by name"
+              value={searchValue}
+              className="px-4 py-6 rounded-full border border-neutral-200 hover:border-gs_white min-w-[60vw]"
+              type="text"
+              onChange={(e) => {
+                setSearchValue(e.target.value);
                 setFiltered(true);
               }}
             />
-            <p>games/page</p>
+            <button
+              onClick={clearFilter}
+              disabled={!filtered}
+              className="btn btn-outline"
+            >
+              Clear
+            </button>
           </div>
-          <div className="flex flex-row relative justify-end gap-2 items-center">
-            <TypeFilter
-              selectedType={selectedTypeFilter}
-              boardgame_type={boardgameTypes}
-              handleChange={(value: string[]) => {
-                setSelectedTypeFilter(value);
-                setFiltered(true);
-              }}
-            />
-            <p>games/page</p>
+
+          <div className="flex flex-col md:flex-row w-full  gap-4 items-center lg:items-end justify-between">
+            <div className="flex flex-col relative gap-4 items-start">
+              <TypeFilter
+                selectedType={selectedTypeFilter}
+                boardgame_type={boardgameTypes}
+                handleChange={(value: string[]) => {
+                  setSelectedTypeFilter(value);
+                  setFiltered(true);
+                }}
+              />
+            </div>
+
+            <div className="flex flex-col md:flex-row  justify-end gap-4 items-center w-full">
+              <PriceFilter price={price} handleChange={setRange} />
+              <div className="flex flex-row items-center gap-4">
+                <ItemsPerPageFilter
+                  itemPerPage={itemsPerPage}
+                  handleChange={(value: number) => {
+                    setItemPerPage(value);
+                    setFiltered(true);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row flex-wrap gap-2">
+            {selectedTypeFilter.map((type, index) => (
+              <p key={index} className="p-1 rounded-sm bg-gs_white/20">
+                {mapped_boardgame_type[type] || "Unknown Type"}
+              </p>
+            ))}
           </div>
         </div>
 
@@ -172,7 +177,7 @@ export function SearchItems() {
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-4  items-center justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4 pt-4  items-stretch justify-center">
                 {games.map((game, index) => (
                   <GameCard
                     boardgame={game}

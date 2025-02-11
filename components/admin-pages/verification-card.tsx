@@ -81,9 +81,13 @@ export default function VerificationCard({
       <div>
         {" "}
         <span className="font-bold pr-1">Credential:</span>{" "}
-        <a className="underline" href={params.users.credentials}>
+        <a
+          className="underline bg-gs_white/40 px-4 py-2"
+          href={params.users.credentials}
+        >
           {" "}
-          {params.users.credentials}{" "}
+          {/* {params.users.credentials}{" "} */}
+          credentail
         </a>
       </div>
 
