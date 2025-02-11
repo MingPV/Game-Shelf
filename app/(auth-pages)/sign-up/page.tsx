@@ -8,6 +8,7 @@ import {
 } from "../actions";
 import Link from "next/link";
 import { FaRegTimesCircle, FaRegCheckCircle } from "react-icons/fa";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function Signup() {
   const [isProvider, setIsProvider] = useState<boolean | null>(null);
@@ -53,41 +54,61 @@ export default function Signup() {
     signUpAction(formData);
   };
 
-  const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
-    const newEmail = e.target.value;
-    setEmail(newEmail);
-    const isUnique = await checkEmailUnique(newEmail);
-    setIsEmailUnique(isUnique);
-    if (isUnique === false) {
-      setError("This email is already used");
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(newEmail)) {
+    setEmail(e.target.value);
+  };
+
+  const validateEmail = useDebouncedCallback( async (email:string) =>{
+    if (!/\S+@\S+\.\S+/.test(email)) {
       setIsEmailValid(false);
       setError("Email is invalid");
+      return;
     } else {
       setIsEmailValid(true);
       setError("");
     }
+
+    try{
+      const isUnique = await checkEmailUnique(email);
+      setIsEmailUnique(isUnique);
+      if (isUnique === false) {
+        setError("This email is already used");
+      }
+    } catch {
+        setError("Error checking email uniqueness");
+    }
+
+  }, 300);
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+    setError("");
+    setUsername(e.target.value); 
   };
 
-  const handleUsernameChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setError("");
-    const newUsername = e.target.value;
-    setUsername(newUsername);
-    const isUnique = await checkUsernameUnique(newUsername);
-    setIsUsernameUnique(isUnique);
+  const validateUsername = useDebouncedCallback( async (username:string) => {
+    // check email first
+    console.log(isEmailValid);
     if (isEmailUnique === false) {
       setError("This email is already used");
       return;
     }
-    if (isUnique === false) {
-      setError("This username is already used");
+    if (isEmailValid == false) {
+      setError("Email is invalid")
     }
-  };
+
+    try{
+      const isUnique = await checkUsernameUnique(username);
+      setIsUsernameUnique(isUnique);
+
+      if (isUnique === false) {
+        setError("This username is already used");
+      }
+    } catch {
+      setError("Error checking username uniqueness");
+    }
+
+  }, 300);
 
   return (
     <div className="flex justify-center items-center w-full">
@@ -145,7 +166,9 @@ export default function Signup() {
                   type="email"
                   placeholder="Email Address"
                   value={email}
-                  onChange={handleEmailChange}
+                  onChange={(e) => {
+                    handleEmailChange(e);
+                    validateEmail(e.target.value); }}
                   className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                 />
                 {isEmailUnique === true && isEmailValid == true && (
@@ -162,7 +185,9 @@ export default function Signup() {
                   type="text"
                   placeholder="Username"
                   value={username}
-                  onChange={handleUsernameChange}
+                  onChange={(e) => {
+                    handleUsernameChange(e);
+                    validateUsername(e.target.value); }}
                   className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                 />
                 {isUsernameUnique === true && (
