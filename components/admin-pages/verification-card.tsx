@@ -81,9 +81,13 @@ export default function VerificationCard({
       <div>
         {" "}
         <span className="font-bold pr-1">Credential:</span>{" "}
-        <a className="underline" href={params.users.credentials}>
+        <a
+          className="btn btn-xs text-slate-900 btn-info text-sm opacity-90"
+          href={params.users.credentials}
+        >
           {" "}
-          {params.users.credentials}{" "}
+          {/* {params.users.credentials}{" "} */}
+          download {"⤓"}
         </a>
       </div>
 

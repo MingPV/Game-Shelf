@@ -1,21 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { Boardgame_type } from "@/app/types/game";
-
+import { useState } from "react";
 export default function TypeFilter({
   selectedType,
   boardgame_type,
   handleChange,
 }: {
-  selectedType: string[] | undefined;
+  selectedType: string[];
   boardgame_type: Boardgame_type[];
   handleChange: (selected: string[]) => void;
 }) {
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(
-    selectedType || []
-  );
-
   const [isOpen, setIsOpen] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -26,22 +21,21 @@ export default function TypeFilter({
 
   const toggleSelection = (typeId: string) => {
     let updatedSelection;
-    if (selectedTypes.includes(typeId)) {
-      updatedSelection = selectedTypes.filter((id) => id !== typeId);
+    if (selectedType.includes(typeId)) {
+      updatedSelection = selectedType.filter((id) => id !== typeId);
     } else {
-      updatedSelection = [...selectedTypes, typeId];
+      updatedSelection = [...selectedType, typeId];
     }
-    setSelectedTypes(updatedSelection);
     handleChange(updatedSelection);
   };
 
   return (
-    <div className="p-4 dropdown dropdown-content items-center">
+    <div className="dropdown dropdown-content items-center ">
       <button
         onClick={() => setIsOpen(!isOpen)}
         tabIndex={0}
         role="button"
-        className="btn m-1 bg-transparent border-none"
+        className="btn btn-outline w-36 bg-transparent border border-gs_white"
       >
         Filter by type
       </button>
@@ -52,13 +46,10 @@ export default function TypeFilter({
         >
           {boardgame_type.map((type, index) => (
             <li key={index}>
-              <label
-                key={type.bg_type_id}
-                className="flex items-center gap-2 cursor-pointer"
-              >
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={selectedTypes.includes(type.bg_type_id.toString())}
+                  checked={selectedType.includes(type.bg_type_id.toString())}
                   onChange={() => toggleSelection(type.bg_type_id.toString())}
                   className="w-4 h-4"
                 />

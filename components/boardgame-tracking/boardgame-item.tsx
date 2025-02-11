@@ -68,27 +68,27 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
       </div> */}
       <div className="flex flex-col min-w-64 items-center w-full space-y-4 mt-4">
         {/* <h1 className="text-2xl font-medium mb-4">Boardgames</h1> */}
-        <div className="flex flex-row   space-x-2 my-4 ">
-          <Input
-            placeholder="Search Board game by name"
-            value={searchValue}
-            className="px-8 py-5 rounded-full border border-neutral-700 hover:border-gs_white min-w-[40vw] bg-neutral-700 text-neutral-400"
-            type="text"
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              setFiltered(true);
-            }}
-          />
-          <button
-            onClick={clearFilter}
-            disabled={filtered === false}
-            className="btn btn-sm self-center"
-          >
-            Clear Filters
-          </button>
-        </div>
-        <div className="flex flex-row items-center gap-16  ">
-          <div className="flex flex-row relative justify-end gap-2 items-center">
+        <div className="flex flex-col items-start gap-2">
+          <div className="flex gap-4  justify-between items-center">
+            <Input
+              placeholder="Search Board game by name"
+              value={searchValue}
+              className="px-4 py-6 rounded-full border border-neutral-200 hover:border-gs_white min-w-[60vw]"
+              type="text"
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                setFiltered(true);
+              }}
+            />
+            <button
+              onClick={clearFilter}
+              disabled={!filtered}
+              className="btn btn-outline"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="flex flex-row relative  justify-end gap-2 items-start">
             <TypeFilter
               selectedType={selectedTypeFilter}
               boardgame_type={boardgameTypes}
@@ -97,7 +97,6 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                 setFiltered(true);
               }}
             />
-            <p>games/page</p>
           </div>
         </div>
 
@@ -106,7 +105,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="w-full lg:w-3/5 mx-auto bg-gs_white/20 rounded-2xl p-1 lg:p-5">
+              <div className="w-full lg:w-4/5 mx-auto bg-gs_white/20 rounded-2xl p-1 lg:p-5">
                 {boardgames?.map((boardgame, index) => (
                   <BoardGameCard
                     key={index}
