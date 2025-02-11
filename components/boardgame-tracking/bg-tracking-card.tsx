@@ -13,7 +13,7 @@ export default function BoardGameCard({
   description: string;
   status: string;
 }) {
-  const statusClass = status === "available" ? "bg-green-500" : "bg-orange-500";
+  const statusClass = status === "available" ? "bg-green-600 hover:bg-green-700" : "bg-orange-600 hover:bg-orange-700";
   const [showProgess, setShowProgess] = useState(false);
 
   return (
@@ -23,7 +23,7 @@ export default function BoardGameCard({
       <img
         src={picture}
         alt="boardgame picture"
-        className="object-cover rounded-xl m-3 w-1/3"
+        className="object-cover object-top rounded-xl m-3 w-1/3"
       />
       <div className="card-body flex flex-col">
         <p className="text-2xl font-semibold">{name}</p>
