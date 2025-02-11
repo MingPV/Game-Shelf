@@ -12,6 +12,8 @@ export default function ProviderFormCard({
   providerId: string;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,6 +24,7 @@ export default function ProviderFormCard({
 
     if (providerId) {
       formDataUser.append("userId", providerId);
+      formDataUser.append("payment_method", paymentMethod);
       updateProviderAction(formDataUser);
 
       const formDataVerifyReq = new FormData();
@@ -30,7 +33,10 @@ export default function ProviderFormCard({
       addVerificationRequest(formDataVerifyReq);
     }
   };
-
+  const handleSelect = (option: string) => {
+    setPaymentMethod(option);
+    setIsOpen(false); // Close the dropdown after selection
+  };
   return (
     <div className="flex justify-center items-center w-full pt-4">
       <div className="card bg-gray-400 bg-opacity-30 w-11/12 md:w-3/5 shadow-2xl">
@@ -64,12 +70,34 @@ export default function ProviderFormCard({
             />
 
             <Label htmlFor="payment_method">Payment Method *</Label>
-            <Input
-              className="placeholder:text-gray-300"
-              name="payment_method"
-              placeholder="Payment Method"
-              required
-            />
+
+            <div className="dropdown w-full text-left">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn no-animation m-1 w-full bg-transparent hover:bg-transparent border-gs_white text-left"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <p className="w-full text-left">
+                  {paymentMethod || "Select Payment Method"}
+                </p>
+              </div>
+              {isOpen && (
+                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 shadow w-full">
+                  {["credit_card", "banking", "qrcode"].map((option) => (
+                    <li key={option}>
+                      <button
+                        className="dropdown-item text-left w-full"
+                        type="button"
+                        onClick={() => handleSelect(option)}
+                      >
+                        {option.replace("_", " ")}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
             <Label htmlFor="credentials">Creadentials *</Label>
             <input name="credentials" type="file" required />
