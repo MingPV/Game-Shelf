@@ -97,14 +97,21 @@ export default function Signup() {
           <img
             src={
               isProvider === null
-                ? "/mock_user.jpeg"
+                ? "/player.png"
                 : isProvider === true
-                  ? "/mock_provider.jpeg"
-                  : "/mock_player.jpg"
+                  ? "/provider.png"
+                  : "/player.png"
             } // Replace with your image path
             alt="Signup Illustration"
-            className="max-w-md mx-auto"
+            className="max-w-md mx-auto rounded-lg shadow-2xl"
+            style={{
+              WebkitMaskImage:
+                "radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 80%)",
+              maskImage:
+                "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 80%)",
+            }}
           />
+
           <h1 className="text-4xl font-bold">
             {isProvider === null
               ? "Welcome"
@@ -112,9 +119,9 @@ export default function Signup() {
                 ? "Provider"
                 : "Player"}
           </h1>
-          <p className="text-lg">
-            Join us and become part of an amazing community. Explore endless
-            possibilities as a player or provider.
+          <p className="text-lg opacity-50">
+            Join now to rent and enjoy your favorite board games anytime! Create
+            an account to explore a variety of games and connect with providers.
           </p>
         </div>
       </div>

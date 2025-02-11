@@ -13,12 +13,21 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
       <div className="flex flex-1 justify-center items-center  text-white p-8">
         <div className="text-center space-y-6">
           <img
-            src="/mock_user.jpeg"
+            src="/player.png"
             alt="SignIn Illustration"
             className="max-w-md mx-auto"
+            style={{
+              WebkitMaskImage:
+                "radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 80%)",
+              maskImage:
+                "radial-gradient(circle, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 80%)",
+            }}
           />
           <h1 className="text-4xl font-bold">Welcome</h1>
-          <p className="text-2xl">Explore the world of meta fashion</p>
+          <p className="text-xl opacity-50">
+            Welcome back! Sign in to rent, manage your bookings, and discover
+            new board games. Let the fun begin!
+          </p>
         </div>
       </div>
 
