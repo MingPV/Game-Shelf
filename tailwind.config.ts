@@ -81,6 +81,11 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      screens:{
+        "xs1": "470px",
+        "xs2": "425px",
+        "xs3": "375px"
+      }
     },
   },
   plugins: [require("tailwindcss-animate"), require("daisyui")],
