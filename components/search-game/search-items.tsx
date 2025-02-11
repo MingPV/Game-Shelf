@@ -89,7 +89,7 @@ export function SearchItems() {
   const clearFilter = () => {
     setSearchValue("");
     setPrice([0, 1000]);
-    setItemPerPage(3);
+    setItemPerPage(15);
     setPage(1);
     setFiltered(false);
     setSelectedTypeFilter([]);
