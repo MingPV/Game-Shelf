@@ -59,7 +59,7 @@ export default function Signup() {
     setEmail(e.target.value);
   };
 
-  const validateEmail = useDebouncedCallback( async (email:string) =>{
+  const validateEmail = useDebouncedCallback(async (email: string) => {
     if (!/\S+@\S+\.\S+/.test(email)) {
       setIsEmailValid(false);
       setError("Email is invalid");
@@ -69,24 +69,23 @@ export default function Signup() {
       setError("");
     }
 
-    try{
+    try {
       const isUnique = await checkEmailUnique(email);
       setIsEmailUnique(isUnique);
       if (isUnique === false) {
         setError("This email is already used");
       }
     } catch {
-        setError("Error checking email uniqueness");
+      setError("Error checking email uniqueness");
     }
-
   }, 300);
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
-    setUsername(e.target.value); 
+    setUsername(e.target.value);
   };
 
-  const validateUsername = useDebouncedCallback( async (username:string) => {
+  const validateUsername = useDebouncedCallback(async (username: string) => {
     // check email first
     console.log(isEmailValid);
     if (isEmailUnique === false) {
@@ -94,10 +93,10 @@ export default function Signup() {
       return;
     }
     if (isEmailValid == false) {
-      setError("Email is invalid")
+      setError("Email is invalid");
     }
 
-    try{
+    try {
       const isUnique = await checkUsernameUnique(username);
       setIsUsernameUnique(isUnique);
 
@@ -107,7 +106,6 @@ export default function Signup() {
     } catch {
       setError("Error checking username uniqueness");
     }
-
   }, 300);
 
   return (
@@ -175,7 +173,8 @@ export default function Signup() {
                   value={email}
                   onChange={(e) => {
                     handleEmailChange(e);
-                    validateEmail(e.target.value); }}
+                    validateEmail(e.target.value);
+                  }}
                   className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                 />
                 {isEmailUnique === true && isEmailValid == true && (
@@ -194,7 +193,8 @@ export default function Signup() {
                   value={username}
                   onChange={(e) => {
                     handleUsernameChange(e);
-                    validateUsername(e.target.value); }}
+                    validateUsername(e.target.value);
+                  }}
                   className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                 />
                 {isUsernameUnique === true && (
