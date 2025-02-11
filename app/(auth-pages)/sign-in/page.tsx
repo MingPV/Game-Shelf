@@ -10,7 +10,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
   return (
     <div className="flex justify-center items-center w-full">
       {/* Left Session */}
-      <div className="flex flex-1 justify-center items-center  text-white p-8">
+      <div className="flex flex-1 justify-center items-center  text-white p-8 max-lg:hidden">
         <div className="text-center space-y-6">
           <img
             src="/player.png"
@@ -90,19 +90,19 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
               <div className="divider text-gray-400 py-5">or</div>
 
               <div className="flex flex-col gap-3">
-                <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-white text-gray-800 border-gray-300 hover:bg-gray-200 py-3">
+                <button className="pl-16 max-xs1:pl-12 max-xs2:pl-10 max-xs3:pl-8 btn border-none w-full flex items-center justify-start rounded-full bg-white text-gray-800 border-gray-300 hover:bg-gray-200 py-3">
                   <FcGoogle className="w-6 h-6 shrink-0" />
-                  <span className="ml-3">Continue With Google</span>
+                  <span className="ml-2 max-xs2:ml-1">Continue With Google</span>
                 </button>
 
-                <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-blue-600 text-white hover:bg-blue-700 py-3">
+                <button className="pl-16 max-xs1:pl-12 max-xs2:pl-10 max-xs3:pl-8 btn border-none w-full flex items-center justify-start rounded-full bg-blue-600 text-white hover:bg-blue-700 py-3">
                   <FaFacebook className="w-6 h-6 shrink-0" />
-                  <span className="ml-3">Continue With Facebook</span>
+                  <span className="ml-2 max-xs2:ml-0.5">Continue With Facebook</span>
                 </button>
 
-                <button className="btn border-none w-full flex items-center justify-start pl-16 rounded-full bg-black text-white hover:bg-gray-800 py-3">
+                <button className="pl-16 max-xs1:pl-12 max-xs2:pl-10 max-xs3:pl-8 btn border-none w-full flex items-center justify-start rounded-full bg-black text-white hover:bg-gray-800 py-3">
                   <FaApple className="w-6 h-6 shrink-0" />
-                  <span className="ml-3">Continue With Apple</span>
+                  <span className="ml-2 max-xs2:ml-1">Continue With Apple</span>
                 </button>
               </div>
 
