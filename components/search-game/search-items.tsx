@@ -11,6 +11,7 @@ import PriceFilter from "./price-filter";
 import ItemsPerPageFilter from "./items-per-page-filter";
 import LoadingGameCard from "./loading-card";
 import TypeFilter from "./type-filter";
+import { useDebouncedCallback } from "use-debounce";
 export function SearchItems() {
   const [itemsPerPage, setItemPerPage] = useState(15);
   const [page, setPage] = useState(1);
@@ -26,7 +27,7 @@ export function SearchItems() {
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
-  const fetchGames = async () => {
+  const fetchGames = useDebouncedCallback(async () => {
     console.log("selected type filer", selectedTypeFilter);
     setIsFetching(true);
 
@@ -49,7 +50,7 @@ export function SearchItems() {
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
     console.log("have games", haveBoardgame);
-  };
+  }, 300);
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();

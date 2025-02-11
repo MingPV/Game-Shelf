@@ -30,7 +30,7 @@ export default function TypeFilter({
   };
 
   return (
-    <div className="dropdown dropdown-content items-center ">
+    <div className="relative items-center" onKeyDown={handleKeyDown}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         tabIndex={0}
@@ -42,7 +42,7 @@ export default function TypeFilter({
       {isOpen && (
         <ul
           tabIndex={0}
-          className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow"
+          className="absolute mt-2 menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow"
         >
           {boardgame_type.map((type, index) => (
             <li key={index}>
@@ -52,6 +52,7 @@ export default function TypeFilter({
                   checked={selectedType.includes(type.bg_type_id.toString())}
                   onChange={() => toggleSelection(type.bg_type_id.toString())}
                   className="w-4 h-4"
+                  onKeyDown={handleKeyDown}
                 />
                 {type.bg_type}
               </label>
