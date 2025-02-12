@@ -73,7 +73,15 @@ export function SearchItems() {
   useEffect(() => {
     fetchGames();
     getBoardgameType();
-  }, [page, searchValue, price, selectedTypeFilter]);
+  }, [page, price, selectedTypeFilter]);
+
+  useEffect(() => {
+    setPage(1);
+    setMaxPage(1);
+    // maxpage will auto change after fetch
+    fetchGames();
+    getBoardgameType();
+  }, [searchValue]);
 
   useEffect(() => {
     setPage(1);
