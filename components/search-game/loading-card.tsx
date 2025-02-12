@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function LoadingGameCard() {
   return (
-    <div className="flex flex-col p-3 h-80 w-56 bg-white/10 rounded-xl items-center space-y-2 skeleton bg-black opacity-30">
+    <div className="flex flex-col p-3 w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 skeleton bg-black opacity-30">
       <div className="h-[65%] w-full rounded-xl relative opacity-0">
         <img src={"/mock_user.jpeg"} className="rounded-xl" />
         <button className="absolute bottom-1 left-1 hover:scale-110">

@@ -76,7 +76,7 @@ export default function BoardGameCard({
           </ol>
 
           <p className="font-bold col-span-1">Price:</p>
-          <p className="col-span-4 flex inline-flex items-center">
+          <p className="col-span-4 inline-flex items-center">
             {boardgame.price} &nbsp;
             <TbCurrencyBaht /> / day
           </p>

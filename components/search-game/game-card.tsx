@@ -16,8 +16,6 @@ export default function GameCard({
   boardgame_type: BoardgameType;
 }) {
   const [filled, setFilled] = useState<boolean>(false);
-  // console.log("from game card", boardgame);
-  // console.log("boardgame_type", boardgame_type);
   return (
     <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 justify-between">
       <div className="flex flex-col gap-1">
@@ -69,7 +67,7 @@ export default function GameCard({
         </button>
 
         <button
-          className="w-full font-semibold text-sm px-4 w-4/5 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
+          className="w-full font-semibold text-sm px-4  rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
           onClick={() => alert("clicked!")}
         >
           Details
