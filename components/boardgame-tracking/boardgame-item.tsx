@@ -67,7 +67,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
       {/* <div className="flex flex-col items-center justify-center font-bold mt-8 mb-4">
         <div>Searching boardgames page</div>
       </div> */}
-      <div className="flex flex-col min-w-64 items-center w-full space-y-4 mt-4">
+      <div className="flex flex-col  items-center w-full space-y-4 mt-4">
         {/* <h1 className="text-2xl font-medium mb-4">Boardgames</h1> */}
         <div className="flex flex-col items-start gap-2">
           <div className="flex gap-4  justify-between items-center">
@@ -103,19 +103,24 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
 
         {isFetching ? (
           <>
-            <div className="w-full mx-auto bg-gs_white/20 rounded-2xl p-1">
-              <Skeleton/>
-              <Skeleton/>
-              <Skeleton/>
-              <Skeleton/>
+            <div
+              className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 
+               lg:p-2"
+            >
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
             </div>
           </>
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="w-[95%] mx-auto bg-gs_white/20 rounded-2xl p-1 
-              lg:w-[70%] lg:p-2
-              ">
+              <div
+                className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 
+               lg:p-2
+              "
+              >
                 {boardgames?.map((boardgame, index) => (
                   <BoardGameCard
                     key={index}
