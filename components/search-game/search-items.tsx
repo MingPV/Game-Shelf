@@ -73,7 +73,7 @@ export function SearchItems() {
   useEffect(() => {
     fetchGames();
     getBoardgameType();
-  }, [page, price, selectedTypeFilter]);
+  }, [page]);
 
   useEffect(() => {
     setPage(1);
@@ -81,15 +81,7 @@ export function SearchItems() {
     // maxpage will auto change after fetch
     fetchGames();
     getBoardgameType();
-  }, [searchValue]);
-
-  useEffect(() => {
-    setPage(1);
-    setMaxPage(1);
-    // maxpage will auto change after fetch
-    fetchGames();
-    getBoardgameType();
-  }, [itemsPerPage]);
+  }, [itemsPerPage, searchValue, price, selectedTypeFilter]);
 
   const mapped_boardgame_type = boardgameTypes.reduce((acc: any, type: any) => {
     acc[type.bg_type_id] = type.bg_type;
