@@ -19,31 +19,50 @@ export const addGameAction = async (formData: FormData) => {
 
   const fileName = randomUUID();
 
-  const { error: uploadError } = await supabase.storage
-    .from("boardgame_pictures")
-    .upload(fileName, bg_picture);
-  if (uploadError) {
-    console.log("Upload file error.", uploadError);
-    return;
+  let addGameError;
+
+  if (
+    bg_picture &&
+    bg_picture.toString() != "undefined" &&
+    bg_picture != undefined
+  ) {
+    const { error: uploadError } = await supabase.storage
+      .from("boardgame_pictures")
+      .upload(fileName, bg_picture);
+    if (uploadError) {
+      console.log("Upload file error.", uploadError);
+      return;
+    }
+
+    console.log("Upload success.");
+
+    const publicBoardgamePictureURL = supabase.storage
+      .from("boardgame_pictures")
+      .getPublicUrl(fileName).data.publicUrl;
+
+    const { data, error } = await supabase.from("boardgames").insert([
+      {
+        bg_name: boardgame_name,
+        description: description,
+        bg_picture: publicBoardgamePictureURL,
+        price: price,
+        types: boardgame_type,
+      },
+    ]);
+    addGameError = error;
+  } else {
+    const { data, error } = await supabase.from("boardgames").insert([
+      {
+        bg_name: boardgame_name,
+        description: description,
+        price: price,
+        types: boardgame_type,
+      },
+    ]);
+    addGameError = error;
   }
 
-  console.log("Upload success.");
-
-  const publicBoardgamePictureURL = supabase.storage
-    .from("boardgame_pictures")
-    .getPublicUrl(fileName).data.publicUrl;
-
-  const { data, error } = await supabase.from("boardgames").insert([
-    {
-      bg_name: boardgame_name,
-      description: description,
-      bg_picture: publicBoardgamePictureURL,
-      price: price,
-      types: boardgame_type,
-    },
-  ]);
-
-  if (error) {
+  if (addGameError) {
     encodedRedirect("error", "/home", "Failed to add boardgame.");
   }
 

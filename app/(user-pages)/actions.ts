@@ -51,22 +51,29 @@ export const updateProviderAction = async (formData: FormData) => {
     console.log("profile:", publicProfileImageURL);
   }
 
+  let publicCredentialsImageURL = null;
   const credName = randomUUID();
 
-  const { error: uploadError } = await supabase.storage
-    .from("credentials")
-    .upload(credName, credentials);
+  if (
+    credentials != undefined &&
+    credentials.toString() != "undefined" &&
+    credentials
+  ) {
+    const { error: uploadError } = await supabase.storage
+      .from("credentials")
+      .upload(credName, credentials);
 
-  if (uploadError) {
-    console.log("Upload file error.", uploadError);
-    return;
+    if (uploadError) {
+      console.log("Upload file error.", uploadError);
+      return;
+    }
+
+    publicCredentialsImageURL = supabase.storage
+      .from("credentials")
+      .getPublicUrl(credName).data.publicUrl;
+
+    console.log("credentials:", publicCredentialsImageURL);
   }
-
-  const publicCredentialsImageURL = supabase.storage
-    .from("credentials")
-    .getPublicUrl(credName).data.publicUrl;
-
-  console.log("credentials:", publicCredentialsImageURL);
 
   const updateData: Record<string, any> = {};
 
