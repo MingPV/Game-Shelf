@@ -20,6 +20,9 @@ export const StatusTracking = ({
   const currentDate = new Date(); // Current date for comparison
 
   // Destructure the dates from the first rentingRequest object
+
+  console.log(rentingRequest[0]);
+
   const { created_at, start_date, end_date } = rentingRequest[0];
 
   // Compare the current date with the different key dates to determine the status

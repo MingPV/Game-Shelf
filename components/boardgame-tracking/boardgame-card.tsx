@@ -22,9 +22,11 @@ export default function BoardGameCard({
   const [showProgess, setShowProgess] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [rentingRequest, setRentingRequest] = useState<RentingRequest[]>([]);
+  const [canShow, setCanShow] = useState(false);
 
   const getRentingRequest = async () => {
     const renting_req = await selectRentingRequest(boardgame.id);
+    setCanShow(true);
     setRentingRequest(renting_req);
     console.log("renting req", renting_req, boardgame.id);
   };
@@ -32,6 +34,8 @@ export default function BoardGameCard({
   useEffect(() => {
     if (!isAvailable) {
       getRentingRequest();
+    } else {
+      setCanShow(true);
     }
   }, [isAvailable]);
 
@@ -57,7 +61,7 @@ export default function BoardGameCard({
           </p>
 
           <button
-            className={`rounded-lg px-5 py-2 transition-transform transform ${isAvailable ? "bg-gs_green" : "bg-gs_red/60"} hover:opacity-80`}
+            className={`rounded-lg px-5 py-2 transition-transform transform ${isAvailable ? "bg-gs_green" : "bg-gs_red/60"} hover:opacity-80 ${!canShow ? "btn-disabled" : ""}`}
             onClick={() => {
               !isAvailable
                 ? setShowProgess(!showProgess)
@@ -97,9 +101,7 @@ export default function BoardGameCard({
                 <button
                   className="text-gray-100 opacity-70 text-start"
                   onClick={() => {
-                    !isAvailable
-                      ? setShowProgess(!showProgess)
-                      : setShowProgess(false);
+                    !isAvailable;
                     setShowDetail(!showDetail);
                   }}
                 >
@@ -108,11 +110,8 @@ export default function BoardGameCard({
                 </button>
               ) : boardgame.description.length > 50 ? (
                 <button
-                  className=" text-gray-100 opacity-70  text-start"
+                  className=" text-gray-100 opacity-70  text-start "
                   onClick={() => {
-                    !isAvailable
-                      ? setShowProgess(!showProgess)
-                      : setShowProgess(false);
                     setShowDetail(!showDetail);
                   }}
                 >
