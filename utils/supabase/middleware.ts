@@ -39,8 +39,6 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
-    console.log("dragonnnn222");
-    console.log(user);
     const { data: user_data, error } = await supabase
       .from("users")
       .select("*")
@@ -71,8 +69,6 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/admin-homepage", request.url));
       }
     }
-
-    // console.log(request.url)
 
     // if (request.nextUrl.pathname === "/" && !user.error) {
     //   return NextResponse.redirect(new URL("", request.url));

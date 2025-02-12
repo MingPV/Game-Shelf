@@ -28,8 +28,6 @@ export const updateProviderAction = async (formData: FormData) => {
     return;
   }
 
-  console.log(user);
-
   let publicProfileImageURL = null;
 
   if (profile_image.size > 0) {

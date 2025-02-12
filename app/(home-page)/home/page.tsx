@@ -28,8 +28,6 @@ export default async function Home() {
     }
   }
 
-  console.log(user);
-
   if (user_data_value?.isProvider) {
     return (
       <>
