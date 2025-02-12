@@ -136,7 +136,7 @@ export default function BoardGameCard({
           className="flex justify-center
         md:justify-end gap-2"
         >
-          <ModalUpdateBg boardgame={boardgame} />
+          <ModalUpdateBg boardgame={boardgame} key={boardgame.id} />
           <DeleteBoardgame boardgameId={boardgame.id} />
         </div>
       </div>

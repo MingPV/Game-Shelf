@@ -8,32 +8,30 @@ import {
   selectAllBoardgameType,
 } from "@/app/(game-pages)/actions";
 import { Label } from "../ui/label";
-import { get } from "http";
 
 export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
   console.log(boardgame);
 
-  const [formData, setFormData] = useState<FormData>(new FormData());
   const [name, setName] = useState<string>(boardgame.bg_name);
   const [description, setDescription] = useState<string>(boardgame.description);
   const [price, setPrice] = useState<number>(boardgame.price);
   const [picture, setPicture] = useState<File>();
-  const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>();
+  const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]); // Track selected types
+  const modalId = `my_modal_6_${boardgame.id}`;
 
   const handleClickUpdate = () => {
+    const formData = new FormData();
     formData.append("id", boardgame.id.toString());
     formData.append("boardgame_name", name);
     formData.append("description", description);
     formData.append("price", price.toString());
     formData.append("bg_picture", picture as File);
-    const checkedTypes = Array.from(
-      document.querySelectorAll('input[name="boardgame_type"]:checked')
-    ).map((checkbox) => (checkbox as HTMLInputElement).value);
 
-    // Append the checked types to the formData
-    checkedTypes.forEach((type) => {
+    selectedTypes.forEach((type) => {
       formData.append("boardgame_type", type); // Use '[]' for multiple values with the same name
     });
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -62,51 +60,51 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
             confirmButton: "custom-swal-confirm-button",
           },
         }).then(() => {
-          // Close the modal
           const modalCheckbox = document.getElementById(
-            "my_modal_6"
+            modalId
           ) as HTMLInputElement;
           if (modalCheckbox) {
             modalCheckbox.checked = false;
           }
         });
       }
-      setFormData(new FormData());
     });
   };
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
-
     setBoardgameTypes(data);
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setSelectedTypes((prevSelected) => {
+      if (checked) {
+        return [...prevSelected, value];
+      } else {
+        return prevSelected.filter((type) => type !== value);
+      }
+    });
   };
 
   useEffect(() => {
     getBoardgameType();
-  }, []);
+    // Set selected types from the existing boardgame
+    setSelectedTypes(boardgame.types);
+  }, [boardgame]);
 
   return (
     <>
-      <label htmlFor="my_modal_6" className="btn  btn-outline">
+      <label htmlFor={modalId} className="btn btn-outline">
         edit condition
       </label>
 
-      {/* Put this part before </body> tag */}
-      <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+      <input type="checkbox" id={modalId} className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="modal-box">
           <div className="flex flex-col min-w-64 max-w-96 mx-auto">
             <h1 className="text-2xl font-medium">Update Game</h1>
-            <Label htmlFor="id" className="text-xs">
-              BoardGame ID {boardgame.id}
-            </Label>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-              <Input
-                name="id"
-                placeholder="Game ID (must auto fill and hidden this input field)"
-                defaultValue={boardgame.id}
-                className="hidden"
-              />
               <Label htmlFor="boardgame_name">Boardgame Name</Label>
               <Input
                 name="boardgame_name"
@@ -151,6 +149,10 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
                       type="checkbox"
                       name="boardgame_type"
                       value={type.bg_type_id}
+                      checked={selectedTypes.includes(
+                        type.bg_type_id.toString()
+                      )} // Check if selected
+                      onChange={handleCheckboxChange}
                     />
                     <p>{type.bg_type}</p>
                   </div>
@@ -158,14 +160,13 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
               </div>
               <div className="flex flex-row gap-2 items-center justify-end ">
                 <label
-                  htmlFor="my_modal_6"
+                  htmlFor={modalId}
                   className="btn rounded-none border border-gs_white border-opacity-50 hover:bg-gs_white hover:text-gs_black"
                 >
                   Cancel
                 </label>
                 <button
                   className="btn rounded-none border border-gs_white border-opacity-50 hover:bg-gs_white hover:text-gs_black"
-                  // pendingText="Updating..."
                   onClick={handleClickUpdate}
                 >
                   Update

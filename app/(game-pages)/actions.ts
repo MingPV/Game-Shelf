@@ -90,7 +90,7 @@ export const updateGameAction = async (formData: FormData) => {
       .update({
         bg_name: boardgame_name,
         description: description,
-        bg_picture: publicBoardgamePictureURL || undefined,
+        bg_picture: publicBoardgamePictureURL,
         price: price,
         types: boardgame_type,
       })
