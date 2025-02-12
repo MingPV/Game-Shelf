@@ -288,7 +288,7 @@ export const selectProviderBoardgameByFilterAction = async (
     .from("boardgames")
     .select("*", { count: "exact" })
     .eq("provider_id", providerId)
-    .like("bg_name", `%${bg_name}%`);
+    .ilike("bg_name", `%${bg_name}%`);
 
   // Apply .overlaps() only if selectedTypeFilter is not empty
   query = selectedTypeFilter.length

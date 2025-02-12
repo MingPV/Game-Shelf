@@ -158,6 +158,7 @@ export default function ModalUpdateBg({
                 onChange={(e) => setPrice(parseInt(e.target.value))}
                 className="bg-gs_white bg-opacity-10"
               />
+              <Label htmlFor="boardgame_type">Type</Label>
               <div className="flex flex-col gap-2">
                 {boardgameTypes?.map((type, index) => (
                   <div key={index} className="flex items-center gap-2">

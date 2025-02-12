@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";
 import BoardGameCard from "./boardgame-card";
 import Skeleton from "./skeleton";
+import { useDebouncedCallback } from "use-debounce";
 
 export function BoardgameItems({ provider_id }: { provider_id: string }) {
   const [boardgames, setBoardgames] = useState<Boardgame[]>([]);
@@ -21,7 +22,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
-  const fetchGames = async () => {
+  const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
     const { data, count } = await selectProviderBoardgameByFilterAction(
@@ -33,7 +34,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
 
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
-  };
+  }, 500);
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
