@@ -18,17 +18,17 @@ export default function BoardGameCard({
   boardgame: Boardgame;
   boardgame_type: BoardgameType;
 }) {
-  const isAvailable = boardgame.status === "available";
+  const [boardgameData, setBoardgameData] = useState(boardgame);
+  const isAvailable = boardgameData.status === "available";
   const [showProgess, setShowProgess] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [rentingRequest, setRentingRequest] = useState<RentingRequest[]>([]);
   const [canShow, setCanShow] = useState(false);
 
   const getRentingRequest = async () => {
-    const renting_req = await selectRentingRequest(boardgame.id);
+    const renting_req = await selectRentingRequest(boardgameData.id);
     setCanShow(true);
     setRentingRequest(renting_req);
-    console.log("renting req", renting_req, boardgame.id);
   };
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function BoardGameCard({
     >
       <div className="bg-white col-span-1 flex justify-start  md:w-full  h-64 m-2 md:m-4 overflow-hidden rounded-xl">
         <img
-          src={boardgame.bg_picture}
+          src={boardgameData.bg_picture}
           alt="boardgame picture"
           className="w-full h-full object-cover object-top"
         />
@@ -53,11 +53,8 @@ export default function BoardGameCard({
 
       <div className="card-body flex flex-col p-2 md:p-4 md:col-span-2 m-4">
         <div className="flex flex-col lg:flex-row items-start justify-between w-full">
-          <p
-            className="text-lg font-semibold capitalize break-all 
-    md:text-2xl lg:text-3xl"
-          >
-            {boardgame.bg_name}
+          <p className="text-lg font-semibold capitalize break-all md:text-2xl lg:text-3xl">
+            {boardgameData.bg_name}
           </p>
 
           <button
@@ -68,13 +65,13 @@ export default function BoardGameCard({
                 : setShowProgess(false);
             }}
           >
-            {boardgame.status}
+            {boardgameData.status}
           </button>
         </div>
         <div className="grid grid-cols-6 gap-2">
           <p className="font-bold mt-2 col-span-3 md:col-span-2">Type:</p>
           <ol className="flex flex-wrap mt-2 gap-2 col-span-3 md:col-span-4">
-            {boardgame.types?.map((type, index) => (
+            {boardgameData.types?.map((type, index) => (
               <li
                 key={index}
                 className="bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-md shadow-sm"
@@ -86,34 +83,28 @@ export default function BoardGameCard({
 
           <p className="font-bold col-span-3 md:col-span-2">Price:</p>
           <p className="col-span-3 md:col-span-4 flex items-center">
-            {boardgame.price} &nbsp;
+            {boardgameData.price} &nbsp;
             <TbCurrencyBaht /> / day
           </p>
 
           <p className="font-bold col-span-3 md:col-span-2">Description:</p>
           <div className="flex flex-col col-span-4">
-            <p className={`col-span-3 md:col-span-4 capitalize break-all `}></p>
+            <p className="capitalize break-all "></p>
             <div className="flex flex-col justify-start capitalize break-all">
               {showDetail
-                ? boardgame.description
-                : boardgame.description.slice(0, 50)}
-              {!showDetail && boardgame.description.length > 50 ? (
+                ? boardgameData.description
+                : boardgameData.description.slice(0, 50)}
+              {!showDetail && boardgameData.description.length > 50 ? (
                 <button
                   className="text-gray-100 opacity-70 text-start"
-                  onClick={() => {
-                    !isAvailable;
-                    setShowDetail(!showDetail);
-                  }}
+                  onClick={() => setShowDetail(!showDetail)}
                 >
-                  {" "}
                   ..more details
                 </button>
-              ) : boardgame.description.length > 50 ? (
+              ) : boardgameData.description.length > 50 ? (
                 <button
-                  className=" text-gray-100 opacity-70  text-start "
-                  onClick={() => {
-                    setShowDetail(!showDetail);
-                  }}
+                  className="text-gray-100 opacity-70 text-start"
+                  onClick={() => setShowDetail(!showDetail)}
                 >
                   show less
                 </button>
@@ -132,12 +123,13 @@ export default function BoardGameCard({
           {showProgess && <StatusTracking rentingRequest={rentingRequest} />}
         </div>
 
-        <div
-          className="flex justify-center
-        md:justify-end gap-2"
-        >
-          <ModalUpdateBg boardgame={boardgame} key={boardgame.id} />
-          <DeleteBoardgame boardgameId={boardgame.id} />
+        <div className="flex justify-center md:justify-end gap-2">
+          <ModalUpdateBg
+            boardgame={boardgameData}
+            setBoardgameData={setBoardgameData}
+            key={boardgameData.id}
+          />
+          <DeleteBoardgame boardgameId={boardgameData.id} />
         </div>
       </div>
     </div>

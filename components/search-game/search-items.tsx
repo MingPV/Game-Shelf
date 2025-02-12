@@ -28,7 +28,6 @@ export function SearchItems() {
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
   const fetchGames = useDebouncedCallback(async () => {
-    console.log("selected type filer", selectedTypeFilter);
     setIsFetching(true);
 
     if (page > maxPage) {
@@ -45,11 +44,9 @@ export function SearchItems() {
     );
     setGames(data);
     setCount(count || 1);
-    console.log(data);
 
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
-    console.log("have games", haveBoardgame);
   }, 300);
 
   const getBoardgameType = async () => {
@@ -150,7 +147,7 @@ export function SearchItems() {
             </div>
           </div>
           <div className="flex flex-row flex-wrap gap-2">
-            {selectedTypeFilter.map((type, index) => (
+            {selectedTypeFilter?.map((type, index) => (
               <p key={index} className="p-1 rounded-sm bg-gs_white/20">
                 {mapped_boardgame_type[type] || "Unknown Type"}
               </p>
@@ -179,7 +176,7 @@ export function SearchItems() {
           <>
             {haveBoardgame ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4 pt-4  items-stretch justify-center">
-                {games.map((game, index) => (
+                {games?.map((game, index) => (
                   <GameCard
                     boardgame={game}
                     key={index}

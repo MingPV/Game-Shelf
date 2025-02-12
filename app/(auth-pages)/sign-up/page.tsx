@@ -87,7 +87,6 @@ export default function Signup() {
 
   const validateUsername = useDebouncedCallback(async (username: string) => {
     // check email first
-    console.log(isEmailValid);
     if (isEmailUnique === false) {
       setError("This email is already used");
       return;

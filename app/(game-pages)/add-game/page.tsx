@@ -33,7 +33,6 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
     );
   }
   const boardgameTypes = await selectAllBoardgameType();
-  console.log("boardgame types ", boardgameTypes);
 
   return (
     <>
@@ -57,7 +56,7 @@ export default async function Home(props: { searchParams: Promise<Message> }) {
               <Input name="price" placeholder="Price" required />
               <Label htmlFor="boardgame_type">Boardgame Type</Label>
               <div className="flex flex-col gap-2">
-                {boardgameTypes.map((type, index) => (
+                {boardgameTypes?.map((type, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <input
                       type="checkbox"

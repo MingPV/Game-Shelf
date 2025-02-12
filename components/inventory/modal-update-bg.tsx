@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
@@ -9,9 +9,13 @@ import {
 } from "@/app/(game-pages)/actions";
 import { Label } from "../ui/label";
 
-export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
-  console.log(boardgame);
-
+export default function ModalUpdateBg({
+  boardgame,
+  setBoardgameData,
+}: {
+  boardgame: Boardgame;
+  setBoardgameData: Dispatch<SetStateAction<Boardgame>>;
+}) {
   const [name, setName] = useState<string>(boardgame.bg_name);
   const [description, setDescription] = useState<string>(boardgame.description);
   const [price, setPrice] = useState<number>(boardgame.price);
@@ -32,6 +36,18 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
       formData.append("boardgame_type", type); // Use '[]' for multiple values with the same name
     });
 
+    const boardgameTmp: Boardgame = {
+      id: boardgame.id,
+      provier_id: boardgame.provier_id,
+      bg_name: name,
+      description: description,
+      bg_picture: boardgame.bg_picture,
+      price: price,
+      created_at: boardgame.created_at,
+      status: boardgame.status,
+      types: selectedTypes,
+    };
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -48,7 +64,7 @@ export default function ModalUpdateBg({ boardgame }: { boardgame: Boardgame }) {
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(formData);
+        setBoardgameData(boardgameTmp);
         await updateGameAction(formData);
         Swal.fire({
           title: "Updated!",

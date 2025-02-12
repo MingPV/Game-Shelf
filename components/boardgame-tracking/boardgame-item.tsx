@@ -22,7 +22,6 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
   const fetchGames = async () => {
-    console.log("selected type filer", selectedTypeFilter);
     setIsFetching(true);
 
     const { data, count } = await selectProviderBoardgameByFilterAction(
@@ -32,11 +31,8 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
     );
     setBoardgames(data);
 
-    console.log(data);
-
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
-    console.log("have games", haveBoardgame);
   };
 
   const getBoardgameType = async () => {
@@ -99,7 +95,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
               }}
             />
             <div className="flex flex-row flex-wrap gap-2 items-end">
-              {selectedTypeFilter.map((type, index) => {
+              {selectedTypeFilter?.map((type, index) => {
                 return (
                   <p key={index} className="px-2 py-1 text-xs bg-gs_white/20">
                     {mapped_boardgame_type[type]}

@@ -2,6 +2,7 @@ import { TbCurrencyBaht } from "react-icons/tb";
 import ModalUpdateBg from "../inventory/modal-update-bg";
 import DeleteBoardgame from "../inventory/delete-bg";
 import { Boardgame } from "@/app/types/game";
+import { SetStateAction } from "react";
 
 export default function Skeleton() {
   const boardgame: Boardgame = {
@@ -88,7 +89,14 @@ export default function Skeleton() {
                     md:justify-end gap-2"
           >
             <div className="bg-white opacity-20 rounded-lg">
-              <ModalUpdateBg boardgame={boardgame} />
+              <ModalUpdateBg
+                boardgame={boardgame}
+                setBoardgameData={function (
+                  value: SetStateAction<Boardgame>
+                ): void {
+                  throw new Error("Function not implemented.");
+                }}
+              />
             </div>
             <div className="bg-white opacity-20 rounded-lg">
               <DeleteBoardgame boardgameId={boardgame.id} />

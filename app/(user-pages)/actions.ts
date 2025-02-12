@@ -83,7 +83,6 @@ export const updateProviderAction = async (formData: FormData) => {
     .eq("uid", userId);
 
   if (error) {
-    console.log("Update Provider Error:", error);
     encodedRedirect("error", "/home", "Failed to update provider.");
   }
 

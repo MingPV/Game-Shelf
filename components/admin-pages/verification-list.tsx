@@ -37,7 +37,7 @@ export default function VerificationList({ adminId }: { adminId: number }) {
             </div>
             <div className="flex flex-col gap-4 w-full items-center">
               {requests.length > 0 ? (
-                requests.map(
+                requests?.map(
                   (item) =>
                     adminId && (
                       <VerificationCard

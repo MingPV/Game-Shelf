@@ -7,10 +7,7 @@ export default function DeleteBoardgame({
 }: {
   boardgameId: number;
 }) {
-  console.log("from delete bg", boardgameId);
-
   const handleDelete = () => {
-    console.log("in handler delete bg");
     const formData = new FormData();
     formData.append("id", boardgameId.toString());
 
@@ -30,7 +27,6 @@ export default function DeleteBoardgame({
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(formData);
         await deleteGameAction(formData);
         Swal.fire({
           title: "Deleted!",

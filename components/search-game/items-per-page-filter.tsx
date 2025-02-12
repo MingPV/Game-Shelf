@@ -31,7 +31,7 @@ export default function ItemsPerPageFilter({
           className="absolute menu bg-base-100 rounded-box z-[1] w-24 p-2 shadow mt-1"
           onKeyDown={handleKeyDown}
         >
-          {[4, 8, 10, 15].map((num) => (
+          {[4, 8, 10, 15]?.map((num) => (
             <div
               key={num}
               className="cursor-pointer p-3"

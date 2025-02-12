@@ -44,7 +44,7 @@ export default function TypeFilter({
           tabIndex={0}
           className="absolute mt-2 menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow"
         >
-          {boardgame_type.map((type, index) => (
+          {boardgame_type?.map((type, index) => (
             <li key={index}>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input

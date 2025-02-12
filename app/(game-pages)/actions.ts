@@ -10,13 +10,11 @@ import { revalidatePath } from "next/cache";
 import { json } from "stream/consumers";
 
 export const addGameAction = async (formData: FormData) => {
-  console.log("get formData, add game : ", formData);
   const boardgame_name = formData.get("boardgame_name")?.toString();
   const description = formData.get("description")?.toString();
   const bg_picture = formData.get("bg_picture") as File;
   const price = formData.get("price")?.toString();
   const boardgame_type = formData.getAll("boardgame_type");
-  // console.log("boardgame_type", boardgame_type);
   const supabase = await createClient();
 
   const fileName = randomUUID();
@@ -55,7 +53,6 @@ export const addGameAction = async (formData: FormData) => {
 };
 
 export const updateGameAction = async (formData: FormData) => {
-  console.log("formdata at update game action", formData);
   const boardgame_name = formData.get("boardgame_name")?.toString();
   const description = formData.get("description")?.toString();
   const bg_picture = formData.get("bg_picture") as File;
@@ -68,10 +65,11 @@ export const updateGameAction = async (formData: FormData) => {
   let publicBoardgamePictureURL = null;
   let error_message2;
 
-  console.log("testttttttt");
-  console.log(formData);
-
-  if (bg_picture) {
+  if (
+    bg_picture &&
+    bg_picture.toString() != "undefined" &&
+    bg_picture != undefined
+  ) {
     const fileName = randomUUID();
     const { error: uploadError } = await supabase.storage
       .from("boardgame_pictures")
@@ -130,7 +128,6 @@ export const deleteGameAction = async (formData: FormData) => {
   if (error) {
     encodedRedirect("error", "/home", "Failed to delete boardgame.");
   }
-  console.log("delete ", id);
 
   // return encodedRedirect("success", "/home", "Delete boardgame success.");
   revalidatePath("/");
@@ -146,7 +143,6 @@ export const selectAllBoardgameType = async () => {
     throw new Error("Failed to fetch boardgame types");
     console.log(error);
   }
-  console.log("data boardgame type", data);
   console.log(error);
 
   return data;
@@ -194,8 +190,6 @@ export const selectGamesByFilterAction = async (
     page_to_fetch = 1;
   }
 
-  console.log("from select action", selectedTypeFilter);
-
   const supabase = await createClient();
   const from = (page_to_fetch - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
@@ -216,7 +210,6 @@ export const selectGamesByFilterAction = async (
   const { data, error, count } = await query;
 
   if (error) {
-    console.log("error22222");
     console.log(error);
     throw new Error("Failed to fetch boardgames.");
   }
@@ -226,7 +219,6 @@ export const selectGamesByFilterAction = async (
 
 export const selectRentingRequest = async (boardgameId: Number) => {
   const supabase = await createClient();
-  console.log(boardgameId);
 
   const { data, error } = await supabase
     .from("rental_requests")
@@ -249,8 +241,6 @@ export const selectProviderBoardgameByFilterAction = async (
   providerId: string,
   selectedTypeFilter: string[]
 ) => {
-  console.log("from select action", selectedTypeFilter);
-
   const supabase = await createClient();
 
   let query = supabase
@@ -267,7 +257,6 @@ export const selectProviderBoardgameByFilterAction = async (
   const { data, error, count } = await query;
 
   if (error) {
-    console.log("error22222");
     console.log(error);
     throw new Error("Failed to fetch boardgames.");
   }
