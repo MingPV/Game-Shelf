@@ -113,7 +113,9 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="w-full lg:w-[70%] mx-auto bg-gs_white/20 rounded-2xl p-1 lg:p-5">
+              <div className="w-[95%] mx-auto bg-gs_white/20 rounded-2xl p-1 
+              lg:w-[70%] lg:p-2
+              ">
                 {boardgames?.map((boardgame, index) => (
                   <BoardGameCard
                     key={index}
