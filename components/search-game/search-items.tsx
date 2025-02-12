@@ -30,13 +30,16 @@ export function SearchItems() {
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
   const fetchGames = useDebouncedCallback(async () => {
-    setMaxPage(Math.ceil((count || 1) / itemsPerPage));
-
     setIsFetching(true);
 
     if (page > maxPage) {
       setPage(1);
     }
+
+    console.log("22222222");
+    console.log(page);
+    console.log(maxPage);
+    console.log(itemsPerPage);
 
     const { fetch_data: data, count_items: count_games } =
       await selectGamesByFilterAction(
@@ -70,7 +73,15 @@ export function SearchItems() {
   useEffect(() => {
     fetchGames();
     getBoardgameType();
-  }, [page, searchValue, price, itemsPerPage, selectedTypeFilter]);
+  }, [page, searchValue, price, selectedTypeFilter]);
+
+  useEffect(() => {
+    setPage(1);
+    setMaxPage(1);
+    // maxpage will auto change after fetch
+    fetchGames();
+    getBoardgameType();
+  }, [itemsPerPage]);
 
   const mapped_boardgame_type = boardgameTypes.reduce((acc: any, type: any) => {
     acc[type.bg_type_id] = type.bg_type;
