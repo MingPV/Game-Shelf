@@ -21,7 +21,7 @@ export default function GameCard({
   return (
     <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 justify-between">
       <div className="flex flex-col gap-1">
-        <div className="h-56 w-full rounded-xl ">
+        <div className="h-56 w-56 rounded-xl ">
           <img
             src={boardgame.bg_picture}
             alt={boardgame.bg_name}

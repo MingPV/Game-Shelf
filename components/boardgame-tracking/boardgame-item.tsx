@@ -97,6 +97,15 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                 setFiltered(true);
               }}
             />
+            <div className="flex flex-row flex-wrap gap-2 items-end">
+              {selectedTypeFilter.map((type, index) => {
+                return (
+                  <p key={index} className="px-2 py-1 text-xs bg-gs_white/20">
+                    {mapped_boardgame_type[type]}
+                  </p>
+                );
+              })}
+            </div>
           </div>
         </div>
 
