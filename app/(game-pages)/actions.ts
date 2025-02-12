@@ -213,27 +213,49 @@ export const selectGamesByFilterAction = async (
   const from = (page_to_fetch - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
-  let query = supabase
+  // Step 1: Get total count first
+  let { count: count_items, error: countError } = await supabase
     .from("boardgames")
-    .select("*", { count: "exact" })
-    .like("bg_name", `%${name}%`)
+    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+    .ilike("bg_name", `%${name}%`)
     .gte("price", price[0])
-    .lte("price", price[1])
-    .range(from, to);
+    .lte("price", price[1]);
 
-  // Apply .overlaps() only if selectedTypeFilter is not empty
-  query = selectedTypeFilter.length
-    ? query.overlaps("types", selectedTypeFilter)
-    : query;
+  let fetch_error = null;
+  let fetch_data = null;
 
-  const { data, error, count } = await query;
+  if (countError) {
+    console.error(countError);
+  } else if (count_items !== null && count_items > 0) {
+    // Step 2: Only fetch data if count > 0
 
-  if (error) {
-    console.log(error);
+    let query = supabase
+      .from("boardgames")
+      .select("*", { count: "exact" })
+      .ilike("bg_name", `%${name}%`)
+      .gte("price", price[0])
+      .lte("price", price[1])
+      .range(from, to);
+
+    // Apply .overlaps() only if selectedTypeFilter is not empty
+    query = selectedTypeFilter.length
+      ? query.overlaps("types", selectedTypeFilter)
+      : query;
+
+    const { data, error } = await query;
+
+    fetch_error = error;
+    fetch_data = data;
+  } else {
+    console.log("No matching rows");
+  }
+
+  if (fetch_error) {
+    console.log(fetch_error);
     throw new Error("Failed to fetch boardgames.");
   }
 
-  return { data, count };
+  return { fetch_data, count_items };
 };
 
 export const selectRentingRequest = async (boardgameId: Number) => {

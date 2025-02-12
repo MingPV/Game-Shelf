@@ -20,9 +20,14 @@ export default async function AuthButton() {
     .select("*")
     .eq("uid", user?.id);
 
+  let isProvider = false;
+
   if (user_data) {
     if (user_data[0].profilePicture) {
       profile_url = user_data[0].profilePicture;
+    }
+    if (user_data[0].isProvider) {
+      isProvider = true;
     }
   }
 
@@ -87,6 +92,12 @@ export default async function AuthButton() {
           <li>
             <a href="/account-settings">Settings</a>
           </li>
+          {isProvider ? (
+            <li>
+              <a href="/boardgame-tracking">My boardgames</a>
+            </li>
+          ) : null}
+
           <li>
             <a onClick={signOutAction}>Logout</a>
           </li>
