@@ -36,7 +36,7 @@ export default async function TrackingPage() {
 
   return (
     <>
-      <main>
+      <main className="w-full">
         {user_data ? (
           <div className="flex justify-center  text-3xl">
             {user_data[0].username}'s Board game
