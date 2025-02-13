@@ -47,6 +47,11 @@ export function SearchItems() {
       );
     setGames(data || []);
     setCount(count_games || 0);
+
+    console.log("Ming");
+    console.log(count_games);
+    console.log(data);
+
     if (count_games == 0) {
       setPage(1);
       setMaxPage(1);

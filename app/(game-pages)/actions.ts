@@ -214,12 +214,31 @@ export const selectGamesByFilterAction = async (
   const to = from + itemsPerPage - 1;
 
   // Step 1: Get total count first
-  let { count: count_items, error: countError } = await supabase
-    .from("boardgames")
-    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
-    .ilike("bg_name", `%${name}%`)
-    .gte("price", price[0])
-    .lte("price", price[1]);
+
+  let count_items;
+  let countError;
+
+  if (selectedTypeFilter.length) {
+    const { count: count_itemstmp, error: countErrortmp } = await supabase
+      .from("boardgames")
+      .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+      .ilike("bg_name", `%${name}%`)
+      .gte("price", price[0])
+      .lte("price", price[1])
+      .overlaps("types", selectedTypeFilter);
+
+    count_items = count_itemstmp;
+    countError = countErrortmp;
+  } else {
+    const { count: count_itemstmp, error: countErrortmp } = await supabase
+      .from("boardgames")
+      .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+      .ilike("bg_name", `%${name}%`)
+      .gte("price", price[0])
+      .lte("price", price[1]);
+    count_items = count_itemstmp;
+    countError = countErrortmp;
+  }
 
   let fetch_error = null;
   let fetch_data = null;
@@ -236,6 +255,7 @@ export const selectGamesByFilterAction = async (
       .gte("price", price[0])
       .lte("price", price[1])
       .range(from, to);
+    // .overlaps("types", selectedTypeFilter);
 
     // Apply .overlaps() only if selectedTypeFilter is not empty
     query = selectedTypeFilter.length
