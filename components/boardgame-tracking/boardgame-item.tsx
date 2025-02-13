@@ -34,7 +34,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
 
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
-  }, 500);
+  }, 700);
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
@@ -44,8 +44,12 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
 
   useEffect(() => {
     fetchGames();
-    getBoardgameType();
   }, [searchValue, selectedTypeFilter, haveBoardgame]);
+
+  useEffect(() => {
+    fetchGames();
+    getBoardgameType();
+  }, []);
 
   const mapped_boardgame_type = boardgameTypes.reduce((acc: any, type: any) => {
     acc[type.bg_type_id] = type.bg_type;
