@@ -57,7 +57,7 @@ export function SearchItems() {
     }
 
     setIsFetching(false);
-  }, 500);
+  }, 700);
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
