@@ -14,16 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default async function Home(props: { searchParams: Promise<Message> }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/sign-in");
-  }
-
   const searchParams = await props.searchParams;
   if ("message" in searchParams) {
     return (

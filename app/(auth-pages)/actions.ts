@@ -2,8 +2,9 @@
 
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { SignJWT, importJWK } from "jose";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -52,10 +53,25 @@ export const signUpAction = async (formData: FormData) => {
         ])
         .select();
 
-      console.log("error :", error);
+      if (!error) {
+        const secretJWK = {
+          kty: "oct",
+          k: process.env.JOSE_SECRET,
+        };
+
+        const secretKey = await importJWK(secretJWK, "HS256");
+        const token = await new SignJWT({ email, userData: data[0] })
+          .setProtectedHeader({ alg: "HS256" })
+          .setIssuedAt()
+          .setExpirationTime("1h")
+          .sign(secretKey);
+
+        (await cookies()).set("token", token);
+      }
     }
 
-    return encodedRedirect("success", "/home", "Thanks for signing up!");
+    // Returning authData in case of success
+    return encodedRedirect("success", "/home", "sign-up success!");
   }
 };
 
@@ -64,7 +80,7 @@ export const signInAction = async (formData: FormData) => {
   const password = formData.get("password") as string;
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -73,7 +89,40 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/home");
+  let getUserData;
+
+  if (authData.user) {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("uid", authData.user.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user data:", error.message);
+      return;
+    }
+
+    getUserData = data;
+
+    console.log("Fetched user data:", data);
+  }
+
+  const secretJWK = {
+    kty: "oct",
+    k: process.env.JOSE_SECRET,
+  };
+
+  const secretKey = await importJWK(secretJWK, "HS256");
+  const token = await new SignJWT({ email, userData: getUserData })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("1h")
+    .sign(secretKey);
+
+  (await cookies()).set("token", token);
+
+  return encodedRedirect("success", "/home", "sign-in success!");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -150,6 +199,8 @@ export const resetPasswordAction = async (formData: FormData) => {
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  (await cookies()).set("token", "");
+
   return redirect("/home");
 };
 

@@ -22,7 +22,7 @@ export default function Signup() {
     null
   );
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
 
@@ -51,7 +51,7 @@ export default function Signup() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("isProvider", isProvider.toString());
-    signUpAction(formData);
+    const { status, authData } = await signUpAction(formData);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

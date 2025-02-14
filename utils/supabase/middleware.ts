@@ -1,5 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { jwtVerify, importJWK } from "jose";
+import { userData } from "@/app/types/user";
+import { signOutAction } from "@/app/(auth-pages)/actions";
 
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
@@ -12,67 +15,111 @@ export const updateSession = async (request: NextRequest) => {
       },
     });
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value)
-            );
-            response = NextResponse.next({
-              request,
-            });
-            cookiesToSet.forEach(({ name, value, options }) =>
-              response.cookies.set(name, value, options)
-            );
-          },
-        },
-      }
-    );
+    // const supabase = createServerClient(
+    //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    //   {
+    //     cookies: {
+    //       getAll() {
+    //         return request.cookies.getAll();
+    //       },
+    //       setAll(cookiesToSet) {
+    //         cookiesToSet.forEach(({ name, value }) =>
+    //           request.cookies.set(name, value)
+    //         );
+    //         response = NextResponse.next({
+    //           request,
+    //         });
+    //         cookiesToSet.forEach(({ name, value, options }) =>
+    //           response.cookies.set(name, value, options)
+    //         );
+    //       },
+    //     },
+    //   }
+    // );
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const user = await supabase.auth.getUser();
 
-    const { data: user_data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("uid", user?.data?.user?.id);
+    const secretJWK = {
+      kty: "oct",
+      k: process.env.JOSE_SECRET,
+    };
+    const secretKey = await importJWK(secretJWK, "HS256");
 
-    // protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+    // for provider
 
-    if (user_data) {
-      if (
-        request.nextUrl.pathname.startsWith("/admin-homepage") &&
-        !user_data[0].is_admin
-      ) {
+    if (request.nextUrl.pathname.startsWith("/provider-home")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      if (
-        request.nextUrl.pathname.startsWith("/manage-provider") &&
-        !user_data[0].is_admin
-      ) {
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as userData;
+
+      if (!userData.isProvider) {
         return NextResponse.redirect(new URL("/home", request.url));
-      }
-      if (
-        request.nextUrl.pathname.startsWith("/home") &&
-        user_data[0].is_admin
-      ) {
-        return NextResponse.redirect(new URL("/admin-homepage", request.url));
       }
     }
 
-    // if (request.nextUrl.pathname === "/" && !user.error) {
-    //   return NextResponse.redirect(new URL("", request.url));
-    // }
+    if (request.nextUrl.pathname.startsWith("/boardgame-tracking")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as userData;
+
+      if (!userData.isProvider) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+
+    if (request.nextUrl.pathname.startsWith("/add-game")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as userData;
+
+      if (!userData.isProvider) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+
+    // // for admin
+
+    if (request.nextUrl.pathname.startsWith("/admin-homepage")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as userData;
+
+      if (!userData.is_admin) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+
+    if (request.nextUrl.pathname.startsWith("/manage-provider")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as userData;
+
+      if (!userData.is_admin) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
 
     return response;
   } catch (e) {
