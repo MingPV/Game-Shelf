@@ -15,6 +15,9 @@ const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req: Request) {
   try {
+    const { amount, productName, customer_id, provider_id, request_id } =
+      await req.json();
+
     const supabase = await createClient();
 
     const session = await stripeClient.checkout.sessions.create({
@@ -23,20 +26,32 @@ export async function POST(req: Request) {
         {
           price_data: {
             currency: "thb",
-            product_data: { name: "product.name" },
-            unit_amount: 4 * 100,
+            product_data: { name: productName },
+            unit_amount: amount * 100,
           },
-          quantity: 555,
+          quantity: 1,
         },
       ],
       mode: "payment",
       success_url: `http://localhost:3000`,
       cancel_url: `http://localhost:3000`,
     });
+    console.log(session);
 
     const { data, error } = await supabase
       .from("invoices")
-      .insert([{ amount: 500, status: "pending", session_id: session.id }])
+      .insert([
+        {
+          payer: customer_id,
+          payout_to: provider_id,
+          amount: amount,
+          status: "pending",
+          commission_fee: amount * 0.1,
+          request_id: request_id,
+          session_id: session.id,
+          payment_url: session.url,
+        },
+      ])
       .select();
 
     return NextResponse.json({

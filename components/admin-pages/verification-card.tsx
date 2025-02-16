@@ -44,7 +44,7 @@ export default function VerificationCard({
   }, []);
 
   return (
-    <div className="flex flex-col justify-center rounded-sm border border-white border-opacity-60 p-4 w-full">
+    <div className="flex flex-col justify-center rounded-sm border border-white border-opacity-30 p-4 w-full">
       <div className="flex justify-between items-center pb-2">
         <div className="flex gap-2 items-center font-bold">
           <div className="flex relative h-7 w-7 rounded-full">

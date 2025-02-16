@@ -66,7 +66,11 @@ export const signUpAction = async (formData: FormData) => {
           .setExpirationTime("1h")
           .sign(secretKey);
 
-        (await cookies()).set("token", token);
+        (await cookies()).set("token", token, {
+          httpOnly: true, // Keeps it secure from client-side JavaScript
+          sameSite: "lax", // Helps prevent CSRF attacks
+          path: "/", // Available to the whole site
+        });
       }
     }
 
@@ -117,10 +121,13 @@ export const signInAction = async (formData: FormData) => {
   const token = await new SignJWT({ email, userData: getUserData })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("1h")
     .sign(secretKey);
 
-  (await cookies()).set("token", token);
+  (await cookies()).set("token", token, {
+    httpOnly: true, // Keeps it secure from client-side JavaScript
+    sameSite: "lax", // Helps prevent CSRF attacks
+    path: "/", // Available to the whole site
+  });
 
   return encodedRedirect("success", "/home", "sign-in success!");
 };

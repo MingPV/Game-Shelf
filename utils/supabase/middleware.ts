@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { jwtVerify, importJWK } from "jose";
-import { userData } from "@/app/types/user";
+import { UserData } from "@/app/types/user";
 import { signOutAction } from "@/app/(auth-pages)/actions";
 
 export const updateSession = async (request: NextRequest) => {
@@ -47,6 +47,11 @@ export const updateSession = async (request: NextRequest) => {
     };
     const secretKey = await importJWK(secretJWK, "HS256");
 
+    const token = request.cookies.get("token");
+    if (!token || token.value == "") {
+      await signOutAction();
+    }
+
     // for provider
 
     if (request.nextUrl.pathname.startsWith("/provider-home")) {
@@ -56,7 +61,7 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const { payload } = await jwtVerify(token.value, secretKey);
-      const userData = payload.userData as userData;
+      const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
         return NextResponse.redirect(new URL("/home", request.url));
@@ -70,7 +75,7 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const { payload } = await jwtVerify(token.value, secretKey);
-      const userData = payload.userData as userData;
+      const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
         return NextResponse.redirect(new URL("/home", request.url));
@@ -84,7 +89,20 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const { payload } = await jwtVerify(token.value, secretKey);
-      const userData = payload.userData as userData;
+      const userData = payload.userData as UserData;
+
+      if (!userData.isProvider) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+    if (request.nextUrl.pathname.startsWith("/rental-request")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const { payload } = await jwtVerify(token.value, secretKey);
+      const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
         return NextResponse.redirect(new URL("/home", request.url));
@@ -100,7 +118,7 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const { payload } = await jwtVerify(token.value, secretKey);
-      const userData = payload.userData as userData;
+      const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {
         return NextResponse.redirect(new URL("/home", request.url));
@@ -114,7 +132,7 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const { payload } = await jwtVerify(token.value, secretKey);
-      const userData = payload.userData as userData;
+      const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {
         return NextResponse.redirect(new URL("/home", request.url));

@@ -93,3 +93,36 @@ export const updateProviderAction = async (formData: FormData) => {
 
   return encodedRedirect("success", "/home", "Update provider success.");
 };
+
+export const selectUserById = async (userId: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", userId);
+
+  if (error) {
+    throw new Error("Failed to fetch User.");
+  }
+
+  return data;
+};
+
+export const createNotificationByUserId = async (
+  userId: string,
+  message: string
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .insert([{ receiver_id: userId, message: message }])
+    .select();
+
+  if (error) {
+    throw new Error("Failed to insert a notification.");
+  }
+
+  return data;
+};

@@ -19,6 +19,7 @@ export interface RentingRequest {
   customer_id: string;
   bg_id: number;
   created_at: string;
+  provider_id: string;
 }
 
 export interface Boardgame_type {

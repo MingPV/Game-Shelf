@@ -278,7 +278,7 @@ export const selectGamesByFilterAction = async (
   return { fetch_data, count_items };
 };
 
-export const selectRentingRequest = async (boardgameId: Number) => {
+export const selectRentingRequestById = async (boardgameId: Number) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
