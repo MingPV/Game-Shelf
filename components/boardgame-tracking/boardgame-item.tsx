@@ -1,9 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  selectAllBoardgameType,
-  selectProviderBoardgameByFilterAction,
-} from "@/app/(game-pages)/actions";
+import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
+import { selectProviderBoardgameByFilterAction } from "@/app/(user-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";

@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Boardgame, Boardgame_type, RentingRequest } from "@/app/types/game";
+import { Boardgame, RentingRequest } from "@/app/types/game";
 import ModalUpdateBg from "../inventory/modal-update-bg";
 import DeleteBoardgame from "../inventory/delete-bg";
 import { TbCurrencyBaht } from "react-icons/tb";
 import { StatusTracking } from "../inventory/status-tracking";
-import { selectRentingRequestById } from "@/app/(game-pages)/actions";
+import { selectLatestBoardgameRequestById } from "@/app/(user-pages)/actions";
 
 type BoardgameType = {
   [key: string]: string;
@@ -26,7 +26,9 @@ export default function BoardGameCard({
   const [canShow, setCanShow] = useState(false);
 
   const getRentingRequest = async () => {
-    const renting_req = await selectRentingRequestById(boardgameData.id);
+    const renting_req = await selectLatestBoardgameRequestById(
+      boardgameData.id
+    );
     setCanShow(true);
     setRentingRequest(renting_req);
   };

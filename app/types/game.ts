@@ -9,6 +9,7 @@ export interface Boardgame {
   created_at: string;
   status: string;
   types: string[];
+  quantity: number;
 }
 
 export interface RentingRequest {
