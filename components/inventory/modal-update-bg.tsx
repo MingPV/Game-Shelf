@@ -46,6 +46,7 @@ export default function ModalUpdateBg({
       created_at: boardgame.created_at,
       status: boardgame.status,
       types: selectedTypes,
+      quantity: 1, // fix this na
     };
 
     Swal.fire({

@@ -15,6 +15,7 @@ export default function Skeleton() {
     created_at: "string",
     status: "pending",
     types: ["1", "2"],
+    quantity: 1, // fix this na
   };
   return (
     <>
