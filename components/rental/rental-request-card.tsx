@@ -212,7 +212,7 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
         <div className="modal-box bg-slate-50 w-[60vw] h-[60vh] flex flex-col text-black">
           <div className="flex flex-row w-full h-1/2">
             <div className="w-1/2 h-full">
-              <img className="w-full h-full" src={profileURL} />
+              <img className="w-full h-full" src={boardgame?.bg_picture} />
             </div>
             <div className="ml-4 w-1/2 h-full ">
               <div className="m-2 text-sm opacity-60 font-thin">

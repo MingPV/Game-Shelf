@@ -1,15 +1,10 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-// import VerificationCard from "@/components/admin-pages/verification-card";
 import RequestCard from "./rental-request-card";
-import { verificationRequests } from "@/app/types/user";
-import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
-import { request } from "http";
 import { RentingRequest } from "@/app/types/game";
-import { selectGameAction } from "@/app/(game-pages)/actions";
-// import LoadingCard from "./loading-card";
 import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
+import LoadingCard from "./rental-request-loading";
 
 export default function RentalRequestList() {
   const [requests, setRequests] = useState<RentingRequest[]>([]);
@@ -50,23 +45,17 @@ export default function RentalRequestList() {
             <div className="flex flex-col gap-4 w-full items-center">
               {requests.length > 0 ? (
                 requests?.map((item) =>
-                  //   <VerificationCard
-                  //     key={item.provider_id}
-                  //     params={item}
-                  //     admin_id={adminId}
-                  //     onRemove={handleRemove}
-                  //   />
                   item.status == "pending" ? (
                     <RequestCard rentalRequest={item} key={item.id} />
                   ) : null
                 )
               ) : isLoadingReq ? (
                 <>
-                  {/* <LoadingCard />
                   <LoadingCard />
                   <LoadingCard />
                   <LoadingCard />
-                  <LoadingCard /> */}
+                  <LoadingCard />
+                  <LoadingCard />
                 </>
               ) : (
                 <p>No verification requests</p>
