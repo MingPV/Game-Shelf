@@ -12,8 +12,8 @@ import ItemsPerPageFilter from "./items-per-page-filter";
 import LoadingGameCard from "./loading-card";
 import TypeFilter from "./type-filter";
 import { useDebouncedCallback } from "use-debounce";
-export function SearchItems() {
-  const [itemsPerPage, setItemPerPage] = useState(15);
+export function HomeSearch() {
+  const [itemsPerPage, setItemPerPage] = useState(9);
   const [page, setPage] = useState(1);
   const [games, setGames] = useState<Boardgame[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -117,58 +117,26 @@ export function SearchItems() {
   // fetchGames();
 
   return (
-    <div className="w-full place-items-center">
+    <div className=" place-items-center w-full">
       {/* <div className="flex flex-col items-center justify-center font-bold mt-8 mb-4">
         <div>Searching boardgames page</div>
       </div> */}
-      <div className="flex flex-col min-w-64 items-center w-full space-y-4 mt-4">
+      <div className="flex flex-col items-center w-full space-y-4 mt-4">
         {/* <h1 className="text-2xl font-medium mb-4">Boardgames</h1> */}
-        <div className="flex flex-col gap-4 items-start  justify-start">
-          <div className="flex gap-4 w-full justify-between items-center">
+        <div className="flex flex-col w-full gap-4 items-center  justify-start">
+          <div className="flex gap-4 w-10/12 justify-between items-center">
             <Input
               placeholder="Search Board game by name"
               value={searchValue}
-              className="px-4 py-6 rounded-full border border-neutral-200 hover:border-gs_white min-w-[60vw]"
+              className="px-4 py-6 rounded-full border border-neutral-200 border-opacity-30 hover:border-gs_white hover:border-opacity-40 text-white text-opacity-40"
               type="text"
               onChange={(e) => {
                 setSearchValue(e.target.value);
                 setFiltered(true);
               }}
             />
-            <button
-              onClick={clearFilter}
-              disabled={!filtered}
-              className="btn btn-outline"
-            >
-              Clear
-            </button>
           </div>
 
-          <div className="flex flex-col md:flex-row w-full  gap-4 items-center lg:items-end justify-between">
-            <div className="flex flex-col relative gap-4 items-start">
-              <TypeFilter
-                selectedType={selectedTypeFilter}
-                boardgame_type={boardgameTypes}
-                handleChange={(value: string[]) => {
-                  setSelectedTypeFilter(value);
-                  setFiltered(true);
-                }}
-              />
-            </div>
-
-            <div className="flex flex-col md:flex-row  justify-end gap-4 items-center w-full">
-              <PriceFilter price={price} handleChange={setRange} />
-              <div className="flex flex-row items-center gap-4">
-                <ItemsPerPageFilter
-                  itemPerPage={itemsPerPage}
-                  handleChange={(value: number) => {
-                    setItemPerPage(value);
-                    setFiltered(true);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
           <div className="flex flex-row flex-wrap gap-2">
             {selectedTypeFilter?.map((type, index) => (
               <p key={index} className="p-1 rounded-sm bg-gs_white/20">
@@ -180,7 +148,7 @@ export function SearchItems() {
 
         {isFetching ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 pt-4  items-center justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4 pt-4  items-stretch justify-center">
               <LoadingGameCard />
               <LoadingGameCard />
               <LoadingGameCard />
@@ -198,7 +166,7 @@ export function SearchItems() {
         ) : (
           <>
             {haveBoardgame ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4 pt-4  items-stretch justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4 pt-4  items-stretch justify-center">
                 {games?.map((game, index) => (
                   <GameCard
                     boardgame={game}
@@ -208,7 +176,7 @@ export function SearchItems() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-4">
+              <div className="flex flex-col items-center justify-center w-full">
                 <svg
                   height="200px"
                   width="200px"
@@ -242,14 +210,18 @@ export function SearchItems() {
         </p>
         <div className="flex justify-between mt-4 gap-8">
           <button
-            onClick={() => setPage(page - 1)}
+            onClick={() => {
+              setPage(page - 1);
+            }}
             disabled={page === 1}
             className="btn"
           >
             Previous
           </button>
           <button
-            onClick={() => setPage(page + 1)}
+            onClick={() => {
+              setPage(page + 1);
+            }}
             disabled={page === maxPage}
             className="btn"
           >

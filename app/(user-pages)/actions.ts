@@ -109,6 +109,46 @@ export const selectUserById = async (userId: string) => {
   return data;
 };
 
+export const getMyUserData = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.error("User not authenticated");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user.id);
+
+  if (error) {
+    throw new Error("Failed to fetch User.");
+  }
+
+  return data[0];
+};
+
+export const selectTopProvider = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("isProvider", true)
+    .limit(10);
+
+  if (error) {
+    throw new Error("Failed to fetch top providers.");
+  }
+
+  return data;
+};
+
 export const createNotificationByUserId = async (
   userId: string,
   message: string
