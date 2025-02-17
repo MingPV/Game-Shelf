@@ -79,9 +79,9 @@ export default function HomeList() {
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto ">
+      <div className="overflow-x-auto bg-black bg-opacity-10 py-8 px-2 rounded-t-md border-t border-opacity-10 border-white">
         <div className="mb-6 w-full ml-6 font-extrabold">Top 10 Providers</div>
-        <table className="table">
+        <table className="table ">
           {/* head */}
           <thead>
             <tr>
