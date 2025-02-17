@@ -7,11 +7,13 @@ import { getMyUserData, selectTopProvider } from "@/app/(user-pages)/actions";
 export default function HomeList() {
   const [topProviders, setTopProviders] = useState<UserData[]>();
   const [userData, setUserData] = useState<UserData>();
+  const [isFetchingProvider, setIsFetchingProvider] = useState(true);
 
   useEffect(() => {
     const fetchTopProvider = async () => {
       const fetchData = await selectTopProvider();
       setTopProviders(fetchData);
+      setIsFetchingProvider(false);
     };
 
     const fetchUserData = async () => {
@@ -30,22 +32,26 @@ export default function HomeList() {
             <div className="w-10 rounded-full mb-2">
               <img
                 alt="Tailwind CSS Navbar component"
-                src={"/mock_provider.jpeg"}
+                src={userData?.profilePicture || "/mock_provider.jpeg"}
                 className="rounded-full"
               />
             </div>
-            <h2 className="card-title">{userData?.username}</h2>
+            <h2 className="card-title mb-2">
+              {userData?.username || "Username"}
+            </h2>
           </div>
           <div className="flex flex-row gap-2">
             <div>Email : </div>
-            <div className="text-opacity-60 text-white">{userData?.email}</div>
+            <div className="text-opacity-60 text-white">
+              {userData?.email || "user@gmail.com"}
+            </div>
           </div>
           <div className="flex flex-row gap-2">
             <div>Member since : </div>
             <div className="text-opacity-60 text-white">
               {userData?.created_at
                 ? new Date(userData.created_at).toLocaleDateString()
-                : ""}
+                : "1/1/2025"}
             </div>
           </div>
           <div className="flex flex-row gap-2">
@@ -87,26 +93,132 @@ export default function HomeList() {
             </tr>
           </thead>
           <tbody>
-            {topProviders?.map((provider, index) => (
-              <tr key={provider.username}>
-                <th>
-                  <label>{index + 1}</label>
-                </th>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle h-12 w-12">
-                        <img src={provider.profilePicture} />
+            {isFetchingProvider ? (
+              <>
+                <tr>
+                  <th>
+                    <label>1. </label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12 skeleton bg-black opacity-20 text-opacity-0 text-white">
+                          <img src={"/mock_provider.jpeg"} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold skeleton bg-slate-500 opacity-10 text-opacity-0 text-white">
+                          -------------------
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <div className="font-bold">{provider.username}</div>
+                  </td>
+                  <td className="text-center opacity-0">32</td>
+                </tr>
+                <tr>
+                  <th>
+                    <label>2. </label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12 skeleton bg-black opacity-20 text-opacity-0 text-white">
+                          <img src={"/mock_provider.jpeg"} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold skeleton bg-slate-500 opacity-10 text-opacity-0 text-white">
+                          ----------------
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="text-center">32</td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="text-center opacity-0">32</td>
+                </tr>
+                <tr>
+                  <th>
+                    <label>3. </label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12 skeleton bg-black opacity-20 text-opacity-0 text-white">
+                          <img src={"/mock_provider.jpeg"} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold skeleton bg-slate-500 opacity-10 text-opacity-0 text-white">
+                          -----------------
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center opacity-0">32</td>
+                </tr>
+                <tr>
+                  <th>
+                    <label>4. </label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12 skeleton bg-black opacity-20 text-opacity-0 text-white">
+                          <img src={"/mock_provider.jpeg"} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold skeleton bg-slate-500 opacity-10 text-opacity-0 text-white">
+                          --------------
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center opacity-0">32</td>
+                </tr>
+                <tr>
+                  <th>
+                    <label>5. </label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12 skeleton bg-black opacity-20 text-opacity-0 text-white">
+                          <img src={"/mock_provider.jpeg"} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold skeleton bg-slate-500 opacity-10 text-opacity-0 text-white">
+                          -----------------
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center opacity-0">32</td>
+                </tr>
+              </>
+            ) : (
+              topProviders?.map((provider, index) => (
+                <tr key={provider.username}>
+                  <th>
+                    <label>{index + 1}</label>
+                  </th>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img src={provider.profilePicture} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold">{provider.username}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center">32</td>
+                </tr>
+              ))
+            )}
+
             {/* row 1 */}
           </tbody>
           {/* foot */}
