@@ -126,3 +126,52 @@ export const createNotificationByUserId = async (
 
   return data;
 };
+
+export const getLast9Notifications = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("receiver_id", user.id)
+    .order("created_at", { ascending: false }) // Ensure latest notifications are fetched first
+    .limit(9); // Safer than range(0, 9)
+
+  if (error) {
+    throw new Error("Failed to select lastest notifications.");
+  }
+
+  return data;
+};
+
+export const updateReadNotification = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("receiver_id", user.id)
+    .select();
+
+  if (error) {
+    throw new Error("Failed to update notifications.");
+  }
+
+  return data;
+};
