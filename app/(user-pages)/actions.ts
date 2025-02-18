@@ -228,7 +228,7 @@ export const getLast9Notifications = async () => {
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
-    .eq("receiver_id", user.id)
+    // .eq("receiver_id", user.id) //comment this on test
     .order("created_at", { ascending: false }) // Ensure latest notifications are fetched first
     .limit(9); // Safer than range(0, 9)
 

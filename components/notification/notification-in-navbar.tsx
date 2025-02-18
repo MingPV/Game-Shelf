@@ -31,6 +31,7 @@ export default function NotificationInNavbar() {
     fetchNotifications();
   }, []);
 
+
   const handleRead = async () => {
     if (!isRead && unread != 0) {
       updateReadNotification();
@@ -38,8 +39,9 @@ export default function NotificationInNavbar() {
     }
   };
 
+
   return (
-    <div className="dropdown dropdown-end ">
+    <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="" onClick={handleRead}>
         <div className="indicator ">
           <IoNotifications className="text-gs_white text-xl" />
@@ -50,26 +52,31 @@ export default function NotificationInNavbar() {
       </div>
       <div
         tabIndex={0}
-        className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow"
+        className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-64 shadow"
       >
         <div className="card-body">
-          <span className="text-lg font-bold">
-            {notifications?.length} Notifications
+          <span className="text-lg font-semibold border-b">
+            Notifications
           </span>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             {notifications?.map((item, index) => (
-              <div key={item.id} className="bg-slate-700">
-                {index + 1}. {item.message}
+              <div key={item.id} className="bg-slate-700 bg-opacity-20 border-b w-full px-2 py-1 flex flex-row space-x-3">
+                <img
+                    alt="Tailwind CSS Navbar component"
+                    src={"/mock_provider.jpeg"}
+                    className="rounded-full w-8 h-8"
+                  />
+                <p className="self-center">{item.message}</p>
               </div>
             ))}
           </div>
 
-          <div>
+          <div className="text-center">
             <a
-              className="btn btn-primary btn-block btn-sm"
+              className="text-sm text-white/70"
               href="/notifications"
             >
-              see more notifications
+              see all
             </a>
           </div>
         </div>
