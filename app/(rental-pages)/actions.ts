@@ -34,6 +34,39 @@ export const selectMyRentingRequest = async () => {
   return rental_requests;
 };
 
+export const selectMyRentingRequestByStatus = async (status: string) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: user_data, error: getUserError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+
+  if (getUserError) {
+    console.log(getUserError);
+    throw new Error("Failed to fetch user");
+  }
+
+  console.log("provider_id:", user?.id);
+
+  const { data: rental_requests, error: getRequestsError } = await supabase
+    .from("rental_requests")
+    .select("*")
+    .eq("provider_id", user?.id)
+    .eq("status", status);
+
+  if (getRequestsError) {
+    console.log(getRequestsError);
+    throw new Error(`Failed to fetch my rental requests with status: ${status}`);
+  }
+
+  return rental_requests;
+};
+
 export const deleteRentingRequest = async (rental_id: number) => {
   const supabase = await createClient();
 

@@ -31,26 +31,31 @@ function ReviewTag({ score }: { score: number | null}) {
                 type="radio"
                 className="mask mask-star-2 bg-yellow-400"
                 checked={score==1} 
+                readOnly
             />
             <input
                 type="radio"
                 className="mask mask-star-2 bg-yellow-400"
                 checked={score==2} 
+                readOnly
             />
             <input
                 type="radio"
                 className="mask mask-star-2 bg-yellow-400"
                 checked={score==3} 
+                readOnly
             />
             <input
                 type="radio"
                 className="mask mask-star-2 bg-yellow-400"
                 checked={score==4} 
+                readOnly
             />
             <input
                 type="radio"
                 className="mask mask-star-2 bg-yellow-400"
                 checked={score==5} 
+                readOnly
             />
         </div>
     );
