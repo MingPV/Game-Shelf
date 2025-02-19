@@ -89,6 +89,16 @@ export default function BoardGameCard({
             <TbCurrencyBaht /> / day
           </p>
 
+          {boardgameData.quantity && (
+            <>
+              <p className="font-bold col-span-3 md:col-span-2">Quantity:</p>
+
+              <p className="col-span-3 md:col-span-4 flex items-center">
+                {boardgameData.quantity} &nbsp; pieces
+              </p>
+            </>
+          )}
+
           <p className="font-bold col-span-3 md:col-span-2">Description:</p>
           <div className="flex flex-col col-span-4">
             <p className="capitalize break-all "></p>
