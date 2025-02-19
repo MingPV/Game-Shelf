@@ -19,6 +19,7 @@ export default function RentalHistory() {
   return (
     <h1 className="text-5xl">
       เอา rentalHistory ไปใช้ได้เลย มีตัวอย่างข้อมูลที่ console.log() เอาไว้อยู่
+      (this page is for player na)
     </h1>
   );
 }
