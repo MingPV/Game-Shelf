@@ -15,6 +15,7 @@ export const addGameAction = async (formData: FormData) => {
   const bg_picture = formData.get("bg_picture") as File;
   const price = formData.get("price")?.toString();
   const boardgame_type = formData.getAll("boardgame_type");
+  const quantity = formData.get("quantity")?.toString();
   const supabase = await createClient();
 
   const fileName = randomUUID();
@@ -47,6 +48,7 @@ export const addGameAction = async (formData: FormData) => {
         bg_picture: publicBoardgamePictureURL,
         price: price,
         types: boardgame_type,
+        quantity: quantity,
       },
     ]);
     addGameError = error;
@@ -57,6 +59,7 @@ export const addGameAction = async (formData: FormData) => {
         description: description,
         price: price,
         types: boardgame_type,
+        quantity: quantity,
       },
     ]);
     addGameError = error;
@@ -78,7 +81,7 @@ export const updateGameAction = async (formData: FormData) => {
   const price = formData.get("price")?.toString();
   const id = formData.get("id")?.toString();
   const boardgame_type = formData.getAll("boardgame_type");
-
+  const quantity = formData.get("quantity")?.toString();
   const supabase = await createClient();
 
   let publicBoardgamePictureURL = null;
@@ -110,6 +113,7 @@ export const updateGameAction = async (formData: FormData) => {
         bg_picture: publicBoardgamePictureURL,
         price: price,
         types: boardgame_type,
+        quantity: quantity,
       })
       .eq("id", id);
     error_message2 = error_message;
@@ -121,6 +125,7 @@ export const updateGameAction = async (formData: FormData) => {
         description: description,
         price: price,
         types: boardgame_type,
+        quantity: quantity,
       })
       .eq("id", id);
     error_message2 = error_message;

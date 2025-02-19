@@ -7,6 +7,7 @@ import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";
 import BoardGameCard from "./boardgame-card";
 import Skeleton from "./skeleton";
+import Link from "next/link";
 import { useDebouncedCallback } from "use-debounce";
 
 export function BoardgameItems({ provider_id }: { provider_id: string }) {
@@ -138,7 +139,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-4">
+              <div className="flex flex-col items-center justify-center p-4 gap-4">
                 <svg
                   height="200px"
                   width="200px"
@@ -162,6 +163,9 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                   </g>
                 </svg>
                 <p>There is no Boardgame matched with your filter.</p>
+                <Link className="btn btn-neutral" href={"/add-game"}>
+                  add new boardgame
+                </Link>
               </div>
             )}
           </>
