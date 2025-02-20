@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { toPayRentingRequest } from "@/app/types/game";
-import BoardGameCard from "./bg-toPay-card";
+import BoardGameCard from "./to-pay-card";
 import Skeleton from "./skeleton";
 import { useDebouncedCallback } from "use-debounce";
 import { selectToPayBoardGameById } from "@/app/(payment-pages)/actions";

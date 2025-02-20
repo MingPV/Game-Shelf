@@ -52,8 +52,8 @@ export interface toPayRentingRequest {
   bg_id: number;
   created_at: string;
   provider_id: string;
-  board_game: Boardgame;
-  invoice: Invoice;
-  provider: UserData;
+  boardgames: Boardgame;
+  invoices: Invoice;
+  users: UserData;
 }
 
