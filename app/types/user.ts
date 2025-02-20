@@ -14,6 +14,7 @@ export interface UserData {
   created_at: string;
   admin_id: Number;
   is_admin: boolean;
+  rental_success: Number;
 }
 
 export interface verificationRequests {
