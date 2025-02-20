@@ -1,3 +1,5 @@
+import { UserData } from "./user";
+
 // game interface
 export interface Boardgame {
   id: number;
@@ -26,4 +28,17 @@ export interface RentingRequest {
 export interface Boardgame_type {
   bg_type: string;
   bg_type_id: number;
+}
+
+export interface RentingRequestJoinBoardgameJoinProvider {
+  id: number;
+  start_date: string;
+  end_date: string;
+  status: string;
+  customer_id: string;
+  bg_id: number;
+  created_at: string;
+  provider_id: string;
+  boardgames: Boardgame;
+  provider: UserData;
 }

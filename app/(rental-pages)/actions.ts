@@ -106,3 +106,35 @@ export const updateRentingRequestStatus = async (
 
   return data;
 };
+
+export const selectPlayerRentingRequest = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: user_data, error: getUserError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+
+  if (getUserError) {
+    console.log(getUserError);
+    throw new Error("Failed to fetch user");
+  }
+
+  const { data: rental_requests, error: getRequestsError } = await supabase
+    .from("rental_requests")
+    .select("*, boardgames(*), provider:users!rental_requests_provider_id_fkey(*)")
+    .eq("customer_id", user?.id);
+
+  if (getRequestsError) {
+    console.log(getRequestsError);
+    throw new Error("Failed to fetch my rental requests");
+  }
+
+  console.log(rental_requests);
+
+  return rental_requests;
+};
