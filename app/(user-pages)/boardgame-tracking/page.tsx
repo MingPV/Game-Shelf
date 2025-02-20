@@ -23,16 +23,16 @@ export default async function TrackingPage() {
     // Filters
     .eq("uid", user?.id);
 
-  if (user_data) {
-    if (user_data[0].is_admin) {
-      redirect("/admin-homepage");
-    } else if (!user_data[0].isProvider) {
-      redirect("/home");
-    } else {
-      //  select index 0 of array [user_data] => user_data
-      user_data_value = user_data[0];
-    }
-  }
+  // if (user_data) {
+  //   if (user_data[0].is_admin) {
+  //     redirect("/admin-homepage");
+  //   } else if (!user_data[0].isProvider) {
+  //     redirect("/home");
+  //   } else {
+  //     //  select index 0 of array [user_data] => user_data
+  //     user_data_value = user_data[0];
+  //   }
+  // }
 
   return (
     <>
