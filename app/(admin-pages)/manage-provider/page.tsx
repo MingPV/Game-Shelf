@@ -10,14 +10,14 @@ export default async function ManageProvider() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   const { data: user_data, error } = await supabase
     .from("users")
     .select("*")
     .eq("uid", user?.id);
-
-  if (!user) {
-    redirect("/sign-in");
-  }
 
   if (user_data) {
     if (!user_data[0].is_admin) {

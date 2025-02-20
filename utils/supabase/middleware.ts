@@ -50,6 +50,7 @@ export const updateSession = async (request: NextRequest) => {
     const token = request.cookies.get("token");
     if (!token || token.value === "") {
       await signOutAction();
+      return NextResponse.redirect(new URL("/sign-in", request.url));
     } else {
       try {
         // const { payload } = await jwtVerify(token.value, secretKey);
@@ -61,6 +62,7 @@ export const updateSession = async (request: NextRequest) => {
       } catch (error) {
         console.log("Invalid token:", error);
         await signOutAction();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
       }
     }
 
