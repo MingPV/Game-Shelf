@@ -53,7 +53,6 @@ export interface toPayRentingRequest {
   created_at: string;
   provider_id: string;
   boardgames: Boardgame;
-  invoices: Invoice;
+  invoices: Invoice[];
   users: UserData;
 }
-
