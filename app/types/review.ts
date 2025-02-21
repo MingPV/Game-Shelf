@@ -4,4 +4,5 @@ export interface ReviewData {
   comment: string;
   rating: Number;
   created_at: string;
+  bg_id: Number;
 }
