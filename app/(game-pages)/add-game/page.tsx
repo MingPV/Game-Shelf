@@ -6,10 +6,10 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Boardgame_type } from "@/app/types/game";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Boardgame } from "@/app/types/game";
 import Swal from "sweetalert2";
-export default function Home(props: { searchParams: Promise<Message> }) {
+function AddGameForm(props: { searchParams: Promise<Message> }) {
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input
@@ -233,5 +233,13 @@ export default function Home(props: { searchParams: Promise<Message> }) {
         </div>
       </main>
     </>
+  );
+}
+
+export default function Home(props: { searchParams: Promise<Message> }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AddGameForm searchParams={props.searchParams} />
+    </Suspense>
   );
 }
