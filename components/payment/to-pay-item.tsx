@@ -11,7 +11,7 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
 
   const [isFetching, setIsFetching] = useState(true);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
-  
+
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
@@ -19,7 +19,7 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
     console.log(data);
 
     setBoardgames(data || []);
-    setIsFetching(false)
+    setIsFetching(false);
     setHaveBoardgame(data !== null && data.length > 0);
   }, 700);
 
@@ -28,49 +28,80 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
   }, []);
 
   return (
-    <div className="w-full place-items-center">
-        {isFetching ? (
-                <>
-                <div
-                    className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 
+    <div className="w-full place-items-center h-full">
+      {isFetching ? (
+        <>
+          <div
+            className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 
                     lg:p-2"
-                >
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
-                </div>
-                </>
-            ):(
-                <>
-                {haveBoardgame ? (
-                    <div className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 lg:p-2">
-                        {boardgames?.map((boardgame, index) => (
-                            <BoardGameCard
-                            key={index}
-                            boardgame={boardgame}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center p-4">
-                        <svg height="175px" width="175px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
-                            viewBox="0 0 512 512" xmlSpace="preserve">
-                        <style type="text/css">{`
+          >
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </div>
+        </>
+      ) : (
+        <>
+          {haveBoardgame ? (
+            <div className="w-[85%] mx-auto bg-white bg-opacity-10 rounded-2xl p-1 lg:p-2">
+              {boardgames?.map((boardgame, index) => (
+                <BoardGameCard key={index} boardgame={boardgame} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-4 h-full mt-24">
+              <svg
+                height="175px"
+                width="175px"
+                version="1.1"
+                id="_x32_"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 512 512"
+                xmlSpace="preserve"
+              >
+                <style type="text/css">{`
                             .st0{fill:#ffffff;}
                         `}</style>
-                        <g>
-                            <polygon className="st0" points="96.388,197.393 97.009,203.262 159.896,196.556 159.268,190.688 	"/>
-                            <path className="st0" d="M155.486,111.05c-8.683,0-15.734,7.052-15.734,15.727c0,8.69,7.052,15.734,15.734,15.734
-                                s15.72-7.044,15.72-15.734C171.206,118.101,164.169,111.05,155.486,111.05z"/>
-                            <polygon className="st0" points="97.515,171.836 161.953,176.924 162.408,171.042 97.969,165.968 	"/>
-                            <polygon className="st0" points="272.209,42.238 258.943,59.935 281.057,64.352 	"/>
-                            <polygon className="st0" points="143.93,42.238 135.082,64.352 157.203,59.935 	"/>
-                            <path className="st0" d="M276.395,126.776c0-8.675-7.044-15.727-15.734-15.727c-8.682,0-15.728,7.052-15.728,15.727
-                                c0,8.69,7.045,15.734,15.728,15.734C269.351,142.511,276.395,135.466,276.395,126.776z"/>
-                            <polygon className="st0" points="319.758,197.393 256.879,190.688 256.25,196.556 319.137,203.262 	"/>
-                            <polygon className="st0" points="318.163,165.968 253.745,171.042 254.207,176.924 318.625,171.836 	"/>
-                            <path className="st0" d="M242.4,203.637c-4.475,1.076-8.257,1.523-11.404,1.523c-4.171,0-7.196-0.78-9.455-1.913
+                <g>
+                  <polygon
+                    className="st0"
+                    points="96.388,197.393 97.009,203.262 159.896,196.556 159.268,190.688 	"
+                  />
+                  <path
+                    className="st0"
+                    d="M155.486,111.05c-8.683,0-15.734,7.052-15.734,15.727c0,8.69,7.052,15.734,15.734,15.734
+                                s15.72-7.044,15.72-15.734C171.206,118.101,164.169,111.05,155.486,111.05z"
+                  />
+                  <polygon
+                    className="st0"
+                    points="97.515,171.836 161.953,176.924 162.408,171.042 97.969,165.968 	"
+                  />
+                  <polygon
+                    className="st0"
+                    points="272.209,42.238 258.943,59.935 281.057,64.352 	"
+                  />
+                  <polygon
+                    className="st0"
+                    points="143.93,42.238 135.082,64.352 157.203,59.935 	"
+                  />
+                  <path
+                    className="st0"
+                    d="M276.395,126.776c0-8.675-7.044-15.727-15.734-15.727c-8.682,0-15.728,7.052-15.728,15.727
+                                c0,8.69,7.045,15.734,15.728,15.734C269.351,142.511,276.395,135.466,276.395,126.776z"
+                  />
+                  <polygon
+                    className="st0"
+                    points="319.758,197.393 256.879,190.688 256.25,196.556 319.137,203.262 	"
+                  />
+                  <polygon
+                    className="st0"
+                    points="318.163,165.968 253.745,171.042 254.207,176.924 318.625,171.836 	"
+                  />
+                  <path
+                    className="st0"
+                    d="M242.4,203.637c-4.475,1.076-8.257,1.523-11.404,1.523c-4.171,0-7.196-0.78-9.455-1.913
                                 c-3.349-1.71-5.298-4.273-6.64-7.578c-1.299-3.27-1.776-7.196-1.776-10.732c0-2.216,0.195-4.165,0.39-5.788l9.382-9.376
                                 c1.732-1.718,2.245-4.323,1.314-6.582c-0.938-2.252-3.14-3.717-5.572-3.717h-21.132c-2.498,0-4.736,1.53-5.623,3.868
                                 c-0.902,2.331-0.267,4.958,1.581,6.64l9.022,8.17c0.259,1.74,0.519,4.107,0.519,6.799c0.022,4.721-0.866,10.098-3.335,13.779
@@ -78,8 +109,11 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
                                 c-2.425-0.57-4.879,0.931-5.456,3.356c-0.57,2.425,0.931,4.879,3.363,5.464c5.024,1.191,9.484,1.754,13.497,1.761
                                 c5.298,0,9.802-1.018,13.526-2.887c4.359-2.187,7.405-5.529,9.448-9.16l0.801,1.56c1.992,3.009,4.836,5.731,8.545,7.6
                                 c3.724,1.869,8.236,2.887,13.526,2.887c4.006,0,8.474-0.57,13.505-1.768c2.432-0.592,3.926-3.032,3.341-5.457
-                                C247.265,204.561,244.825,203.059,242.4,203.637z"/>
-                            <path className="st0" d="M435.895,246.307c0.657-0.678,1.624-1.306,2.31-1.646l0.404-0.188l21.436-7.145l-2.743-5.492
+                                C247.265,204.561,244.825,203.059,242.4,203.637z"
+                  />
+                  <path
+                    className="st0"
+                    d="M435.895,246.307c0.657-0.678,1.624-1.306,2.31-1.646l0.404-0.188l21.436-7.145l-2.743-5.492
                                 c7.716-9.448,10.978-22.324,7.651-34.861c-4.54-17.178-20.116-29.181-37.878-29.181c-3.385,0-6.756,0.44-10.047,1.299l-0.289,0.086
                                 l-0.281,0.087c-11.043,3.211-21.776,9.116-31.159,17.091c-8.863,7.607-15.886,16.701-20.952,27.08
                                 c-5.94,12.118-9.079,26.301-9.058,40.974c0.008,18.527,4.604,38.087,14.053,59.747c4.503,10.372,6.799,21.66,6.799,33.583
@@ -104,15 +138,15 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
                                 c6.726-4.085,13.41-10.386,19.234-18.491c11.707-16.182,19.552-39.394,19.488-63.053c0-13.988-2.642-28.12-8.438-41.407
                                 c-8.596-19.726-12.399-36.86-12.407-51.952c-0.022-12.429,2.685-23.407,7.066-32.357c4.374-8.957,10.278-15.792,16.03-20.729
                                 c11.613-9.873,22.331-12.731,24.049-13.237c1.682-0.447,3.364-0.664,5.031-0.664c8.675,0,16.614,5.802,18.932,14.601
-                                c2.743,10.343-3.349,20.931-13.62,23.854L432.402,225.881z"/>
-                        </g>
-                        </svg>
-                        <p className=" opacity-80 mt-4">There is no to pay Boardgame.</p>
-                    </div>
-                )}
-                </>
-            )
-        }
+                                c2.743,10.343-3.349,20.931-13.62,23.854L432.402,225.881z"
+                  />
+                </g>
+              </svg>
+              <p className=" opacity-80 mt-4">There is no to pay Boardgame.</p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
