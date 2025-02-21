@@ -48,8 +48,22 @@ export const updateSession = async (request: NextRequest) => {
     const secretKey = await importJWK(secretJWK, "HS256");
 
     const token = request.cookies.get("token");
-    if (!token || token.value == "") {
+    if (!token || token.value === "") {
       await signOutAction();
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    } else {
+      try {
+        // const { payload } = await jwtVerify(token.value, secretKey);
+        // console.log("ming", payload);
+        // if (payload.exp && payload.exp * 1000 < Date.now()) {
+        //   console.log("Token expired");
+        //   await signOutAction();
+        // }
+      } catch (error) {
+        console.log("Invalid token:", error);
+        await signOutAction();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
     }
 
     // for provider
@@ -70,6 +84,7 @@ export const updateSession = async (request: NextRequest) => {
 
     if (request.nextUrl.pathname.startsWith("/boardgame-tracking")) {
       const token = request.cookies.get("token");
+
       if (!token || token.value == "") {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));

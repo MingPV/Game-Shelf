@@ -63,7 +63,6 @@ export const signUpAction = async (formData: FormData) => {
         const token = await new SignJWT({ email, userData: data[0] })
           .setProtectedHeader({ alg: "HS256" })
           .setIssuedAt()
-          .setExpirationTime("1h")
           .sign(secretKey);
 
         (await cookies()).set("token", token, {

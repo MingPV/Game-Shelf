@@ -3,6 +3,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export const selectMyRentingRequest = async () => {
   const supabase = await createClient();
@@ -10,6 +11,10 @@ export const selectMyRentingRequest = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   const { data: user_data, error: getUserError } = await supabase
     .from("users")
@@ -113,6 +118,10 @@ export const selectPlayerRentingRequest = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   const { data: user_data, error: getUserError } = await supabase
     .from("users")

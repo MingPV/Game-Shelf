@@ -9,6 +9,10 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   let user_data_value = null;
 
   const { data: user_data, error } = await supabase

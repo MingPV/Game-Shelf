@@ -286,3 +286,63 @@ export const getAllNotifications = async () => {
 
   return data;
 };
+
+export const selectProvidersByFilterAction = async (
+  name: string,
+  page: number,
+  itemsPerPage: number,
+  maxPage: number
+) => {
+  let page_to_fetch = page;
+
+  if (page > maxPage) {
+    page_to_fetch = 1;
+  }
+
+  const supabase = await createClient();
+  const from = (page_to_fetch - 1) * itemsPerPage;
+  const to = from + itemsPerPage - 1;
+
+  // Step 1: Get total count first
+
+  let count_items;
+  let countError;
+
+  const { count: count_itemstmp, error: countErrortmp } = await supabase
+    .from("users")
+    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+    .ilike("username", `%${name}%`);
+
+  count_items = count_itemstmp;
+  countError = countErrortmp;
+
+  let fetch_error = null;
+  let fetch_data = null;
+
+  if (countError) {
+    console.error(countError);
+  } else if (count_items !== null && count_items > 0) {
+    // Step 2: Only fetch data if count > 0
+
+    let query = supabase
+      .from("users")
+      .select("*", { count: "exact" })
+      .ilike("username", `%${name}%`)
+      .range(from, to);
+    // .overlaps("types", selectedTypeFilter);
+
+    const { data, error } = await query;
+
+    fetch_error = error;
+    fetch_data = data;
+  } else {
+    console.log("No matching rows");
+  }
+
+  if (fetch_error) {
+    console.log(fetch_error);
+    throw new Error("Failed to fetch boardgames.");
+  }
+
+  return { fetch_data, count_items };
+};
