@@ -15,6 +15,24 @@ export const updateSession = async (request: NextRequest) => {
       },
     });
 
+    // CORS selectPlayerRentingRequest
+    response.headers.set(
+      "Access-Control-Allow-Origin",
+      "http://localhost:3000"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, DELETE, PATCH"
+    );
+
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Origin, Accept, Content-Type, Authorization, X-Requested-With, Referer, User-Agent"
+    );
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-XSS-Protection", "1; mode=block");
+
     // const supabase = createServerClient(
     //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
     //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
