@@ -42,3 +42,16 @@ export interface RentingRequestJoinBoardgameJoinProvider {
   boardgames: Boardgame;
   provider: UserData;
 }
+
+export interface RentingRequestJoinBoardgameJoinCustomer {
+  id: number;
+  start_date: string;
+  end_date: string;
+  status: string;
+  customer_id: string;
+  bg_id: number;
+  created_at: string;
+  provider_id: string;
+  boardgames: Boardgame;
+  customer: UserData;
+}

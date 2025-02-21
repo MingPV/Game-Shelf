@@ -60,7 +60,7 @@ export const selectMyRentingRequestByStatus = async (status: string) => {
 
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
-    .select("*")
+    .select("*, boardgames(*), customer:users!rental_requests_customer_id_fkey(*)")
     .eq("provider_id", user?.id)
     .eq("status", status);
 

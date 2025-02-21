@@ -1,6 +1,5 @@
 "use client";
 
-import { FaStar, FaRegStar } from "react-icons/fa";
 import Image from "next/image";
 import mockBoardGame from "../../public/mock_user.jpeg";
 import { RentingRequestJoinBoardgameJoinProvider } from "@/app/types/game";
