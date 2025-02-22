@@ -1,6 +1,6 @@
 "use client";
 
-import RentingShippingList from "@/components/rental/renting-shipping-list";
+import RentingShippingList from "@/components/rental/shipping-list";
 
 export default function Home() {
 
