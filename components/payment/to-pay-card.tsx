@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { toPayRentingRequest } from "@/app/types/game";
 import { TbCurrencyBaht } from "react-icons/tb";
+import Link from "next/link";
 
 export default function BoardGameCard({
   boardgame,
@@ -65,7 +66,7 @@ export default function BoardGameCard({
 
           <p className="font-bold col-span-3 md:col-span-2 flex">status:</p>
           <div className="col-span-3 md:col-span-4">
-            <a
+            <Link
               href={boardgameData.invoices[0].payment_url}
               target="_blank"
               rel="noopener noreferrer"
@@ -73,7 +74,7 @@ export default function BoardGameCard({
             >
               Pay Now
               {/* <span className="text-xs ml-2 opacity-80">within 00:25:44</span> */}
-            </a>
+            </Link>
             <p className="text-xs opacity-50 mt-2">
               * Please complete your payment within 24 hours to avoid
               cancellation by the provider. Thank you!

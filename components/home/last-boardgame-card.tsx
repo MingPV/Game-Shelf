@@ -1,10 +1,11 @@
 import { Boardgame } from "@/app/types/game";
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 export default function LastBoardgameCard() {
   return (
-    <a
+    <Link
       href="/inventory"
       className="flex flex-col   w-56  bg-slate-600/10 rounded-xl items-center space-y-2 justify-center hover:bg-black/10 hover:cursor-pointer border border-white border-opacity-0 hover:border-opacity-10 transition duration-300 "
     >
@@ -16,6 +17,6 @@ export default function LastBoardgameCard() {
           Go to Inventory
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

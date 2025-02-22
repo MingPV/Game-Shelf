@@ -17,6 +17,7 @@ import LastBoardgameCard from "./last-boardgame-card";
 import { VscGraphLine } from "react-icons/vsc";
 import { MdInventory2 } from "react-icons/md";
 import { MdRateReview } from "react-icons/md";
+import Link from "next/link";
 
 export function ProviderManage() {
   const [provider, setProvider] = useState<UserData>();
@@ -63,7 +64,7 @@ export function ProviderManage() {
     <div className="w-full h-full flex flex-col gap-6 bg-black bg-opacity-10 border border-white border-opacity-10 rounded-md overflow-x-hidden">
       <div className="p-4 w-full h-full gap-8 flex flex-col overflow-x-hidden">
         <div className="w-full bg-black bg-opacity-20 flex flex-row gap-4 overflow-x-auto px-4 py-8">
-          <a
+          <Link
             href="/home"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
@@ -71,8 +72,8 @@ export function ProviderManage() {
             <span>
               <VscGraphLine />
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/inventory"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
@@ -80,20 +81,20 @@ export function ProviderManage() {
             <span>
               <MdInventory2 />
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/rental-request"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Rental request
-          </a>
-          <a
+          </Link>
+          <Link
             href="/home"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Rental status
-          </a>
-          <a
+          </Link>
+          <Link
             href={`/profile/${provider?.username}`}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
@@ -101,7 +102,7 @@ export function ProviderManage() {
             <span>
               <MdRateReview />
             </span>
-          </a>
+          </Link>
         </div>
         <div className="w-full bg-black bg-opacity-20 flex flex-col overflow-x-hidden px-4 py-8 min-h-60">
           <div className="mb-4 ml-4 font-bold text-white text-opacity-80 ">
@@ -140,13 +141,13 @@ export function ProviderManage() {
             <div className="mb-4 ml-4 font-bold text-white text-opacity-80 ">
               Incoming requests
             </div>
-            <a
+            <Link
               className="mb-4 text-white hover:text-opacity-40 text-opacity-60"
               href="/rental-request"
             >
               {" "}
               manage {"➞"}
-            </a>
+            </Link>
           </div>
           <div className="flex flex-row overflow-x-scroll h-full">
             {rentalRequests && rentalRequests.length > 0 ? (
@@ -168,13 +169,13 @@ export function ProviderManage() {
             <div className="mb-4 ml-4 font-bold text-white text-opacity-80 ">
               Reviews
             </div>
-            <a
+            <Link
               className="mb-4 text-white hover:text-opacity-40 text-opacity-60"
               href={`/profile/${provider?.username}`}
             >
               {" "}
               see more {"➞"}
-            </a>
+            </Link>
           </div>
 
           <div className="flex flex-row overflow-x-scroll h-full">

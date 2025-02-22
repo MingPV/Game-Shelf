@@ -1,33 +1,34 @@
 import { IoNotifications } from "react-icons/io5";
 import AuthButton from "./header-auth";
+import Link from "next/link";
 
 export const NavbarGetStarted = () => {
   return (
     <>
       <div className="navbar bg-transparent">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl" href="/home">
+          <Link className="btn btn-ghost text-xl" href="/home">
             GameShelf
-          </a>
+          </Link>
         </div>
         <div className="flex-none gap-2">
           <div className="flex flex-row  items-center justify-center">
             <div className="hidden flex-row  items-center justify-center lg:flex mr-16">
               <ul className="menu menu-horizontal md:px-1 gap-8">
                 <li className="">
-                  <a href="/home">Home</a>
+                  <Link href="/home">Home</Link>
                 </li>
                 <li>
-                  <a href="/games">Boardgame</a>
+                  <Link href="/games">Boardgame</Link>
                 </li>
                 <li>
-                  <a href="/providers">Provider</a>
+                  <Link href="/providers">Provider</Link>
                 </li>
                 <li>
-                  <a href="/support">Support</a>
+                  <Link href="/support">Support</Link>
                 </li>
                 <li>
-                  <a href="/contact">Contact</a>
+                  <Link href="/contact">Contact</Link>
                 </li>
               </ul>
             </div>
