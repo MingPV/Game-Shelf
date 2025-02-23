@@ -84,22 +84,24 @@ export default async function AuthButton() {
           className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
         >
           <li>
-            <a className="justify-between" href="/profile">
+            <Link className="justify-between" href="/profile">
               Profile
               <span className="badge">New</span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/account-settings">Settings</a>
+            <Link href="/account-settings">Settings</Link>
           </li>
           {isProvider ? (
             <li>
-              <a href="/boardgame-tracking">My boardgames</a>
+              <Link href="/boardgame-tracking">My boardgames</Link>
             </li>
           ) : null}
 
           <li>
-            <a onClick={signOutAction}>Logout</a>
+            <div className="hover:cursor-pointer" onClick={signOutAction}>
+              Logout
+            </div>
           </li>
         </ul>
       </div>

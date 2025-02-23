@@ -346,3 +346,20 @@ export const selectProvidersByFilterAction = async (
 
   return { fetch_data, count_items };
 };
+
+export const selectReviewByProviderId = async (userId: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("provider_id", userId)
+    .order("created_at", { ascending: false }) // Order by newest first
+    .limit(10);
+
+  if (error) {
+    throw new Error("Failed to fetch top providers.");
+  }
+
+  return data;
+};
