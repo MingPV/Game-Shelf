@@ -17,7 +17,7 @@ export default function RentingShippingList() {
       {/* Labtop Layout */}
       <div className="hidden lg:flex gap-8 justify-center">
         <RentingShippingCard 
-          title="To be shipped" 
+          title="shipped" 
           icon={<PiPackage strokeWidth={5} />} 
           status="reserved" 
           nextStatus="renting" 
@@ -26,7 +26,7 @@ export default function RentingShippingList() {
           setNextRequest={setRentingRequests} 
         />
         <RentingShippingCard
-          title="To be returned" 
+          title="returned" 
           icon={<AiOutlineHome strokeWidth={8} />} 
           status="renting" 
           nextStatus="available" 
@@ -51,7 +51,7 @@ export default function RentingShippingList() {
 
         <div className={`flex w-full justify-center h-[calc(100vh-240px)] ${showReserved ? "" : "hidden"}`}>
           <RentingShippingCard 
-            title="To be shipped" 
+            title="shipped" 
             icon={<PiPackage strokeWidth={5} />} 
             status="reserved" 
             nextStatus="renting" 
@@ -63,7 +63,7 @@ export default function RentingShippingList() {
 
         <div className={`flex w-full justify-center h-[calc(100vh-240px)] ${!showReserved ? "" : "hidden"}`}>
         <RentingShippingCard 
-          title="To be returned" 
+          title="returned" 
           icon={<AiOutlineHome strokeWidth={8} />} 
           status="renting" 
           nextStatus="available" 

@@ -6,6 +6,7 @@ import { RentingRequestJoinBoardgameJoinCustomer } from "@/app/types/game";
 import Image from "next/image";
 import { JSX } from "react";
 import { SetStateAction, Dispatch } from "react";
+import RentingShippingModal from "./shipping-modal";
 
 type RentingListProps = {
   title: string;
@@ -23,6 +24,7 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
   const [selectedRequestIds, setSelectedRequestIds] = useState<Set<number>>(new Set());
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -34,6 +36,7 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
   }, [status]);
 
   const handleUpdateStatus = () => {
+    setShowModal(false);
     requests.filter(req => selectedRequestIds.has(req.id)).forEach(req => {
       setRequests(prev => prev.filter(r => r.id !== req.id));
       if (setNextRequest) setNextRequest((prev) => [ ...prev, req ])
@@ -44,10 +47,10 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
 
   return (
     <div className="flex flex-col items-center bg-white/10 px-2 py-0 lg:p-4 rounded-lg w-full lg:w-1/2">
-      <div className="flex font-bold text-xl items-center gap-2 hidden lg:flex">{title} {icon}</div>
+      <div className="flex font-bold text-xl items-center gap-2 hidden lg:flex">To be {title} {icon}</div>
       {requests.length > 0 ? (
         <div>
-          <div className="overflow-y-auto flex-grow mt-4 rounded-lg h-[calc(100vh-400px)] lg:h-[calc(100vh-340px)]">
+          <div className="overflow-y-auto flex-grow mt-4 rounded-lg h-[calc(100vh-360px)] lg:h-[calc(100vh-340px)]">
             <table className="table">
               <thead>
                 <tr className="border-white border-opacity-50">
@@ -99,12 +102,18 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
             Select all
           </button>
           <div className="flex w-full justify-center">
-            <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 mt-4 px-8" onClick={handleUpdateStatus}>
+            <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-9 h-9 lg:min-h-8 lg:h-8 mt-4 px-8 font-bold" 
+            onClick={() => setShowModal(selectedRequestIds.size > 0)}
+            >
               {status === "reserved" ? "Ship" : "Return"}
             </button>
           </div>
         </div>
       ) : isLoading ? "Loading..." : <p>No {status} requests</p>}
+
+      {/* confirm modal */}
+      {showModal && <RentingShippingModal title={title} count={selectedRequestIds.size} handleFunction={handleUpdateStatus} setShowModal={setShowModal} />}
+
     </div>
   );
 }
