@@ -78,7 +78,7 @@ export default function NotificationInNavbar() {
               href="/notifications"
             >
               see all
-            </a>
+            </Link>
           </div>
         </div>
       </div>
