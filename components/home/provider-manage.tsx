@@ -27,6 +27,7 @@ export function ProviderManage() {
   const [isLoadingBoardgame, setIsLoadingBoardgame] = useState(true);
   const [isLoadingRental, setIsLoadingRental] = useState(true);
   const [isLoadingReview, setIsLoadingReview] = useState(true);
+  const [countPendingRequest, setCountPendingRequest] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +47,13 @@ export function ProviderManage() {
         const rentalsData = await selectMyRentingRequest();
         setRentalRequests(rentalsData || []);
         setIsLoadingRental(false);
+
+        // check rental request
+        rentalsData.forEach((element) => {
+          if (element.status === "pending") {
+            setCountPendingRequest(countPendingRequest + 1);
+          }
+        });
 
         const reviewsData = await selectReviewByProviderId(fetchUserData.uid);
 
@@ -150,13 +158,18 @@ export function ProviderManage() {
             </Link>
           </div>
           <div className="flex flex-row overflow-x-scroll h-full">
-            {rentalRequests && rentalRequests.length > 0 ? (
-              rentalRequests.map((rentalRequest) => (
-                <RequestCard
-                  requestData={rentalRequest}
-                  key={rentalRequest.id}
-                />
-              ))
+            {rentalRequests &&
+            rentalRequests.length > 0 &&
+            countPendingRequest != 0 ? (
+              rentalRequests.map(
+                (rentalRequest) =>
+                  rentalRequest.status === "pending" && (
+                    <RequestCard
+                      requestData={rentalRequest}
+                      key={rentalRequest.id}
+                    />
+                  )
+              )
             ) : (
               <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
                 There are no requests coming in at this time.
