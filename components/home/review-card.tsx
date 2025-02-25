@@ -30,7 +30,7 @@ export default function ReviewCard({ reviewData }: ReviewCardProps) {
   }, []);
 
   return (
-    <div className="flex flex-col w-60 bg-white/10 rounded-xl items-center justify-between mr-4">
+    <div className="flex flex-col min-w-56 w-56 bg-white/10 rounded-xl items-center justify-between mr-4">
       <div className="flex flex-col w-full p-4">
         <div className=" text-xs text-gs_white/50">name</div>
         <div className=" text-md text-gs_white w-full">
