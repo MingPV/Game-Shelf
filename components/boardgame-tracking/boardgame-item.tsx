@@ -1,15 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
 import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
-import { selectProviderBoardgameByFilterAction } from "@/app/(user-pages)/actions";
+import {
+  getMyUserData,
+  selectProviderBoardgameByFilterAction,
+} from "@/app/(user-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";
 import BoardGameCard from "./boardgame-card";
 import Skeleton from "./skeleton";
+import Link from "next/link";
 import { useDebouncedCallback } from "use-debounce";
+import { UserData } from "@/app/types/user";
 
-export function BoardgameItems({ provider_id }: { provider_id: string }) {
+export function BoardgameItems() {
+  const [provider, setProvider] = useState<UserData>();
   const [boardgames, setBoardgames] = useState<Boardgame[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -23,16 +29,38 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
+    if (provider) {
+      const { data, count } = await selectProviderBoardgameByFilterAction(
+        searchValue,
+        provider?.uid || "",
+        selectedTypeFilter
+      );
+      setBoardgames(data);
+      setHaveBoardgame(data.length > 0);
+    }
+
+    setIsFetching(false);
+  }, 700);
+
+  const firstFetchGames = async () => {
+    setIsFetching(true);
+
+    const fetchUserData = await getMyUserData();
+    setProvider(fetchUserData);
+
+    console.log("fetchUserData");
+    console.log(fetchUserData);
+
     const { data, count } = await selectProviderBoardgameByFilterAction(
       searchValue,
-      provider_id,
+      fetchUserData.uid,
       selectedTypeFilter
     );
     setBoardgames(data);
 
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
-  }, 700);
+  };
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
@@ -45,7 +73,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
   }, [searchValue, selectedTypeFilter, haveBoardgame]);
 
   useEffect(() => {
-    fetchGames();
+    firstFetchGames();
     getBoardgameType();
   }, []);
 
@@ -138,7 +166,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center p-4">
+              <div className="flex flex-col items-center justify-center p-4 gap-4">
                 <svg
                   height="200px"
                   width="200px"
@@ -162,6 +190,9 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
                   </g>
                 </svg>
                 <p>There is no Boardgame matched with your filter.</p>
+                <Link className="btn btn-neutral" href={"/add-game"}>
+                  add new boardgame
+                </Link>
               </div>
             )}
           </>

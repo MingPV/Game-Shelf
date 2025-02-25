@@ -15,6 +15,24 @@ export const updateSession = async (request: NextRequest) => {
       },
     });
 
+    // CORS selectPlayerRentingRequest
+    response.headers.set(
+      "Access-Control-Allow-Origin",
+      "http://localhost:3000"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, OPTIONS, PUT, DELETE, PATCH"
+    );
+
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Origin, Accept, Content-Type, Authorization, X-Requested-With, Referer, User-Agent"
+    );
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-XSS-Protection", "1; mode=block");
+
     // const supabase = createServerClient(
     //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
     //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -48,11 +66,39 @@ export const updateSession = async (request: NextRequest) => {
     const secretKey = await importJWK(secretJWK, "HS256");
 
     const token = request.cookies.get("token");
-    if (!token || token.value == "") {
+    if (!token || token.value === "") {
       await signOutAction();
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    } else {
+      try {
+        // const { payload } = await jwtVerify(token.value, secretKey);
+        // console.log("ming", payload);
+        // if (payload.exp && payload.exp * 1000 < Date.now()) {
+        //   console.log("Token expired");
+        //   await signOutAction();
+        // }
+      } catch (error) {
+        console.log("Invalid token:", error);
+        await signOutAction();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
     }
 
     // for provider
+
+    if (request.nextUrl.pathname.startsWith("/home")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
+      const userData = payload.userData as UserData;
+
+      if (userData.isProvider) {
+        return NextResponse.redirect(new URL("/provider-home", request.url));
+      }
+    }
 
     if (request.nextUrl.pathname.startsWith("/provider-home")) {
       const token = request.cookies.get("token");
@@ -60,7 +106,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -68,13 +114,14 @@ export const updateSession = async (request: NextRequest) => {
       }
     }
 
-    if (request.nextUrl.pathname.startsWith("/boardgame-tracking")) {
+    if (request.nextUrl.pathname.startsWith("/inventory")) {
       const token = request.cookies.get("token");
+
       if (!token || token.value == "") {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -88,7 +135,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -101,7 +148,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -117,7 +164,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {
@@ -131,7 +178,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {

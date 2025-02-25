@@ -1,5 +1,6 @@
 import { NavbarGetStarted } from "@/components/navbar-getstart";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function Home() {
   return (
@@ -30,9 +31,9 @@ export default async function Home() {
             {/* <button className="btn bg-rose-500 hover:bg-rose-900 hover:shadow-xl hover:shadow-stone-100">
               Get Started
             </button> */}
-            <a className="btn bg-rose-500 hover:bg-rose-900" href="/home">
+            <Link className="btn bg-rose-500 hover:bg-rose-900" href="/home">
               Get Started
-            </a>
+            </Link>
           </div>
         </div>
       </div>

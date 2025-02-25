@@ -25,7 +25,7 @@ export default function RentalRequestList() {
     <>
       <main className="flex-1 flex flex-col items-center gap-6 px-4 w-full">
         <div className="flex flex-col items-center justify-center w-10/12">
-          <div className="text-2xl font-bold pb-2">Manage Provider Page</div>
+          <div className="text-2xl font-bold pb-2">Manage Rental Request</div>
           <div className="flex flex-col bg-white bg-opacity-10 mt-4 p-4 rounded-md w-full mb-4">
             <div className="text-lg pb-4 font-bold">Board Game Requested</div>
             <div className="hidden sm:grid grid-flow-col grid-cols-12 mb-2">

@@ -9,6 +9,7 @@ import {
   deleteVerificationRequest,
 } from "../../app/(admin-pages)/actions";
 import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function VerificationCard({
   params,
@@ -81,14 +82,14 @@ export default function VerificationCard({
       <div>
         {" "}
         <span className="font-bold pr-1">Credential:</span>{" "}
-        <a
+        <Link
           className="btn btn-xs text-slate-900 btn-info text-sm opacity-90"
           href={params.users.credentials}
         >
           {" "}
           {/* {params.users.credentials}{" "} */}
           download {"⤓"}
-        </a>
+        </Link>
       </div>
 
       <div className="flex gap-2 pt-4">

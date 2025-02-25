@@ -8,6 +8,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { IoNotifications } from "react-icons/io5";
 import { Notification } from "@/app/types/notification";
+import Link from "next/link";
 
 export default function NotificationInNavbar() {
   // notifications will have only 9 notifications. If user want to see more they need to go to notification page.
@@ -71,9 +72,9 @@ export default function NotificationInNavbar() {
             ))}
           </div>
 
-          <div className="text-center">
-            <a
-              className="text-sm text-white/70"
+          <div>
+            <Link
+              className="btn btn-primary btn-block btn-sm"
               href="/notifications"
             >
               see all
