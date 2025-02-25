@@ -65,8 +65,17 @@ function ReviewTag({ score }: { score: number | null}) {
 
 export default function MyRentalCard({data} : {data: RentingRequestJoinBoardgameJoinProvider}) {
     const dateFormatter = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    // Calculate the difference in days
+    const startDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+    const timeDiff = endDate.getTime() - startDate.getTime();
+    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+
+    // Calculate total price
+    const totalPrice = days * data.boardgames.price;
+    
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-center border p-4 sm:p-6 rounded-lg gap-3 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full border p-4 sm:p-6 rounded-lg gap-3 sm:gap-6">
             <div className="relative w-full sm:w-[160px] h-[160px] sm:aspect-square">
             <Image 
                 alt="boardgame image"
@@ -92,12 +101,14 @@ export default function MyRentalCard({data} : {data: RentingRequestJoinBoardgame
                     </div>
                     <div className="flex pb-1">
                         <div className="font-bold w-24 sm:w-36">Total price:</div>
-                        <div>{data.boardgames.price}&nbsp;Baht</div>
+                        <div>{totalPrice}&nbsp;Baht</div>
                     </div>
-                    <div className="flex">
-                        <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
-                        <ReviewTag score={data.bg_id % 10} />
-                    </div>
+                    { (data.status == "renting" || data.status == "completed") && 
+                        <div className="flex">
+                            <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
+                            <ReviewTag score={data.bg_id % 10} />
+                        </div> 
+                    }
                 </div>
             </div>
         </div>

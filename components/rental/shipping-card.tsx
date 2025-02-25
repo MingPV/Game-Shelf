@@ -7,6 +7,7 @@ import Image from "next/image";
 import { JSX } from "react";
 import { SetStateAction, Dispatch } from "react";
 import RentingShippingModal from "./shipping-modal";
+import RentingShippingLoading from "./shipping-loading";
 
 type RentingListProps = {
   title: string;
@@ -93,6 +94,7 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
               </tbody>
             </table>
           </div>
+
           <button className="flex w-full justify-end underline pt-3" onClick={() => {
             const updated = new Set<number>();
             if (!selectAll) requests.forEach(item => updated.add(item.id));
@@ -109,7 +111,8 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
             </button>
           </div>
         </div>
-      ) : isLoading ? "Loading..." : <p>No {status} requests</p>}
+      ) : isLoading ? <RentingShippingLoading />
+      : <p className="pt-6">No {status} requests</p>}
 
       {/* confirm modal */}
       {showModal && <RentingShippingModal title={title} count={selectedRequestIds.size} handleFunction={handleUpdateStatus} setShowModal={setShowModal} />}
