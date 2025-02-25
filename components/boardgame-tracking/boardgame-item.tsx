@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
-import { selectProviderBoardgameByFilterAction } from "@/app/(user-pages)/actions";
+import {
+  getMyUserData,
+  selectProviderBoardgameByFilterAction,
+} from "@/app/(user-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
 import TypeFilter from "../search-game/type-filter";
@@ -9,8 +12,10 @@ import BoardGameCard from "./boardgame-card";
 import Skeleton from "./skeleton";
 import Link from "next/link";
 import { useDebouncedCallback } from "use-debounce";
+import { UserData } from "@/app/types/user";
 
-export function BoardgameItems({ provider_id }: { provider_id: string }) {
+export function BoardgameItems() {
+  const [provider, setProvider] = useState<UserData>();
   const [boardgames, setBoardgames] = useState<Boardgame[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -26,7 +31,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
 
     const { data, count } = await selectProviderBoardgameByFilterAction(
       searchValue,
-      provider_id,
+      provider?.uid || "",
       selectedTypeFilter
     );
     setBoardgames(data);
@@ -34,6 +39,23 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
     setIsFetching(false);
     setHaveBoardgame(data.length > 0);
   }, 700);
+
+  const firstFetchGames = async () => {
+    setIsFetching(true);
+
+    const fetchUserData = await getMyUserData();
+    setProvider(fetchUserData);
+
+    const { data, count } = await selectProviderBoardgameByFilterAction(
+      searchValue,
+      fetchUserData.uid,
+      selectedTypeFilter
+    );
+    setBoardgames(data);
+
+    setIsFetching(false);
+    setHaveBoardgame(data.length > 0);
+  };
 
   const getBoardgameType = async () => {
     const data = await selectAllBoardgameType();
@@ -46,7 +68,7 @@ export function BoardgameItems({ provider_id }: { provider_id: string }) {
   }, [searchValue, selectedTypeFilter, haveBoardgame]);
 
   useEffect(() => {
-    fetchGames();
+    firstFetchGames();
     getBoardgameType();
   }, []);
 
