@@ -29,15 +29,17 @@ export function BoardgameItems() {
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
-    const { data, count } = await selectProviderBoardgameByFilterAction(
-      searchValue,
-      provider?.uid || "",
-      selectedTypeFilter
-    );
-    setBoardgames(data);
+    if (provider) {
+      const { data, count } = await selectProviderBoardgameByFilterAction(
+        searchValue,
+        provider?.uid || "",
+        selectedTypeFilter
+      );
+      setBoardgames(data);
+      setHaveBoardgame(data.length > 0);
+    }
 
     setIsFetching(false);
-    setHaveBoardgame(data.length > 0);
   }, 700);
 
   const firstFetchGames = async () => {
@@ -45,6 +47,9 @@ export function BoardgameItems() {
 
     const fetchUserData = await getMyUserData();
     setProvider(fetchUserData);
+
+    console.log("fetchUserData");
+    console.log(fetchUserData);
 
     const { data, count } = await selectProviderBoardgameByFilterAction(
       searchValue,
