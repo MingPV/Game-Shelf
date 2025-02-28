@@ -1,5 +1,5 @@
-import { Boardgame } from "@/app/types/game";
-import Image from "next/image";
+"use client";
+
 import React from "react";
 import Link from "next/link";
 

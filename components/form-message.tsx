@@ -1,3 +1,5 @@
+"use client";
+
 export type Message =
   | { success: string }
   | { error: string }

@@ -24,7 +24,9 @@ export function BoardgameItems() {
 
   const [isFetching, setIsFetching] = useState(true);
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
-  const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
+  const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(false);
+
+  const [isFirstFetch, setIsFirstFetch] = useState(true);
 
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
@@ -44,6 +46,7 @@ export function BoardgameItems() {
 
   const firstFetchGames = async () => {
     setIsFetching(true);
+    setIsFirstFetch(false);
 
     const fetchUserData = await getMyUserData();
     setProvider(fetchUserData);
@@ -58,8 +61,8 @@ export function BoardgameItems() {
     );
     setBoardgames(data);
 
-    setIsFetching(false);
     setHaveBoardgame(data.length > 0);
+    setIsFetching(false);
   };
 
   const getBoardgameType = async () => {
@@ -69,7 +72,9 @@ export function BoardgameItems() {
   };
 
   useEffect(() => {
-    fetchGames();
+    if (!firstFetchGames) {
+      fetchGames();
+    }
   }, [searchValue, selectedTypeFilter, haveBoardgame]);
 
   useEffect(() => {

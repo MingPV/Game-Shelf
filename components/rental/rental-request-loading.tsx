@@ -1,17 +1,5 @@
 "use client";
 
-import { selectGameAction } from "@/app/(game-pages)/actions";
-import {
-  deleteRentingRequest,
-  updateRentingRequestStatus,
-} from "@/app/(rental-pages)/actions";
-import {
-  createNotificationByUserId,
-  selectUserById,
-} from "@/app/(user-pages)/actions";
-import { Boardgame, RentingRequest } from "@/app/types/game";
-import { UserData } from "@/app/types/user";
-import { useEffect, useState } from "react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
 
 export default function LoadingCard() {
