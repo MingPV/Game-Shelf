@@ -61,13 +61,15 @@ export default function NotificationInNavbar() {
           </span>
           <div className="flex flex-col">
             {notifications?.map((item, index) => (
-              <div key={item.id} className="bg-slate-700 bg-opacity-20 border-b w-full px-2 py-1 flex flex-row space-x-3">
+              <div key={item.id} className="bg-slate-700 bg-opacity-20 border-b w-full px-2 py-1 flex flex-row space-x-2">
                 <img
-                    alt="Tailwind CSS Navbar component"
+                    alt="mock_nofication_image"
                     src={"/mock_provider.jpeg"}
                     className="rounded-full w-8 h-8"
                   />
-                <p className="self-center">{item.message}</p>
+                <p className="self-center line-clamp-1">
+                  {item.message}
+                </p>
               </div>
             ))}
           </div>

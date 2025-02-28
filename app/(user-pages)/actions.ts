@@ -196,7 +196,7 @@ export const selectProviderBoardgameByFilterAction = async (
   let query = supabase
     .from("boardgames")
     .select("*", { count: "exact" })
-    .eq("provider_id", providerId)
+    // .eq("provider_id", providerId)
     .ilike("bg_name", `%${bg_name}%`);
 
   // Apply .overlaps() only if selectedTypeFilter is not empty
@@ -228,7 +228,7 @@ export const getLast9Notifications = async () => {
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
-    // .eq("receiver_id", user.id) //comment this on test
+    .eq("receiver_id", user.id) //comment this on test
     .order("created_at", { ascending: false }) // Ensure latest notifications are fetched first
     .limit(9); // Safer than range(0, 9)
 
