@@ -139,7 +139,6 @@ export default function AuthButton() {
           <Link href="/sign-up">Sign up</Link>
         </Button>
       </div>
-      <button onClick={() => console.log(myData)}>test{myData}</button>
     </>
   );
 }
