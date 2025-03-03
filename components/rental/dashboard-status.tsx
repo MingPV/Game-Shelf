@@ -148,7 +148,7 @@ export function DashBoardStatus({ status }: { status: string }) {
         {/* Table */}
         <div className="overflow-x-auto min-h-24 max-h-64">
           <table className="table">
-            <thead className="backdrop-blur-xl sticky top-0 z-[9999] text-white shadow-md  bg-transparent overflow-hidden">
+            <thead className="backdrop-blur-xl sticky top-0 z-[99] text-white shadow-md  bg-transparent overflow-hidden">
               <tr>
                 <th>{""}</th>
                 <th>Boardgame Name</th>

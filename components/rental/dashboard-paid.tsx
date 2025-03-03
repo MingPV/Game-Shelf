@@ -2,13 +2,17 @@
 import {
   selectMyRentingRequestByStatus,
   selectRentalRequestUnpaid,
+  cancelMultipleInvoices,
 } from "@/app/(rental-pages)/actions";
 import { Invoice } from "@/app/types/game";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export function DashBoardPaid() {
   const [records, setRecords] = useState<Invoice[]>([]);
   const [countdowns, setCountdowns] = useState<{ [key: string]: number }>({});
+  const [isCanceled, setIsCanceled] = useState<boolean>(false);
+  const [invoiceToCancel, setInvoiceToCancel] = useState<string[]>([]);
   const status = "waiting for payment";
   const convertDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -17,6 +21,64 @@ export function DashBoardPaid() {
       year: "numeric",
     };
     return new Date(date).toLocaleDateString("en-US", options);
+  };
+
+  const toggleInvoiceSelection = (id: string) => {
+    setInvoiceToCancel((prev) => {
+      if (prev.includes(id)) {
+        // Remove the ID from the list if already selected
+        return prev.filter((invoiceId) => invoiceId !== id);
+      } else {
+        // Add the ID to the list if not selected
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleCancelInvoices = () => {
+    console.log("invoice to cancel", invoiceToCancel);
+
+    const formData = new FormData();
+
+    // Append all selected invoice IDs to the FormData object
+    invoiceToCancel.forEach((id) => {
+      formData.append("invoice_ids[]", id); // appending each invoice ID
+    });
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#359368",
+      cancelButtonColor: "#FF2525",
+      confirmButtonText: "Yes, Canceled it!",
+      customClass: {
+        popup: "custom-swal-popup",
+        title: "custom-swal-title",
+        confirmButton: "custom-swal-confirm-button",
+        cancelButton: "custom-swal-cancel-button",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsCanceled(true);
+        await cancelMultipleInvoices(formData);
+        Swal.fire({
+          title: "Canceled!",
+          text: "Your file has been canceled.",
+          icon: "success",
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+        }).then(() => {
+          // Close the modal
+          setIsCanceled(false);
+          setInvoiceToCancel([]);
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -43,7 +105,7 @@ export function DashBoardPaid() {
     };
 
     fetchRequests();
-  }, [status]);
+  }, [status, isCanceled]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -75,7 +137,7 @@ export function DashBoardPaid() {
         {records.map((record, index) => (
           <div
             key={record.id}
-            className="grid grid-cols-11 w-full border rounded-md place-items-center gap- py-2"
+            className="grid grid-cols-11 w-full border border-gs_white border-opacity-50 rounded-md place-items-center gap- py-2"
           >
             <p className="col-span-1  w-full text-center py-2 flex items-center justify-center">
               {index + 1}
@@ -118,10 +180,21 @@ export function DashBoardPaid() {
                 </span>
               )}
 
-              <input type="checkbox" className="checkbox checkbox-sm" />
+              <input
+                type="checkbox"
+                className="checkbox checkbox-sm"
+                checked={invoiceToCancel.includes(record.id.toString())}
+                onChange={() => toggleInvoiceSelection(record.id.toString())}
+              />
             </div>
           </div>
         ))}
+        <button
+          onClick={handleCancelInvoices}
+          className="flex w-full items-center justify-center btn bg-error hover:bg-gs_red"
+        >
+          canceled
+        </button>
       </div>
     </div>
   );

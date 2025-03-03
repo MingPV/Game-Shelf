@@ -229,6 +229,7 @@ export const selectRentalRequestUnpaid = async () => {
     )
   `
     )
+    .eq("status", "pending")
     .eq("rental_requests.status", "waiting for payment")
     .eq("payout_to", user?.id);
 
@@ -239,4 +240,19 @@ export const selectRentalRequestUnpaid = async () => {
 
   // Return the invoices with their associated rental requests
   return invoices;
+};
+
+export const cancelMultipleInvoices = async (formData: FormData) => {
+  const invoiceIds = formData.getAll("invoice_ids[]");
+  console.log(invoiceIds);
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("cancel_multiple_invoices", {
+    invoice_ids: invoiceIds,
+  });
+
+  if (error) {
+    throw new Error(`Transaction failed: ${error.message}`);
+  }
+
+  return data;
 };
