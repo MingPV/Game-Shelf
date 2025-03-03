@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Boardgame } from "@/app/types/game";
-import { TbCurrencyBaht } from "react-icons/tb";
 
 type BoardgameType = {
   [key: string]: string;

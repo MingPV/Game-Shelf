@@ -51,7 +51,15 @@ export default function Signup() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("isProvider", isProvider.toString());
-    const { status, authData } = await signUpAction(formData);
+    const { status, message } = await signUpAction(formData);
+
+    if (status == "success") {
+      window.location.reload(); // Reload first
+      window.location.href = "/home"; // Then Redirect
+      // use this because we need to reload profile picture
+    } else {
+      setError(message);
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
