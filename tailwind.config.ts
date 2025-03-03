@@ -29,6 +29,8 @@ const config = {
         gs_white: "#FFFFFF",
         gs_red: "#FF2525",
         gs_green: "#359368",
+        gs_yellow: "#FFCC00",
+        gs_gray: "#B9B9B9",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -82,11 +84,11 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      screens:{
-        "xs1": "470px",
-        "xs2": "425px",
-        "xs3": "375px"
-      }
+      screens: {
+        xs1: "470px",
+        xs2: "425px",
+        xs3: "375px",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("daisyui")],

@@ -112,3 +112,131 @@ export const selectPlayerRentingRequest = async () => {
 
   return rental_requests;
 };
+
+export const selectMyRentingRequestByStatus = async (formData: FormData) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  const status = formData.get("status")?.toString();
+  const month = formData.get("month")?.toString() || "undefined";
+  const year = formData.get("year")?.toString() || "undefined";
+
+  if (month !== "undefined" && year !== "undefined") {
+    const curMonth = parseInt(month) + 1;
+    const curYear = parseInt(year);
+
+    const nextMonth = curMonth + 1;
+    const nextYear = nextMonth === 13 ? curYear + 1 : curYear;
+
+    const { data: user_data, error: getUserError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("uid", user?.id);
+
+    if (getUserError) {
+      console.log(getUserError);
+      throw new Error("Failed to fetch user");
+    }
+
+    const { data: rentalRequests, error } = await supabase
+      .from("rental_requests")
+      .select(
+        `
+    *,
+    boardgames:bg_id (*),
+    users:customer_id(*)
+  `
+      )
+      .eq("provider_id", user?.id)
+      .eq("status", status)
+      .gte(
+        "start_date",
+        `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
+      ) // Filter for the first day of the current month
+      .lt(
+        "start_date",
+        `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
+      ); // Filter for the first day of the next month, using nextMonth
+
+    if (error) {
+      console.log(error);
+      throw new Error("Failed to fetch my rental requests");
+    }
+
+    console.log(`${curYear}-${curMonth.toString().padStart(2, "0")}-01`);
+    console.log(`${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`);
+    console.log("----------------------------------------------------");
+    return rentalRequests;
+  }
+
+  const { data: user_data, error: getUserError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+
+  if (getUserError) {
+    console.log(getUserError);
+    throw new Error("Failed to fetch user");
+  }
+
+  const { data: rentalRequests, error } = await supabase
+    .from("rental_requests")
+    .select(
+      `
+    *,
+    boardgames:bg_id (*),
+    users:customer_id(*)
+  `
+    )
+    .eq("provider_id", user?.id)
+    .eq("status", status);
+
+  if (error) {
+    console.log(error);
+    throw new Error("Failed to fetch my rental requests");
+  }
+
+  return rentalRequests;
+};
+
+export const selectRentalRequestUnpaid = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  const { data: invoices, error: getInvoicesError } = await supabase
+    .from("invoices") // Assuming your table is named "invoices"
+    .select(
+      `
+    *,
+    rental_requests (
+      *,
+      boardgames: bg_id (*),
+      users: customer_id (*)
+    )
+  `
+    )
+    .eq("rental_requests.status", "waiting for payment")
+    .eq("payout_to", user?.id);
+
+  if (getInvoicesError) {
+    console.log(getInvoicesError);
+    throw new Error("Failed to fetch invoices");
+  }
+
+  // Return the invoices with their associated rental requests
+  return invoices;
+};

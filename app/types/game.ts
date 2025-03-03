@@ -23,6 +23,8 @@ export interface RentingRequest {
   bg_id: number;
   created_at: string;
   provider_id: string;
+  boardgames?: Boardgame;
+  users?: UserData;
 }
 
 export interface Boardgame_type {
@@ -41,6 +43,7 @@ export interface Invoice {
   create_at: string;
   session_id: string;
   payment_url: string;
+  rental_requests: RentingRequest;
 }
 
 export interface toPayRentingRequest {
