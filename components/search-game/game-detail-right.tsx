@@ -1,6 +1,3 @@
-'use client'
-
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 
@@ -8,7 +5,7 @@ type BoardgameType = {
     [key: string]: string;
 };
 
-export default function GameDetailRight({ boardgame, boardgame_type, provider}: { boardgame: Boardgame, boardgame_type: BoardgameType, provider:UserData }) {
+export default function GameDetailRight({ boardgame, boardgame_type, provider}: { boardgame: Boardgame, boardgame_type: BoardgameType, provider:UserData|null }) {
     
     return (
         <div className="w-1/2 flex flex-col space-y-8">
@@ -29,8 +26,8 @@ export default function GameDetailRight({ boardgame, boardgame_type, provider}: 
             <div>
                 <p className="text-md text-gs_white/50 mb-2">Store</p>
                 <div className="flex flex-row items-center gap-3">
-                    <img alt="mock_nofication_image" src={provider.profilePicture} className="rounded-full w-12" />
-                    <p className="text-xl font-bold">{provider.username}</p>
+                    <img alt="mock_nofication_image" src={provider? provider.profilePicture : './mock_provider.jpeg'} className="rounded-full w-12" />
+                    <p className="text-xl font-bold">{provider? provider.username: 'N/A'}</p>
                 </div>
             </div>
 
