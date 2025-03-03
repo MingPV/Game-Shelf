@@ -16,10 +16,12 @@ Given("I have a Supabase client", function () {
 });
 
 When("I fetch users from the database", async function () {
+  // Try fetching users from a valid table
   response = await supabase.from("users").select("*");
 });
 
 Then("I should receive a list of users", function () {
+  // Check if response is successful and contains data
   expect(response.data).to.be.an("array");
   expect(response.status).to.equal(200);
 });
