@@ -1,38 +1,11 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import BoardGameCard from "@/components/boardgame-tracking/boardgame-card";
-import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
+"use client";
+
 import { BoardgameItems } from "@/components/boardgame-tracking/boardgame-item";
-export default async function InventoryPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/sign-in");
-  }
-
-  let user_data_value = null;
-
-  const { data: user_data, error } = await supabase
-    .from("users")
-    .select("*")
-
-    // Filters
-    .eq("uid", user?.id);
-
+export default function InventoryPage() {
   return (
     <>
       <main className="w-full">
-        {user_data ? (
-          <div className="flex justify-center  text-3xl">
-            {user_data[0].username}'s Board game
-          </div>
-        ) : null}
-
-        <BoardgameItems provider_id={user?.id} />
+        <BoardgameItems />
       </main>
     </>
   );

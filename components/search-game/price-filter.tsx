@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { DropdownMenu } from "../ui/dropdown-menu";
 
 export default function Filter({
   price,

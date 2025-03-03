@@ -39,7 +39,7 @@ export default function RequestCard({ requestData }: RentalCardProps) {
   }, []);
 
   return isLoading ? null : (
-    <div className="flex flex-col w-48 bg-amber-700 bg-opacity-80 rounded-xl items-center justify-between mr-4">
+    <div className="flex flex-col min-w-48 w-48 bg-amber-700 bg-opacity-80 rounded-xl items-center justify-between mr-4">
       <div className="flex flex-col w-full p-4">
         <div className=" text-xs text-gs_white/50">name</div>
         <div className=" text-md text-gs_white w-full">

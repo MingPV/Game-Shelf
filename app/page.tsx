@@ -1,8 +1,10 @@
+"use client";
+
 import { NavbarGetStarted } from "@/components/navbar-getstart";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default async function Home() {
+export default function Home() {
   return (
     <>
       <div className="z-20 fixed top-0 w-full">

@@ -1,6 +1,6 @@
+"use client";
+
 import { RentingRequest } from "../../app/types/game";
-import { FaHourglassStart, FaPlayCircle } from "react-icons/fa";
-import { IoIosTime } from "react-icons/io";
 
 // Convert date to desired format
 const convertDate = (date: string) => {

@@ -1,17 +1,22 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import VerificationCard from "@/components/admin-pages/verification-card";
-import { verificationRequests } from "@/app/types/user";
+import { UserData, verificationRequests } from "@/app/types/user";
 import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
 import LoadingCard from "./loading-card";
+import { getMyUserData } from "@/app/(user-pages)/actions";
 
-export default function VerificationList({ adminId }: { adminId: number }) {
+export default function VerificationList() {
+  const [admin, setAdmin] = useState<UserData | null>(null);
   const [requests, setRequests] = useState<verificationRequests[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      const fetchData = await getMyUserData();
+      setAdmin(fetchData);
+
       const res = await selectAllUnverifiedVerificationRequest();
       setRequests(res || []);
       setIsLoading(false);
@@ -39,11 +44,11 @@ export default function VerificationList({ adminId }: { adminId: number }) {
               {requests.length > 0 ? (
                 requests?.map(
                   (item) =>
-                    adminId && (
+                    admin && (
                       <VerificationCard
                         key={item.provider_id}
                         params={item}
-                        admin_id={adminId}
+                        admin_id={Number(admin.admin_id)}
                         onRemove={handleRemove}
                       />
                     )

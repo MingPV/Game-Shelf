@@ -92,7 +92,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (userData.isProvider) {
@@ -106,7 +106,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -121,7 +121,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -135,7 +135,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -148,7 +148,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.isProvider) {
@@ -164,7 +164,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {
@@ -178,7 +178,7 @@ export const updateSession = async (request: NextRequest) => {
         await signOutAction();
         return NextResponse.redirect(new URL("/home", request.url));
       }
-      const { payload } = await jwtVerify(token.value, secretKey);
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
       const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {

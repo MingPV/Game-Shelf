@@ -83,7 +83,7 @@ export default function ProviderFormCard({
                 </p>
               </div>
               {isOpen && (
-                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 shadow w-full">
+                <ul className="dropdown-content menu bg-base-100 rounded-box z-[1] shadow w-full">
                   {["credit_card", "banking", "qrcode"]?.map((option) => (
                     <li key={option}>
                       <button

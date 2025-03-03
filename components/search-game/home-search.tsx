@@ -7,10 +7,7 @@ import {
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import GameCard from "./game-card";
 import { Input } from "../ui/input";
-import PriceFilter from "./price-filter";
-import ItemsPerPageFilter from "./items-per-page-filter";
 import LoadingGameCard from "./loading-card";
-import TypeFilter from "./type-filter";
 import { useDebouncedCallback } from "use-debounce";
 export function HomeSearch() {
   const [itemsPerPage, setItemPerPage] = useState(9);

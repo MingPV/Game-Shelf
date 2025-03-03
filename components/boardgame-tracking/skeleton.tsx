@@ -1,3 +1,5 @@
+"use client";
+
 import { TbCurrencyBaht } from "react-icons/tb";
 import ModalUpdateBg from "../inventory/modal-update-bg";
 import DeleteBoardgame from "../inventory/delete-bg";

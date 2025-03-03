@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export default function LoadingGameCard() {
   return (
     <div className="flex flex-col p-3 w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 skeleton bg-black opacity-30">
