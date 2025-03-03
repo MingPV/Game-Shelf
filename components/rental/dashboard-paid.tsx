@@ -45,40 +45,48 @@ export function DashBoardPaid() {
       formData.append("invoice_ids[]", id); // appending each invoice ID
     });
 
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#359368",
-      cancelButtonColor: "#FF2525",
-      confirmButtonText: "Yes, Canceled it!",
-      customClass: {
-        popup: "custom-swal-popup",
-        title: "custom-swal-title",
-        confirmButton: "custom-swal-confirm-button",
-        cancelButton: "custom-swal-cancel-button",
-      },
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        setIsCanceled(true);
-        await cancelMultipleInvoices(formData);
-        Swal.fire({
-          title: "Canceled!",
-          text: "Your file has been canceled.",
-          icon: "success",
-          customClass: {
-            popup: "custom-swal-popup",
-            title: "custom-swal-title",
-            confirmButton: "custom-swal-confirm-button",
-          },
-        }).then(() => {
-          // Close the modal
-          setIsCanceled(false);
-          setInvoiceToCancel([]);
-        });
-      }
-    });
+    if (invoiceToCancel.length > 0) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#359368",
+        cancelButtonColor: "#FF2525",
+        confirmButtonText: "Yes, Canceled it!",
+        customClass: {
+          popup: "custom-swal-popup",
+          title: "custom-swal-title",
+          confirmButton: "custom-swal-confirm-button",
+          cancelButton: "custom-swal-cancel-button",
+        },
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          setIsCanceled(true);
+          await cancelMultipleInvoices(formData);
+          Swal.fire({
+            title: "Canceled!",
+            text: "Your file has been canceled.",
+            icon: "success",
+            customClass: {
+              popup: "custom-swal-popup",
+              title: "custom-swal-title",
+              confirmButton: "custom-swal-confirm-button",
+            },
+          }).then(() => {
+            // Close the modal
+            setIsCanceled(false);
+            setInvoiceToCancel([]);
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "You haven't selected any request",
+        text: "please select any request!",
+        icon: "warning",
+      });
+    }
   };
 
   useEffect(() => {

@@ -245,14 +245,17 @@ export const selectRentalRequestUnpaid = async () => {
 export const cancelMultipleInvoices = async (formData: FormData) => {
   const invoiceIds = formData.getAll("invoice_ids[]");
   console.log(invoiceIds);
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("cancel_multiple_invoices", {
-    invoice_ids: invoiceIds,
-  });
+  if (invoiceIds.length > 0) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("cancel_multiple_invoices", {
+      invoice_ids: invoiceIds,
+    });
 
-  if (error) {
-    throw new Error(`Transaction failed: ${error.message}`);
+    if (error) {
+      throw new Error(`Transaction failed: ${error.message}`);
+    }
+
+    return data;
   }
-
-  return data;
+  return;
 };
