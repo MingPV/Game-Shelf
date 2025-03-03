@@ -35,6 +35,19 @@ export function DashBoardPaid() {
     });
   };
 
+  const toggleSelectAll = () => {
+    setInvoiceToCancel((prev) => {
+      if (prev.length === records.length) {
+        // If all are selected, deselect all
+        return [];
+      } else {
+        // Otherwise, select all
+        return records.map((record) => record.id.toString());
+      }
+    });
+    console.log(invoiceToCancel);
+  };
+
   const handleCancelInvoices = () => {
     console.log("invoice to cancel", invoiceToCancel);
 
@@ -140,7 +153,17 @@ export function DashBoardPaid() {
   };
 
   return (
-    <div className="w-full overflow-y-auto">
+    <div className="w-full overflow-y-auto flex flex-col">
+      <div className="flex w-full flex flex-col justify-between items-end">
+        <p className="text-xl w-full text-start px-4 pt-2">To be paid</p>
+        <button
+          onClick={toggleSelectAll}
+          className="btn btn-ghost btn-sm font-normal p-1 my-1"
+        >
+          select all
+        </button>
+      </div>
+
       <div className="flex flex-col gap-2">
         {records.map((record, index) => (
           <div

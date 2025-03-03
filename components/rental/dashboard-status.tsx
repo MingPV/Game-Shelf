@@ -68,21 +68,21 @@ export function DashBoardStatus({ status }: { status: string }) {
   };
 
   return (
-    <div className="font-normal">
+    <div className="font-normal bg-gs_white bg-opacity-10 p-4 rounded-md">
       <div className="flex flex-col w-full">
-        <div className="flex flex-row w-full items-center justify-between">
+        <div className="flex flex-row w-full items-center justify-between ">
           <p
             className={`text-white font-bold text-md px-4 py-2 rounded-md ${btnClass} `}
           >
             {status}
           </p>
-          <div className="flex flex-row join">
+          <div className="flex flex-row join border border-white border-opacity-50 ">
             {/* Month Dropdown */}
             <div className="dropdown dropdown-end join-item">
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-sm m-1 btn-outline"
+                className="btn btn-sm m-1 btn-ghost text-xl"
                 onClick={() => {
                   setIsMonthOpen(!isMonthOpen);
                   setIsYearOpen(false);
@@ -97,7 +97,7 @@ export function DashBoardStatus({ status }: { status: string }) {
                 {months.map((month, index) => (
                   <li key={index} className="w-full bg-neutral col-span-1">
                     <button
-                      className="btn btn-sm text-left w-full text-accent hover:text-neutral btn-outline"
+                      className="btn btn-sm btn-ghost  text-left w-full text-accent hover:text-gs_white"
                       onClick={() => {
                         setMonth(index);
                         setIsMonthOpen(false); // Close dropdown after selection
@@ -115,7 +115,7 @@ export function DashBoardStatus({ status }: { status: string }) {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-sm m-1 btn-outline"
+                className="btn btn-sm m-1 btn-ghost text-xl"
                 onClick={() => {
                   setIsYearOpen(!isYearOpen);
                   setIsMonthOpen(false);
@@ -130,7 +130,7 @@ export function DashBoardStatus({ status }: { status: string }) {
                 {years.map((year, index) => (
                   <li key={index} className="w-full bg-neutral col-span-1">
                     <button
-                      className="btn btn-sm text-left w-full text-accent hover:text-neutral btn-outline"
+                      className="btn btn-sm text-left w-full text-accent  btn-ghost hover:text-gs_white"
                       onClick={() => {
                         setYear(year.toString());
                         setIsYearOpen(false); // Close dropdown after selection
@@ -146,49 +146,60 @@ export function DashBoardStatus({ status }: { status: string }) {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto min-h-24 max-h-64">
-          <table className="table">
-            <thead className="backdrop-blur-xl sticky top-0 z-[99] text-white shadow-md  bg-transparent overflow-hidden">
-              <tr>
-                <th>{""}</th>
-                <th>Boardgame Name</th>
-                <th>Customer Name</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody className="overflow-y-auto">
-              {records.map((record, index) => (
-                <tr key={record.id}>
-                  <th>{index + 1}</th>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar mask mask-squircle h-12 w-12">
-                        <img
-                          src={
-                            record.boardgames?.bg_picture ||
-                            "https://via.placeholder.com/48"
-                          }
-                          alt={record.boardgames?.bg_name || "Boardgames"}
-                        />
-                      </div>
-                      <div>
-                        <div className="text-sm max-w-56 break-words">
-                          {record.boardgames?.bg_name}
+        <div className=" min-h-24 max-h-64">
+          <div className="table">
+            <div className="sticky top-0 z-[99] text-white  bg-transparent overflow-hidden pt-4">
+              <div className="grid grid-cols-11 ">
+                <div className="col-span-1 opacity-70">{""}</div>
+                <div className="col-span-3 opacity-70">Boardgame Name</div>
+                <div className="col-span-4 opacity-70">Customer Name</div>
+                <div className="col-span-3 opacity-70">Duration</div>
+              </div>
+            </div>
+            <div className="overflow-y-auto py-1 h-48">
+              {records.length > 0 ? (
+                records.map((record, index) => (
+                  <div
+                    key={record.id}
+                    className="border border-gs_white border-opacity-50 rounded-lg grid grid-cols-11 items-center justify-center py-1"
+                  >
+                    <div className="col-span-1 text-center">{index + 1}</div>
+                    <div className="col-span-3">
+                      <div className="flex items-center gap-3">
+                        <div className="avatar mask mask-squircle h-12 w-12">
+                          <img
+                            src={
+                              record.boardgames?.bg_picture ||
+                              "https://via.placeholder.com/48"
+                            }
+                            alt={record.boardgames?.bg_name || "Boardgames"}
+                          />
+                        </div>
+                        <div>
+                          <div className="text-sm max-w-56 break-words">
+                            {record.boardgames?.bg_name}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </td>
-                  <td>{record.users?.username || "Unknown"}</td>
-                  <td>
-                    <button className="text-xs">
-                      {convertDate(record.start_date)} -{" "}
-                      {convertDate(record.end_date)}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <div className="col-span-4">
+                      {record.users?.username || "Unknown"}
+                    </div>
+                    <div className="col-span-3">
+                      <div className="text-xs">
+                        {convertDate(record.start_date)} -{" "}
+                        {convertDate(record.end_date)}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center flex py-4 h-full items-center justify-center">
+                  <p className="font-bold">No records found</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
