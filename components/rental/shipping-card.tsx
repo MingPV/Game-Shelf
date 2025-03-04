@@ -1,6 +1,9 @@
 "use client";
 
-import { selectMyRentingRequestByStatus, updateRentingRequestStatus } from "@/app/(rental-pages)/actions";
+import {
+  selectMyRentingRequestByStatus2,
+  updateRentingRequestStatus,
+} from "@/app/(rental-pages)/actions";
 import { useState, useEffect } from "react";
 import { RentingRequestJoinBoardgameJoinCustomer } from "@/app/types/game";
 import Image from "next/image";
@@ -15,21 +18,39 @@ type RentingListProps = {
   status: "reserved" | "renting";
   nextStatus: "renting" | "available";
   requests: RentingRequestJoinBoardgameJoinCustomer[];
-  setRequests: Dispatch<SetStateAction<RentingRequestJoinBoardgameJoinCustomer[]>>;
-  setNextRequest: Dispatch<SetStateAction<RentingRequestJoinBoardgameJoinCustomer[]>> | null;
+  setRequests: Dispatch<
+    SetStateAction<RentingRequestJoinBoardgameJoinCustomer[]>
+  >;
+  setNextRequest: Dispatch<
+    SetStateAction<RentingRequestJoinBoardgameJoinCustomer[]>
+  > | null;
 };
 
-const dateFormatter = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" });
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "2-digit",
+});
 
-export default function RentingShippingCard({ title, icon, status, nextStatus, requests, setRequests, setNextRequest }: RentingListProps) {
-  const [selectedRequestIds, setSelectedRequestIds] = useState<Set<number>>(new Set());
+export default function RentingShippingCard({
+  title,
+  icon,
+  status,
+  nextStatus,
+  requests,
+  setRequests,
+  setNextRequest,
+}: RentingListProps) {
+  const [selectedRequestIds, setSelectedRequestIds] = useState<Set<number>>(
+    new Set()
+  );
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
-      const res = await selectMyRentingRequestByStatus(status);
+      const res = await selectMyRentingRequestByStatus2(status);
       setRequests(res || []);
       setIsLoading(false);
     }
@@ -38,17 +59,21 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
 
   const handleUpdateStatus = () => {
     setShowModal(false);
-    requests.filter(req => selectedRequestIds.has(req.id)).forEach(req => {
-      setRequests(prev => prev.filter(r => r.id !== req.id));
-      if (setNextRequest) setNextRequest((prev) => [ ...prev, req ])
-      updateRentingRequestStatus(req.id, nextStatus);
-    });
+    requests
+      .filter((req) => selectedRequestIds.has(req.id))
+      .forEach((req) => {
+        setRequests((prev) => prev.filter((r) => r.id !== req.id));
+        if (setNextRequest) setNextRequest((prev) => [...prev, req]);
+        updateRentingRequestStatus(req.id, nextStatus);
+      });
     setSelectedRequestIds(new Set());
   };
 
   return (
     <div className="flex flex-col items-center bg-white/10 px-2 py-0 lg:p-4 rounded-lg w-full lg:w-1/2">
-      <div className="flex font-bold text-xl items-center gap-2 hidden lg:flex">To be {title} {icon}</div>
+      <div className="flex font-bold text-xl items-center gap-2 hidden lg:flex">
+        To be {title} {icon}
+      </div>
       {requests.length > 0 ? (
         <div>
           <div className="overflow-y-auto flex-grow mt-4 rounded-lg h-[calc(100vh-360px)] lg:h-[calc(100vh-340px)]">
@@ -69,21 +94,30 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
                     <td className="hidden sm:table-cell">{index + 1}</td>
                     <td className="hidden sm:table-cell">
                       <div className="relative h-12 w-12 aspect-square">
-                        <Image src={item.boardgames.bg_picture} alt="boardgame" fill className="rounded-lg object-cover" />
+                        <Image
+                          src={item.boardgames.bg_picture}
+                          alt="boardgame"
+                          fill
+                          className="rounded-lg object-cover"
+                        />
                       </div>
                     </td>
                     <th>{item.boardgames.bg_name}</th>
-                    <td className="hidden sm:table-cell">{item.customer.username}</td>
+                    <td className="hidden sm:table-cell">
+                      {item.customer.username}
+                    </td>
                     <td>{dateFormatter.format(new Date(item.start_date))}</td>
                     <th>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="checkbox [--chkbg:theme(colors.purple.500)] [--chkfg:white]"
                         checked={selectedRequestIds.has(item.id) || selectAll}
                         onChange={(e) => {
-                          setSelectedRequestIds(prev => {
+                          setSelectedRequestIds((prev) => {
                             const updated = new Set(prev);
-                            e.target.checked ? updated.add(item.id) : updated.delete(item.id);
+                            e.target.checked
+                              ? updated.add(item.id)
+                              : updated.delete(item.id);
                             return updated;
                           });
                         }}
@@ -95,28 +129,41 @@ export default function RentingShippingCard({ title, icon, status, nextStatus, r
             </table>
           </div>
 
-          <button className="flex w-full justify-end underline pt-3" onClick={() => {
-            const updated = new Set<number>();
-            if (!selectAll) requests.forEach(item => updated.add(item.id));
-            setSelectedRequestIds(updated);
-            setSelectAll(!selectAll);
-          }}>
+          <button
+            className="flex w-full justify-end underline pt-3"
+            onClick={() => {
+              const updated = new Set<number>();
+              if (!selectAll) requests.forEach((item) => updated.add(item.id));
+              setSelectedRequestIds(updated);
+              setSelectAll(!selectAll);
+            }}
+          >
             Select all
           </button>
           <div className="flex w-full justify-center">
-            <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-9 h-9 lg:min-h-8 lg:h-8 mt-4 px-8 font-bold" 
-            onClick={() => setShowModal(selectedRequestIds.size > 0)}
+            <button
+              className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-9 h-9 lg:min-h-8 lg:h-8 mt-4 px-8 font-bold"
+              onClick={() => setShowModal(selectedRequestIds.size > 0)}
             >
               {status === "reserved" ? "Ship" : "Return"}
             </button>
           </div>
         </div>
-      ) : isLoading ? <RentingShippingLoading />
-      : <p className="pt-6">No {status} requests</p>}
+      ) : isLoading ? (
+        <RentingShippingLoading />
+      ) : (
+        <p className="pt-6">No {status} requests</p>
+      )}
 
       {/* confirm modal */}
-      {showModal && <RentingShippingModal title={title} count={selectedRequestIds.size} handleFunction={handleUpdateStatus} setShowModal={setShowModal} />}
-
+      {showModal && (
+        <RentingShippingModal
+          title={title}
+          count={selectedRequestIds.size}
+          handleFunction={handleUpdateStatus}
+          setShowModal={setShowModal}
+        />
+      )}
     </div>
   );
 }

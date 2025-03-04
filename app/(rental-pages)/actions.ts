@@ -39,7 +39,7 @@ export const selectMyRentingRequest = async () => {
   return rental_requests;
 };
 
-export const selectMyRentingRequestByStatus = async (status: string) => {
+export const selectMyRentingRequestByStatus2 = async (status: string) => {
   const supabase = await createClient();
 
   const {
@@ -60,13 +60,17 @@ export const selectMyRentingRequestByStatus = async (status: string) => {
 
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
-    .select("*, boardgames(*), customer:users!rental_requests_customer_id_fkey(*)")
+    .select(
+      "*, boardgames(*), customer:users!rental_requests_customer_id_fkey(*)"
+    )
     .eq("provider_id", user?.id)
     .eq("status", status);
 
   if (getRequestsError) {
     console.log(getRequestsError);
-    throw new Error(`Failed to fetch my rental requests with status: ${status}`);
+    throw new Error(
+      `Failed to fetch my rental requests with status: ${status}`
+    );
   }
 
   return rental_requests;
@@ -135,7 +139,9 @@ export const selectPlayerRentingRequest = async () => {
 
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
-    .select("*, boardgames(*), provider:users!rental_requests_provider_id_fkey(*)")
+    .select(
+      "*, boardgames(*), provider:users!rental_requests_provider_id_fkey(*)"
+    )
     .eq("customer_id", user?.id);
 
   if (getRequestsError) {
