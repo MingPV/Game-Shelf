@@ -17,7 +17,7 @@ export default function GameCard({
   boardgame_type: BoardgameType;
 }) {
   const [filled, setFilled] = useState<boolean>(false);
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center justify-between space-y-2">
@@ -52,7 +52,10 @@ export default function GameCard({
       </div>
 
       <div className="flex flex-row w-full gap-2">
-        <HeartButton filled={filled} onChange={(filled:boolean)=>setFilled(filled)}/>
+        <HeartButton
+          filled={filled}
+          onChange={(filled: boolean) => setFilled(filled)}
+        />
         <button
           className="w-full font-semibold text-sm px-4 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
           onClick={() => router.push(`/games/${boardgame.id}`)}

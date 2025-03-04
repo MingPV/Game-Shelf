@@ -1,3 +1,5 @@
+"use client";
+
 import { RentingRequest } from "@/app/types/game";
 import React from "react";
 

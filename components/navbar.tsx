@@ -1,4 +1,5 @@
-import { IoNotifications } from "react-icons/io5";
+"use client";
+
 import AuthButton from "./header-auth";
 import NotificationInNavbar from "./notification/notification-in-navbar";
 import Link from "next/link";

@@ -20,11 +20,7 @@ export const signUpAction = async (formData: FormData) => {
   }
 
   if (!email || !password) {
-    return encodedRedirect(
-      "error",
-      "/sign-up",
-      "Email and password are required"
-    );
+    return { status: "error", message: "Email and password are required" };
   }
 
   const { data: authData, error } = await supabase.auth.signUp({
@@ -37,7 +33,7 @@ export const signUpAction = async (formData: FormData) => {
 
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
+    return { status: "error", message: error.message };
   } else {
     // Try inserting the user into the public.user table
 
@@ -73,8 +69,7 @@ export const signUpAction = async (formData: FormData) => {
       }
     }
 
-    // Returning authData in case of success
-    return encodedRedirect("success", "/home", "sign-up success!");
+    return { status: "success", message: "Sign up successful!" };
   }
 };
 
@@ -127,8 +122,7 @@ export const signInAction = async (formData: FormData) => {
     sameSite: "lax", // Helps prevent CSRF attacks
     path: "/", // Available to the whole site
   });
-
-  return encodedRedirect("success", "/home", "sign-in success!");
+  return { status: "success" };
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {

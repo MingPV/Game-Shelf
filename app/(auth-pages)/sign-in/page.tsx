@@ -1,11 +1,44 @@
+"use client";
+
 import { signInAction } from "@/app/(auth-pages)/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
+import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default async function Login(props: { searchParams: Promise<Message> }) {
-  const searchParams = await props.searchParams;
+export default function Login() {
+  // const searchParams = await props.searchParams;
+
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSignIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    const response = await signInAction(formData);
+
+    if (response?.status == "success") {
+      window.location.reload(); // Reload first
+      window.location.href = "/home"; // Then Redirect
+      // use this because we need to reload profile picture
+    }
+
+    console.log(response);
+  };
 
   return (
     <div className="flex justify-center items-center w-full">
@@ -50,13 +83,15 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
 
             <form
               className="flex flex-col min-w-64 placeholder:text-gs_white"
-              action={signInAction}
+              onSubmit={handleSignIn}
             >
               <div className="flex flex-col gap-3">
                 <div className="flex items-center">
                   <input
                     type="email"
                     name="email"
+                    value={email}
+                    onChange={handleEmailChange}
                     placeholder="Email Address"
                     className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                     required
@@ -66,6 +101,8 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                   <input
                     type="password"
                     name="password"
+                    value={password}
+                    onChange={handlePasswordChange}
                     placeholder="Password"
                     className="flex-1 p-2 border-b-2 border-gray-300 bg-transparent focus:outline-none focus:border-gs_purple"
                     required
@@ -109,8 +146,8 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                   <span className="ml-2 max-xs2:ml-1">Continue With Apple</span>
                 </button>
               </div>
-
-              <FormMessage message={searchParams} />
+              {/* 
+              <FormMessage message={searchParams} /> */}
             </form>
           </div>
         </div>

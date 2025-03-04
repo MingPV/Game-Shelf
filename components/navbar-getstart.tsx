@@ -1,5 +1,5 @@
-import { IoNotifications } from "react-icons/io5";
-import AuthButton from "./header-auth";
+"use client";
+
 import Link from "next/link";
 
 export const NavbarGetStarted = () => {

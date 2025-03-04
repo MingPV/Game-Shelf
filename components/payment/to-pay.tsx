@@ -1,6 +1,5 @@
 "use client";
 
-import { createClient } from "@/utils/supabase/server";
 import { BoardgameItems } from "@/components/payment/to-pay-item";
 import { selectMyToPayBoardGame } from "@/app/(payment-pages)/actions";
 import { useEffect, useState } from "react";
