@@ -9,7 +9,7 @@ import { SetStateAction } from "react";
 export default function Skeleton() {
   const boardgame: Boardgame = {
     id: 1,
-    provier_id: "1",
+    provider_id: "1",
     bg_name: "sand",
     description: "hello mock hello mock hello mock hello mock hello mock",
     bg_picture: "",
