@@ -163,7 +163,7 @@ export function ProviderManage() {
             countPendingRequest != 0 ? (
               rentalRequests.map(
                 (rentalRequest) =>
-                  rentalRequest.status !== "requested" && (
+                  rentalRequest.status == "pending" && (
                     <RequestCard
                       requestData={rentalRequest}
                       key={rentalRequest.id}

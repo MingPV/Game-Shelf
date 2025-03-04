@@ -25,7 +25,7 @@ export default function GameDetailRight({
         {boardgame.types?.map((type, index) => (
           <div
             key={index}
-            className="py-1 px-2 rounded-lg bg-gs_purple_gradient opacity-95"
+            className="py-1 px-2 rounded-lg bg-gs_white/20 opacity-95"
           >
             {boardgame_type[type] || "Unknown Type"}
           </div>
@@ -46,12 +46,12 @@ export default function GameDetailRight({
         </div>
       </div>
 
-      <button
+      {/* <button
         className="w-1/2 font-semibold text-sm px-4 rounded-xl py-2 self-start border border-white border-opacity-0 hover:border-opacity-80 bg-gs_purple_gradient"
         onClick={() => alert("checked!")}
       >
         Check Schedule
-      </button>
+      </button> */}
 
       <div>
         <p className="text-md text-gs_white/50">Detail</p>

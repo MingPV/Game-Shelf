@@ -59,7 +59,7 @@ export default function HomeList() {
           <div className="flex flex-row gap-2">
             <div>Role : </div>
             <div className="text-opacity-60 text-white">
-              {userData?.isProvider ? "Provider" : "Customer"}
+              {userData?.isProvider ? "Provider" : "Player"}
             </div>
           </div>
         </div>

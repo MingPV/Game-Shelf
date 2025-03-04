@@ -112,3 +112,33 @@ export const selectPlayerRentingRequest = async () => {
 
   return rental_requests;
 };
+
+export const createRentalRequest = async (
+  start_date: Date,
+  end_date: Date,
+  customer_id: string,
+  provider_id: string,
+  bg_id: Number
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("rental_requests")
+    .insert([
+      {
+        start_date: start_date,
+        end_date: end_date,
+        customer_id: customer_id,
+        provider_id: provider_id,
+        bg_id: bg_id,
+      },
+    ])
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Failed to create rental request");
+  }
+
+  return data;
+};

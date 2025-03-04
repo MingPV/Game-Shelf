@@ -12,6 +12,7 @@ export interface Boardgame {
   status: string;
   types: string[];
   quantity: number;
+  renting: number;
 }
 
 export interface RentingRequest {

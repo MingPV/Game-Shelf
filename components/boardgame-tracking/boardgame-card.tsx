@@ -93,8 +93,15 @@ export default function BoardGameCard({
             <>
               <p className="font-bold col-span-3 md:col-span-2">Quantity:</p>
 
-              <p className="col-span-3 md:col-span-4 flex items-center">
+              <p className="col-span-3 md:col-span-4 flex items-center text-lime-500">
                 {boardgameData.quantity} &nbsp; pieces
+              </p>
+              <p className="font-bold col-span-3 md:col-span-2">
+                Currently being rented:
+              </p>
+
+              <p className="col-span-3 md:col-span-4 flex items-center text-amber-500">
+                {boardgameData.renting} &nbsp; pieces
               </p>
             </>
           )}

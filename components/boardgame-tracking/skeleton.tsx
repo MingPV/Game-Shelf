@@ -15,9 +15,10 @@ export default function Skeleton() {
     bg_picture: "",
     price: 120,
     created_at: "string",
-    status: "pending",
+    status: "available",
     types: ["1", "2"],
     quantity: 1, // fix this na
+    renting: 0,
   };
   return (
     <>

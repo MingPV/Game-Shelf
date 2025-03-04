@@ -62,6 +62,7 @@ export default function ModalUpdateBg({
       status: boardgame.status,
       types: selectedTypes,
       quantity: parseFloat(quantity),
+      renting: boardgame.renting,
     };
 
     Swal.fire({

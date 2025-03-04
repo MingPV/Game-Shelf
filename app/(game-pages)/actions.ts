@@ -221,11 +221,11 @@ export const selectGamesByFilterAction = async (
   // Step 1: Get total count first
 
   const query = supabase
-  .from("boardgames")
-  .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
-  .ilike("bg_name", `%${name}%`)
-  .gte("price", price[0])
-  .lte("price", price[1]);
+    .from("boardgames")
+    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+    .ilike("bg_name", `%${name}%`)
+    .gte("price", price[0])
+    .lte("price", price[1]);
 
   if (selectedTypeFilter.length) {
     query.overlaps("types", selectedTypeFilter);
@@ -269,4 +269,19 @@ export const selectGamesByFilterAction = async (
   }
 
   return { fetch_data, count_items };
+};
+
+export const updateBaordgameStatus = async (
+  bg_id: Number,
+  status: string,
+  renting: Number
+) => {
+  const supabase = await createClient();
+  const { data, error: error_message } = await supabase
+    .from("boardgames")
+    .update({
+      status: status,
+      renting: renting,
+    })
+    .eq("id", bg_id);
 };

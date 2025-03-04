@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
 import { useDebouncedCallback } from "use-debounce";
 import { getMyUserData } from "@/app/(user-pages)/actions";
+import { createRentalRequest } from "@/app/(rental-pages)/actions";
+import { useRouter } from "next/navigation";
 
 export default function GameDetailLeft({
   boardgame,
@@ -21,6 +23,8 @@ export default function GameDetailLeft({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [totalDate, setTotalDate] = useState<number>(0);
+
+  const router = useRouter();
 
   const calculateTotalDate = useDebouncedCallback(() => {
     if (!startDate || !endDate) return null;
@@ -62,7 +66,22 @@ export default function GameDetailLeft({
       return;
     }
 
-    alert("confirm!");
+    // alert("confirm!");
+
+    if (!myData || !provider) {
+      return;
+    }
+
+    createRentalRequest(start, end, myData.uid, provider.uid, boardgame.id);
+    setOpenDialog(false);
+  };
+
+  const handleModal = () => {
+    if (!myData) {
+      router.push("/sign-in");
+      return;
+    }
+    setOpenDialog(true);
   };
 
   return (
@@ -94,18 +113,29 @@ export default function GameDetailLeft({
         />
         <button
           className="w-full font-semibold text-sm px-4 rounded-xl py-2 self-end border border-white border-opacity-0 hover:border-opacity-80 bg-gs_purple_gradient"
-          onClick={() => setOpenDialog(true)}
-          disabled={!myData || myData.isProvider}
+          onClick={handleModal}
+          disabled={myData?.isProvider || boardgame.status == "unavailable"}
         >
           {myData?.isProvider ? (
             <div className="text-xs text-white text-opacity-50 font-serif">
               you can't booking as a provider
             </div>
+          ) : boardgame.quantity == boardgame.renting ? (
+            <div>out of stock</div>
           ) : (
             <div>Rent</div>
           )}
         </button>
       </div>
+      {boardgame.quantity == boardgame.renting ? (
+        <div className="w-full flex justify-end text-sm font-bold text-slate-300 text-opacity-50">
+          out of stock
+        </div>
+      ) : (
+        <div className="w-full flex justify-end text-sm font-bold text-slate-300 text-opacity-50">
+          {boardgame.quantity - boardgame.renting} boardgames in stock
+        </div>
+      )}
 
       <dialog open={openDialog} className="modal">
         <div className="w-[40vw] h-[55vh] bg-slate-50 flex flex-row items-center justify-center rounded-md">
@@ -162,7 +192,7 @@ export default function GameDetailLeft({
                 onClick={() => setOpenDialog(false)}
                 className="w-1/2 border rounded-xl bg-red-500"
               >
-                cancle
+                cancel
               </button>
               <button
                 className="w-1/2 border rounded-xl bg-green-500"
