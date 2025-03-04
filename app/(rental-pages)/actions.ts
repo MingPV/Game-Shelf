@@ -230,7 +230,7 @@ export const selectRentalRequestUnpaid = async () => {
   `
     )
     .eq("status", "pending")
-    .eq("rental_requests.status", "waiting for payment")
+    .eq("rental_requests.status", "unpaid")
     .eq("payout_to", user?.id);
 
   if (getInvoicesError) {

@@ -13,7 +13,7 @@ export function DashBoardPaid() {
   const [countdowns, setCountdowns] = useState<{ [key: string]: number }>({});
   const [isCanceled, setIsCanceled] = useState<boolean>(false);
   const [invoiceToCancel, setInvoiceToCancel] = useState<string[]>([]);
-  const status = "waiting for payment";
+  const status = "unpaid";
   const convertDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
       day: "2-digit",
