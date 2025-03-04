@@ -154,7 +154,7 @@ export function DashBoardPaid() {
 
   return (
     <div className="w-full overflow-y-auto flex flex-col">
-      <div className="flex w-full flex flex-col justify-between items-end">
+      <div className="flex w-full flex-col justify-between items-end">
         <p className="text-xl w-full text-start px-4 pt-2">To be paid</p>
         <button
           onClick={toggleSelectAll}
