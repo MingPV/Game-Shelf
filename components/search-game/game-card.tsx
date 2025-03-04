@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Boardgame } from "@/app/types/game";
+import { useRouter } from "next/navigation";
+import HeartButton from "./heart-button";
 
 type BoardgameType = {
   [key: string]: string;
@@ -15,10 +17,12 @@ export default function GameCard({
   boardgame_type: BoardgameType;
 }) {
   const [filled, setFilled] = useState<boolean>(false);
+  const router = useRouter();
+
   return (
-    <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center space-y-2 justify-between">
+    <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-xl items-center justify-between space-y-2">
       <div className="flex flex-col gap-1">
-        <div className="h-56 w-56 rounded-xl ">
+        <div className="h-56 w-56 rounded-xl">
           <img
             src={boardgame.bg_picture}
             alt={boardgame.bg_name}
@@ -48,26 +52,13 @@ export default function GameCard({
       </div>
 
       <div className="flex flex-row w-full gap-2">
-        <button className="hover:scale-110" onClick={() => setFilled(!filled)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill={filled ? "red" : "none"}
-            viewBox="0 0 24 24"
-            stroke="red"
-            strokeWidth="2"
-            className="size-[1.6em]"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-            />
-          </svg>
-        </button>
-
+        <HeartButton
+          filled={filled}
+          onChange={(filled: boolean) => setFilled(filled)}
+        />
         <button
-          className="w-full font-semibold text-sm px-4  rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
-          onClick={() => alert("clicked!")}
+          className="w-full font-semibold text-sm px-4 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
+          onClick={() => router.push(`/games/${boardgame.id}`)}
         >
           Details
         </button>

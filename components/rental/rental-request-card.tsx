@@ -1,6 +1,9 @@
 "use client";
 
-import { selectGameAction } from "@/app/(game-pages)/actions";
+import {
+  selectGameAction,
+  updateBaordgameStatus,
+} from "@/app/(game-pages)/actions";
 import {
   deleteRentingRequest,
   updateRentingRequestStatus,
@@ -102,10 +105,29 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
   }
 
   const handleAccept = () => {
+    if (!boardgame) {
+      alert("no boardgame");
+      return;
+    }
+    if (boardgame.status == "unavailable") {
+      alert("boardgame unavailable !!");
+      return;
+    }
     if (!customer || !boardgame) {
       return;
     }
-    updateRentingRequestStatus(rentalRequest.id, "waiting for payment");
+
+    let new_renting = boardgame.renting + 1;
+    let new_status = "available";
+    if (new_renting == boardgame.quantity) {
+      new_status = "unavailable";
+    }
+
+    updateBaordgameStatus(boardgame.id, new_status, new_renting);
+
+    console.log("ming12");
+    updateRentingRequestStatus(rentalRequest.id, "unpaid");
+    console.log("ming13");
 
     if (overallPrice !== undefined) {
       createCheckoutSession(

@@ -220,30 +220,18 @@ export const selectGamesByFilterAction = async (
 
   // Step 1: Get total count first
 
-  let count_items;
-  let countError;
+  const query = supabase
+    .from("boardgames")
+    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+    .ilike("bg_name", `%${name}%`)
+    .gte("price", price[0])
+    .lte("price", price[1]);
 
   if (selectedTypeFilter.length) {
-    const { count: count_itemstmp, error: countErrortmp } = await supabase
-      .from("boardgames")
-      .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
-      .ilike("bg_name", `%${name}%`)
-      .gte("price", price[0])
-      .lte("price", price[1])
-      .overlaps("types", selectedTypeFilter);
-
-    count_items = count_itemstmp;
-    countError = countErrortmp;
-  } else {
-    const { count: count_itemstmp, error: countErrortmp } = await supabase
-      .from("boardgames")
-      .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
-      .ilike("bg_name", `%${name}%`)
-      .gte("price", price[0])
-      .lte("price", price[1]);
-    count_items = count_itemstmp;
-    countError = countErrortmp;
+    query.overlaps("types", selectedTypeFilter);
   }
+
+  const { count: count_items, error: countError } = await query;
 
   let fetch_error = null;
   let fetch_data = null;
@@ -281,4 +269,19 @@ export const selectGamesByFilterAction = async (
   }
 
   return { fetch_data, count_items };
+};
+
+export const updateBaordgameStatus = async (
+  bg_id: Number,
+  status: string,
+  renting: Number
+) => {
+  const supabase = await createClient();
+  const { data, error: error_message } = await supabase
+    .from("boardgames")
+    .update({
+      status: status,
+      renting: renting,
+    })
+    .eq("id", bg_id);
 };

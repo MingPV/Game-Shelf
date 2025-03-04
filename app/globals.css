@@ -5,3 +5,10 @@
 :root {
     --radius: 8px;
 }
+
+@layer utilities {
+    .black-calendar-icon::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        /* Turns the icon black */
+    }
+}

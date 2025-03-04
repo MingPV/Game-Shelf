@@ -53,7 +53,7 @@ export default function ModalUpdateBg({
 
     const boardgameTmp: Boardgame = {
       id: boardgame.id,
-      provier_id: boardgame.provier_id,
+      provider_id: boardgame.provider_id,
       bg_name: name,
       description: description,
       bg_picture: img,
@@ -62,6 +62,7 @@ export default function ModalUpdateBg({
       status: boardgame.status,
       types: selectedTypes,
       quantity: parseFloat(quantity),
+      renting: boardgame.renting,
     };
 
     Swal.fire({

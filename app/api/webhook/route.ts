@@ -53,6 +53,11 @@ export async function POST(req: NextRequest) {
           .update({ status: paymentSuccessData.status })
           .eq("session_id", sessionId)
           .select();
+
+        await supabase
+          .from("rental_requests")
+          .update({ status: "reserved" })
+          .eq("id", data?.[0]?.request_id);
       } catch (error) {
         console.error("Database Update Error:", error);
         return NextResponse.json(

@@ -3,7 +3,7 @@ import { UserData } from "./user";
 
 export interface Boardgame {
   id: number;
-  provier_id: string;
+  provider_id: string;
   bg_name: string;
   description: string;
   bg_picture: string;
@@ -12,6 +12,7 @@ export interface Boardgame {
   status: string;
   types: string[];
   quantity: number;
+  renting: number;
 }
 
 export interface RentingRequest {

@@ -4,7 +4,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "cross-env NODE_ENV=test jest"
+    "test": "cross-env NODE_ENV=test jest",
+    "test:cucumber": "cucumber-js "
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -13,9 +14,13 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/chai": "^5.0.1",
     "autoprefixer": "10.4.20",
+    "chai": "^5.2.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.468.0",
     "next": "latest",
     "next-auth": "^4.24.11",
@@ -36,6 +41,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
+    "@types/dotenv": "^6.1.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
