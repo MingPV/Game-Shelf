@@ -120,13 +120,21 @@ export default function AuthButton() {
               <Link href="/home">Rental History</Link>
             </li>
           ) : (
-            <li>
-              <Link href="/my-rental">My Rental</Link>
-            </li>
+            <>
+              <li>
+                <Link href="/my-rental">My-Rental</Link>
+              </li>
+              <li>
+                <Link href="/to-pay">To-Pay</Link>
+              </li>
+            </>
           )}
 
           <li>
-            <div className="hover:cursor-pointer" onClick={handleSignOut}>
+            <div
+              className="hover:cursor-pointer bg-red-800 mt-4 flex flex-row justify-center"
+              onClick={handleSignOut}
+            >
               Logout
             </div>
           </li>
