@@ -117,7 +117,7 @@ export default function AuthButton() {
           </li>
           {myData.isProvider ? (
             <li>
-              <Link href="/boardgame-tracking">My boardgames</Link>
+              <Link href="/inventory">Inventory</Link>
             </li>
           ) : null}
 

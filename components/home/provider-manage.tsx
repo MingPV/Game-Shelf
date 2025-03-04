@@ -73,7 +73,7 @@ export function ProviderManage() {
       <div className="p-4 w-full h-full gap-8 flex flex-col overflow-x-hidden">
         <div className="w-full bg-black bg-opacity-20 flex flex-row gap-4 overflow-x-auto px-4 py-8">
           <Link
-            href="/home"
+            href="/dashboard"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Dashboard
