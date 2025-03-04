@@ -19,7 +19,7 @@ export default function DashBoard() {
               </div>
 
               <div className="flex flex-col rounded-md ">
-                <DashBoardStatus status="requested" />
+                <DashBoardStatus status="unpaid" />
               </div>
             </div>
 
