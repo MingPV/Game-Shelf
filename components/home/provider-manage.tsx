@@ -97,10 +97,10 @@ export function ProviderManage() {
             Rental request
           </Link>
           <Link
-            href="/home"
+            href="/shipping"
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
-            Rental History
+            Manage Shipping
           </Link>
           <Link
             href={`/profile/${provider?.username}`}

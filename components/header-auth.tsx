@@ -117,9 +117,13 @@ export default function AuthButton() {
           </li>
           {myData.isProvider ? (
             <li>
-              <Link href="/inventory">Inventory</Link>
+              <Link href="/home">Rental History</Link>
             </li>
-          ) : null}
+          ) : (
+            <li>
+              <Link href="/my-rental">My Rental</Link>
+            </li>
+          )}
 
           <li>
             <div className="hover:cursor-pointer" onClick={handleSignOut}>
