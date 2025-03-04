@@ -198,7 +198,7 @@ export default function GameDetailLeft({
                 className="w-1/2 border rounded-xl bg-green-500"
                 onClick={checkOK}
               >
-                comfirm
+                confirm
               </button>
             </div>
           </div>

@@ -8,6 +8,7 @@ import Link from "next/link";
 function StatusTag({ status }: { status: string }) {
   const statusClassMap = new Map<string, string>([
     ["completed", "badge-outline"],
+    ["pending", "bg-sky-500 text-slate-100"],
     ["unpaid", "bg-amber-600 text-slate-100"],
     ["canceled", "badge-error"],
     ["renting", "badge-success"],

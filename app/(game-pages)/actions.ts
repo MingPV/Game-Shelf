@@ -285,3 +285,35 @@ export const updateBaordgameStatus = async (
     })
     .eq("id", bg_id);
 };
+
+
+export const updateBoardgameRentingCount = async (
+  bg_id: Number,
+) => {
+  const supabase = await createClient();
+
+  const { data, error: fetchError } = await supabase
+  .from("boardgames")
+  .select("renting")
+  .eq("id", bg_id)
+  .single();
+
+if (fetchError) {
+  console.error("Error fetching boardgame:", fetchError);
+  return;
+}
+
+const { error: updateError } = await supabase
+  .from("boardgames")
+  .update({
+    renting: data.renting - 1,
+    status: "available",
+  })
+  .eq("id", bg_id);
+
+if (updateError) {
+  console.error("Error updating boardgame:", updateError);
+} else {
+  console.log("Boardgame updated successfully");
+}
+};
