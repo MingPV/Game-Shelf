@@ -1,3 +1,5 @@
+"use client";
+
 import MyRentalList from "@/components/rental/my-rental-list";
 
 export default function Home() {

@@ -3,10 +3,12 @@
 import Image from "next/image";
 import mockBoardGame from "../../public/mock_user.jpeg";
 import { RentingRequestJoinBoardgameJoinProvider } from "@/app/types/game";
+import Link from 'next/link'
 
 function StatusTag({ status }: { status: string }) {
     const statusClassMap = new Map<string, string>([
         ["completed", "badge-outline"],
+        ["unpaid", "bg-orange-400 text-black"],
         ["cenceled", "badge-error"],
         ["renting", "badge-success"],
         ["reserved", "bg-yellow-400 text-black"],
@@ -15,7 +17,7 @@ function StatusTag({ status }: { status: string }) {
     
     const classes = statusClassMap.get(status);
     return (
-      <span className={`badge badge-lg pb-7 ${classes} hidden sm:block`}>
+      <span className={`badge badge-lg pb-7 rounded-sm ${classes} hidden sm:block`}>
         {status}
       </span>
     );
@@ -107,6 +109,17 @@ export default function MyRentalCard({data} : {data: RentingRequestJoinBoardgame
                         <div className="flex">
                             <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
                             <ReviewTag score={data.bg_id % 10} />
+                        </div> 
+                    }
+                    { (data.status == "unpaid") && 
+                        <div className="flex">
+                            <div className="font-bold w-24 sm:w-36 pb-1">Payment:</div>
+                            <Link 
+                                href="/to-pay"
+                                className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7"
+                            >
+                                Go to payment page
+                            </Link>
                         </div> 
                     }
                 </div>
