@@ -196,7 +196,7 @@ export const selectProviderBoardgameByFilterAction = async (
   let query = supabase
     .from("boardgames")
     .select("*", { count: "exact" })
-    // .eq("provider_id", providerId)
+    .eq("provider_id", providerId)
     .ilike("bg_name", `%${bg_name}%`);
 
   // Apply .overlaps() only if selectedTypeFilter is not empty
