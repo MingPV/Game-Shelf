@@ -66,6 +66,14 @@ export default function GameDetailLeft({
       return;
     }
 
+    if (!startDate || !endDate) {
+      alert("No date selected.");
+      return;
+    }
+
+    console.log(startDate);
+    console.log(endDate);
+
     // alert("confirm!");
 
     if (!myData || !provider) {
