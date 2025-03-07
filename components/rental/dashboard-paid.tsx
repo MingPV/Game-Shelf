@@ -7,7 +7,7 @@ import {
 import { Invoice } from "@/app/types/game";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
+import PaidSVG from "./paid-svg";
 export function DashBoardPaid() {
   const [records, setRecords] = useState<Invoice[]>([]);
   const [countdowns, setCountdowns] = useState<{ [key: string]: number }>({});
@@ -156,77 +156,88 @@ export function DashBoardPaid() {
     <div className="w-full overflow-y-auto flex flex-col">
       <div className="flex w-full flex-col justify-between items-end">
         <p className="text-xl w-full text-start px-4 pt-2">To be paid</p>
-        <button
-          onClick={toggleSelectAll}
-          className="btn btn-ghost btn-sm font-normal p-1 my-1"
-        >
-          select all
-        </button>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        {records.map((record, index) => (
-          <div
-            key={record.id}
-            className="grid grid-cols-11 w-full border border-gs_white border-opacity-50 rounded-md place-items-center gap- py-2"
+        {records.length > 0 && (
+          <button
+            onClick={toggleSelectAll}
+            className="btn btn-ghost btn-sm font-normal p-1 my-1"
           >
-            <p className="col-span-1  w-full text-center py-2 flex items-center justify-center">
-              {index + 1}
-            </p>
-            <div className="avatar mask mask-squircle h-12 w-12 col-span-2  flex items-center justify-center">
-              <img
-                src={
-                  record.rental_requests.boardgames?.bg_picture ||
-                  "https://via.placeholder.com/48"
-                }
-                alt={record.rental_requests.boardgames?.bg_name || "Boardgames"}
-              />
-            </div>
-            <div className="flex flex-col col-span-6 text-xs items-start justify-start w-full  text-center">
-              <p className="font-bold text-sm">
-                {record.rental_requests.boardgames?.bg_name}
-              </p>
-              <p className="font-extralight text-gs_gray">
-                Customer name: {record.rental_requests.users?.username}
-              </p>
-              <p className="font-extralight text-gs_gray">
-                duration: {convertDate(record.rental_requests.start_date)} -{" "}
-                {convertDate(record.rental_requests.end_date)}
-              </p>
-              <p className="font-extralight text-gs_gray">
-                Amount: {record.amount} baht
-              </p>
-            </div>
-            <div className="col-span-2 flex flex-col items-center justify-center w-full gap-2">
-              {formatCountdown && (
-                <span
-                  className={`countdown font-mono text-xs ${
-                    countdowns[record.rental_requests.id] <= 0
-                      ? "text-red-500"
-                      : ""
-                  }`}
-                >
-                  {formatCountdown(countdowns[record.rental_requests.id]) ||
-                    "overdue"}
-                </span>
-              )}
-
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm"
-                checked={invoiceToCancel.includes(record.id.toString())}
-                onChange={() => toggleInvoiceSelection(record.id.toString())}
-              />
-            </div>
-          </div>
-        ))}
-        <button
-          onClick={handleCancelInvoices}
-          className="flex w-full items-center justify-center btn bg-error hover:bg-gs_red"
-        >
-          canceled
-        </button>
+            select all
+          </button>
+        )}
       </div>
+
+      {records.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {records.map((record, index) => (
+            <div
+              key={record.id}
+              className="grid grid-cols-11 w-full border border-gs_white border-opacity-50 rounded-md place-items-center gap- py-2"
+            >
+              <p className="col-span-1  w-full text-center py-2 flex items-center justify-center">
+                {index + 1}
+              </p>
+              <div className="avatar mask mask-squircle h-12 w-12 col-span-2  flex items-center justify-center">
+                <img
+                  src={
+                    record.rental_requests.boardgames?.bg_picture ||
+                    "https://via.placeholder.com/48"
+                  }
+                  alt={
+                    record.rental_requests.boardgames?.bg_name || "Boardgames"
+                  }
+                />
+              </div>
+              <div className="flex flex-col col-span-6 text-xs items-start justify-start w-full  text-center">
+                <p className="font-bold text-sm">
+                  {record.rental_requests.boardgames?.bg_name}
+                </p>
+                <p className="font-extralight text-gs_gray">
+                  Customer name: {record.rental_requests.users?.username}
+                </p>
+                <p className="font-extralight text-gs_gray">
+                  duration: {convertDate(record.rental_requests.start_date)} -{" "}
+                  {convertDate(record.rental_requests.end_date)}
+                </p>
+                <p className="font-extralight text-gs_gray">
+                  Amount: {record.amount} baht
+                </p>
+              </div>
+              <div className="col-span-2 flex flex-col items-center justify-center w-full gap-2">
+                {formatCountdown && (
+                  <span
+                    className={`countdown font-mono text-xs opacity-50 ${
+                      countdowns[record.rental_requests.id] <= 0
+                        ? "text-red-500"
+                        : ""
+                    }`}
+                  >
+                    {formatCountdown(countdowns[record.rental_requests.id]) ||
+                      "overdue"}
+                  </span>
+                )}
+
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-sm"
+                  checked={invoiceToCancel.includes(record.id.toString())}
+                  onChange={() => toggleInvoiceSelection(record.id.toString())}
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={handleCancelInvoices}
+            className="flex w-full items-center justify-center btn bg-error hover:bg-gs_red"
+          >
+            cancel
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center">
+          <PaidSVG />
+          <p>there is no request waiting to be paid.</p>
+        </div>
+      )}
     </div>
   );
 }

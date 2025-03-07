@@ -34,7 +34,7 @@ export function DashBoardStatus({ status }: { status: string }) {
   const classBtn = {
     renting: "bg-gs_green",
     reserved: "bg-gs_yellow",
-    requested: "bg-gs_gray",
+    canceled: "bg-gs_red bg-opacity-60",
   } as const; // Use `as const` to make the object keys readonly and literal types
 
   type Status = keyof typeof classBtn; // 'renting' | 'reserved' | 'request'
