@@ -17,7 +17,7 @@ type RentingListProps = {
   title: string;
   icon: JSX.Element;
   status: "reserved" | "renting";
-  nextStatus: "renting" | "available";
+  nextStatus: "renting" | "complete";
   requests: RentingRequestJoinBoardgameJoinCustomer[];
   setRequests: Dispatch<
     SetStateAction<RentingRequestJoinBoardgameJoinCustomer[]>
