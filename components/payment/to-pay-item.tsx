@@ -15,13 +15,15 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
+    //console.log("player_id: ", player_id);
+
     const data = await selectToPayBoardGameById(player_id);
     console.log(data);
 
     setBoardgames(data || []);
     setIsFetching(false);
     setHaveBoardgame(data !== null && data.length > 0);
-  }, 700);
+  }, 300);
 
   useEffect(() => {
     fetchGames();
