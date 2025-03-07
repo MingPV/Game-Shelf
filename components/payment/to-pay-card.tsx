@@ -17,7 +17,7 @@ export default function BoardGameCard({
     return date.toLocaleDateString("en-GB").slice(0, 8); // Format: "DD/MM/YY"
   };
 
-  console.log(boardgameData.invoices);
+  //console.log(boardgameData.invoices);
 
   return (
     <div
