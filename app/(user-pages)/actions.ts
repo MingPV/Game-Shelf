@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { url } from "inspector";
 import { revalidatePath } from "next/cache";
+import { error } from "console";
 
 export const updateProviderAction = async (formData: FormData) => {
   const profile_image = formData.get("profile_image") as File;
@@ -362,4 +363,91 @@ export const selectReviewByProviderId = async (userId: string) => {
   }
 
   return data;
+};
+
+export const updateUserAction = async (formData: FormData) => {
+  const supabase = await createClient();  
+  const id = formData.get("id")?.toString();
+  const username = formData.get("username")?.toString();
+  const phoneNumber = formData.get("phoneNumber")?.toString();
+  const location = formData.get("location")?.toString();
+
+
+  const { data, error } = await supabase
+  .from('users')
+  .update({ username: username, phoneNumber: phoneNumber, location: location })
+  .eq('uid', id)
+  
+  if (error) {
+    encodedRedirect("error", "/", "Failed to update profile.");
+  }
+
+  revalidatePath("/");
+  // return encodedRedirect("success", "/home", "Update boardgame success.");
+  return;
+};
+
+export const updateProviderAction2 = async (formData: FormData) => {
+  const supabase = await createClient();  
+  const id = formData.get("id")?.toString();
+  const username = formData.get("username")?.toString();
+  const phoneNumber = formData.get("phoneNumber")?.toString();
+  const location = formData.get("location")?.toString();
+  const credentials = formData.get("credentials")?.toString();
+
+
+  const { data, error } = await supabase
+  .from('users')
+  .update({ username: username, phoneNumber: phoneNumber, location: location, credentials: credentials })
+  .eq('uid', id)
+  
+  if (error) {
+    encodedRedirect("error", "/", "Failed to update profile.");
+  }
+
+  revalidatePath("/");
+  // return encodedRedirect("success", "/home", "Update boardgame success.");
+  return;
+};
+
+export const updateProfilePicAction = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const profile_picture = formData.get("profile_picture") as File;
+  const supabase = await createClient();
+
+  let publicProfilePictureURL = null;
+  let error_message2;
+  console.log("profile_picture", profile_picture);
+  if (
+    profile_picture &&
+    profile_picture.toString() != "undefined" &&
+    profile_picture != undefined
+  ) {
+    const fileName = randomUUID();
+    const { error: uploadError } = await supabase.storage
+      .from("user_profiles")
+      .upload(fileName, profile_picture);
+    if (uploadError) {
+      console.log("Upload file error.", uploadError);
+      error_message2 = uploadError;
+      return;
+    }
+
+    publicProfilePictureURL = supabase.storage
+      .from("user_profiles")
+      .getPublicUrl(fileName).data.publicUrl;
+
+    const { data, error } = await supabase
+      .from('users')
+      .update({ profilePicture: publicProfilePictureURL })
+      .eq('uid', id)
+
+  }
+
+  if (error_message2) {
+    encodedRedirect("error", "/", "Failed to update boardgame.");
+  }
+  revalidatePath("/");
+  // return encodedRedirect("success", "/home", "Update boardgame success.");
+  return;
 };
