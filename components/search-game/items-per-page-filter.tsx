@@ -23,7 +23,7 @@ export default function ItemsPerPageFilter({
         className="flex flex-row rounded-xl p-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)} // Toggle dropdown on click
       >
-        <button className="btn btn-outline ">{itemPerPage} games / page</button>
+        <button className="btn btn-outline ">{itemPerPage} items / page</button>
       </div>
 
       {isOpen && (
