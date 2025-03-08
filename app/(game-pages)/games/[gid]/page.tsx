@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import LoadingGameCard from "@/components/search-game/loading-card";
+import GameDetailLoading from "@/components/search-game/game-detail-loading";
 
 export default function GameDetails() {
     const { gid } = useParams();
@@ -65,7 +66,7 @@ export default function GameDetails() {
     }, [bg]);
 
     if (loading) {
-        return <LoadingGameCard/>;
+        return <GameDetailLoading/>
     }
 
     if (!bg) {

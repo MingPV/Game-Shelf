@@ -37,7 +37,7 @@ export default function GameDetailRight({
         <p className="text-sm md:text-base text-gs_white/50 mb-2">Store</p>
         <div className="flex flex-row items-center gap-3">
           <img
-            alt="mock_nofication_image"
+            alt="mock_provider"
             src={provider ? provider.profilePicture : "./mock_provider.jpeg"}
             className="rounded-full w-12"
           />
