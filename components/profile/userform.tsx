@@ -6,7 +6,7 @@ import { Label } from "../ui/label";
 import { UserData } from "@/app/types/user";
 import { updateUserAction } from "@/app/(user-pages)/actions";
 
-export default function UserForm({user} : { user: UserData}) {
+export default function UserForm({user, setWindow} : { user: UserData, setWindow: Dispatch<SetStateAction<string>> }) {
   const [username, setUsername] = useState<string>(user.username);
   const [phoneNumber, setPhoneNumber] = useState<string>(user.phoneNumber);
   const [location, setLocation] = useState<string>(user.location);
@@ -58,8 +58,32 @@ export default function UserForm({user} : { user: UserData}) {
 
   return (
     <>
-      <div className="bg-white bg-opacity-10 ml-4 rounded-xl p-4 flex-col flex justify-center items-center w-[500px]">
-        <div className="text-xl mb-3">Edit Profile</div>
+      <div className="bg-white bg-opacity-10 ml-4 rounded-xl p-4 flex-col flex justify-center items-center">
+      <div className="flex justify-between items-center w-full">
+        <details className="dropdown md:hidden">
+          <summary className="btn p-0 border-0 bg-white bg-opacity-0"><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="inline-block h-5 w-5 stroke-current"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg></summary>
+          <ul className="menu dropdown-content bg-base-100 isolation rounded-box z-1 w-52 p-2 shadow-sm">
+            <li><button onClick={()=>setWindow('profile')} >My Profile</button></li>
+            <li><button onClick={()=>setWindow('fav')} >My Favourite</button></li>
+            <li><button onClick={()=>setWindow('rental')} >My Rental</button></li>
+            <li><button onClick={()=>setWindow('wallet')} >My Dashboard</button></li>
+          </ul>
+        </details>
+        <div className="mx-auto text-lg md:hidden">Edit Profile</div>
+      </div>
+        <div className="hidden md:block text-xl mb-3">Edit Profile</div>
         <div className="grid grid-cols-10 gap-5">
             <Label htmlFor="id" className="font-bold text-md col-span-3">
                 ID :

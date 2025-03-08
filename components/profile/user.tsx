@@ -1,18 +1,26 @@
+"use client"
 import UserForm from "./userform";
 import { UserData } from "@/app/types/user";
+import { useState } from "react";
+import UserBlankform from "./userblankform";
 
-export default async function User({user}:{user:UserData}) {
-
+export default function User({user}:{user:UserData}) {
+    const [window, setWindow] = useState("profile");
     return (
         <main className="flex flex-row m-4">
-            <ul className="menu w-56 bg-white bg-opacity-10 rounded-xl mb-auto">
+            <ul className="menu hidden md:block w-56 bg-white bg-opacity-10 rounded-xl mb-auto">
                 <li className="menu-title text-xl">Account</li>
-                <li><a className="active">My Profile</a></li>
-                <li><a className="">My Favourite</a></li>
-                <li><a className="">My Rental</a></li>
-                <li><a className="">My Wallet</a></li>
+                <li><button onClick={()=>setWindow('profile')} className={`${window == "profile" ? "active" : ""}`}>My Profile</button></li>
+                <li><button onClick={()=>setWindow('fav')} className={`${window == "fav" ? "active" : ""}`}>My favourite</button></li>
+                <li><button onClick={()=>setWindow('rental')} className={`${window == "rental" ? "active" : ""}`}>My Rental</button></li>
+                <li><button onClick={()=>setWindow('wallet')} className={`${window == "wallet" ? "active" : ""}`}>My Wallet</button></li>
             </ul>
-            <UserForm user={user}/>
+            {
+                window == "profile" ? (<UserForm user={user} setWindow={setWindow}/>):null
+            }
+            {
+                window != "profile" ? (<UserBlankform setWindow={setWindow}/>):null
+            }
         </main>
     );
 }
