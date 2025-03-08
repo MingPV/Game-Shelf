@@ -23,6 +23,7 @@ export default function GameDetailLeft({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [totalDate, setTotalDate] = useState<number>(0);
+  const [isSending, setIsSending] = useState(false);
 
   const router = useRouter();
 
@@ -50,7 +51,7 @@ export default function GameDetailLeft({
 
   const today = new Date().toISOString().split("T")[0];
 
-  const checkOK = () => {
+  const checkOK = async () => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const todayDate = new Date(today);
@@ -80,8 +81,21 @@ export default function GameDetailLeft({
       return;
     }
 
-    createRentalRequest(start, end, myData.uid, provider.uid, boardgame.id);
-    setOpenDialog(false);
+    setIsSending(true);
+
+    const { data, error } = await createRentalRequest(
+      start,
+      end,
+      myData.uid,
+      provider.uid,
+      boardgame.id
+    );
+    if (!error) {
+      setIsSending(false);
+      setOpenDialog(false);
+    } else {
+      setIsSending(false);
+    }
   };
 
   const handleModal = () => {
@@ -147,69 +161,75 @@ export default function GameDetailLeft({
 
       <dialog open={openDialog} className="modal">
         <div className="w-[40vw] h-[55vh] bg-slate-50 flex flex-row items-center justify-center rounded-md">
-          <div className="modal-box bg-slate-50 flex-frow w-full flex flex-col text-black space-y-5 shadow-none">
-            <p className="font-bold text-3xl">Booking Request</p>
+          {isSending ? (
+            <span className="loading loading-spinner loading-xl"></span>
+          ) : (
+            <div className="modal-box bg-slate-50 flex-frow w-full flex flex-col text-black space-y-5 shadow-none">
+              <p className="font-bold text-3xl">Booking Request</p>
 
-            <div className="flex flex-row w-full">
-              <p className="w-[20%] font-semibold">Name :</p>
-              <p className="w-[80%]">{boardgame.bg_name}</p>
-            </div>
+              <div className="flex flex-row w-full">
+                <p className="w-[20%] font-semibold">Name :</p>
+                <p className="w-[80%]">{boardgame.bg_name}</p>
+              </div>
 
-            <div className="flex flex-row w-full">
-              <p className="w-[20%] font-semibold">Store :</p>
-              <p className="w-[80%]">{provider ? provider.username : "N/A"}</p>
-            </div>
+              <div className="flex flex-row w-full">
+                <p className="w-[20%] font-semibold">Store :</p>
+                <p className="w-[80%]">
+                  {provider ? provider.username : "N/A"}
+                </p>
+              </div>
 
-            <div className="flex flex-row w-full">
-              <p className="w-[20%] font-semibold">Price :</p>
-              <p className="w-[80%]">{boardgame.price} Bath/Day</p>
-            </div>
+              <div className="flex flex-row w-full">
+                <p className="w-[20%] font-semibold">Price :</p>
+                <p className="w-[80%]">{boardgame.price} Bath/Day</p>
+              </div>
 
-            <div className="flex flex-row w-full items-center">
-              <p className="w-[20%] font-semibold">Date :</p>
-              <div className="flex flex-row gap-4">
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
-                />
-                <p>to</p>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
-                />
+              <div className="flex flex-row w-full items-center">
+                <p className="w-[20%] font-semibold">Date :</p>
+                <div className="flex flex-row gap-4">
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
+                  />
+                  <p>to</p>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row w-full">
+                <p className="w-[20%] font-semibold">Total :</p>
+                <p
+                  className={`w-[80%] ${totalDate < 0 ? "text-red-600 font-bold" : ""}`}
+                >
+                  {totalDate < 0
+                    ? "Invalid date"
+                    : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
+                </p>
+              </div>
+
+              <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
+                <button
+                  onClick={() => setOpenDialog(false)}
+                  className="w-1/2 border rounded-xl bg-red-500"
+                >
+                  cancel
+                </button>
+                <button
+                  className="w-1/2 border rounded-xl bg-green-500"
+                  onClick={checkOK}
+                >
+                  confirm
+                </button>
               </div>
             </div>
-
-            <div className="flex flex-row w-full">
-              <p className="w-[20%] font-semibold">Total :</p>
-              <p
-                className={`w-[80%] ${totalDate < 0 ? "text-red-600 font-bold" : ""}`}
-              >
-                {totalDate < 0
-                  ? "Invalid date"
-                  : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
-              </p>
-            </div>
-
-            <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
-              <button
-                onClick={() => setOpenDialog(false)}
-                className="w-1/2 border rounded-xl bg-red-500"
-              >
-                cancel
-              </button>
-              <button
-                className="w-1/2 border rounded-xl bg-green-500"
-                onClick={checkOK}
-              >
-                confirm
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </dialog>
     </div>

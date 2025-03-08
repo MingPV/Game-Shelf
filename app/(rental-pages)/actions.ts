@@ -181,7 +181,7 @@ export const createRentalRequest = async (
     throw new Error("Failed to create rental request");
   }
 
-  return data;
+  return { data, error };
 };
 
 export const selectMyRentingRequestByStatus = async (formData: FormData) => {
