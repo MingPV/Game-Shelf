@@ -5,6 +5,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
 import { getMyUserData, selectTopProvider } from "@/app/(user-pages)/actions";
+import Link from "next/link";
 
 export default function HomeList() {
   const [topProviders, setTopProviders] = useState<UserData[]>();
@@ -59,7 +60,27 @@ export default function HomeList() {
           <div className="flex flex-row gap-2">
             <div>Role : </div>
             <div className="text-opacity-60 text-white">
-              {userData?.isProvider ? "Provider" : "Player"}
+              {userData?.isProvider ? (
+                <>
+                  <div className="flex flex-row gap-2">
+                    <div>Provider</div>
+                    {userData.is_verified ? (
+                      <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                        Account verified ✓
+                      </div>
+                    ) : (
+                      <Link
+                        href="/provider-form"
+                        className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
+                      >
+                        Verify your account ✎
+                      </Link>
+                    )}
+                  </div>
+                </>
+              ) : (
+                "Player"
+              )}
             </div>
           </div>
         </div>
