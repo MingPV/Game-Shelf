@@ -184,6 +184,12 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
         } else {
           console.error("Overall price is undefined");
         }
+
+        const message = `Your rental request for the board game ${boardgame?.bg_name} has been accepted. You can pay for the rental in your profile menu.`;
+        if (customer?.uid) {
+          await createNotificationByUserId(customer.uid, message);
+        }
+
         setIsUpdating(false);
         setIsHidden(true);
 
