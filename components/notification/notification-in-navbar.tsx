@@ -32,14 +32,12 @@ export default function NotificationInNavbar() {
     fetchNotifications();
   }, []);
 
-
   const handleRead = async () => {
     if (!isRead && unread != 0) {
       updateReadNotification();
       setIsRead(true);
     }
   };
-
 
   return (
     <div className="dropdown dropdown-end">
@@ -53,21 +51,22 @@ export default function NotificationInNavbar() {
       </div>
       <div
         tabIndex={0}
-        className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-64 shadow"
+        className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-80 shadow"
       >
         <div className="card-body">
-          <span className="text-lg font-semibold border-b">
-            Notifications
-          </span>
+          <span className="text-lg font-bold py-2 ">Notifications</span>
           <div className="flex flex-col">
             {notifications?.map((item, index) => (
-              <div key={item.id} className="bg-slate-700 bg-opacity-20 border-b w-full px-2 py-1 flex flex-row space-x-2">
+              <div
+                key={item.id}
+                className="bg-opacity-20  border-t border-white border-opacity-30 w-full px-2 py-4 flex flex-row space-x-2"
+              >
                 <img
-                    alt="mock_nofication_image"
-                    src={"/mock_provider.jpeg"}
-                    className="rounded-full w-8 h-8"
-                  />
-                <p className="self-center line-clamp-1">
+                  alt="mock_nofication_image"
+                  src={"/mock_provider.jpeg"}
+                  className="rounded-full w-8 h-8"
+                />
+                <p className="self-center line-clamp-1 text-white text-opacity-50">
                   {item.message}
                 </p>
               </div>
@@ -76,7 +75,7 @@ export default function NotificationInNavbar() {
 
           <div>
             <Link
-              className="btn btn-primary btn-block btn-sm"
+              className="btn btn-primary btn-block btn-sm "
               href="/notifications"
             >
               see all
