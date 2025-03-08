@@ -16,21 +16,19 @@ export default function ToPayList() {
 
     const user_data = await selectMyToPayBoardGame();
     //console.log("Fetched data:", user_data);
-  
+
     if (user_data && user_data.length > 0) {
       //console.log("Fetched UID:", user_data[0]?.uid);
       setUserData(user_data[0]);
     }
-    
-    setIsFetching(false);
 
+    setIsFetching(false);
   }, []);
 
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
 
-  
   return (
     <>
       <main className="w-full flex flex-col gap-5">
@@ -41,15 +39,15 @@ export default function ToPayList() {
             <Skeleton />
             <Skeleton />
           </div>
-        ) : (userData ? (
-            <div>
-              <div className="flex justify-center text-3xl">
-                <p className="font-bold">{userData.username}</p>'s to pay Boardgame
-              </div>
-              <BoardgameItems player_id={userData?.uid || ""} />
+        ) : userData ? (
+          <div>
+            <div className="flex justify-center text-3xl mb-6">
+              <p className="font-bold">{userData.username}</p>'s to pay
+              Boardgame
             </div>
-          ) : null )
-        }
+            <BoardgameItems player_id={userData?.uid || ""} />
+          </div>
+        ) : null}
       </main>
     </>
   );
