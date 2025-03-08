@@ -122,7 +122,7 @@ export function BoardgameItems() {
             </button>
           </div>
           <div className="flex flex-row relative  justify-end gap-2 items-start">
-            <TypeFilter
+            {/* <TypeFilter
               selectedType={selectedTypeFilter}
               boardgame_type={boardgameTypes}
               handleChange={(value: string[]) => {
@@ -138,7 +138,7 @@ export function BoardgameItems() {
                   </p>
                 );
               })}
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -162,6 +162,22 @@ export function BoardgameItems() {
                lg:p-2
               "
               >
+                <div className="flex flex-row w-full">
+                  <div className="flex justify-start w-full mt-2 mr-2">
+                    <div className="font-extrabold text-2xl px-4 py-2 mx-4">
+                      Inventory
+                    </div>
+                  </div>
+                  <div className="flex justify-end w-full mt-2 mr-2">
+                    <Link
+                      className="flex justify-center items-center bg-black bg-opacity-20 px-4 py-2 mx-4 rounded-lg text-white text-opacity-80 hover:bg-opacity-40 hover:cursor-pointer transition-all duration-300 hover:text-opacity-90"
+                      href={"/add-game"}
+                    >
+                      + Add Boardgame
+                    </Link>
+                  </div>
+                </div>
+
                 {boardgames?.map((boardgame, index) => (
                   <BoardGameCard
                     key={index}
