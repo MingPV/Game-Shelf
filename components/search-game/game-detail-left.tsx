@@ -107,8 +107,8 @@ export default function GameDetailLeft({
   };
 
   return (
-    <div className="flex flex-col p-10 bg-white/10 rounded-xl items-center justify-between gap-6 lg:w-96 sm:w-48 md:w-64">
-      <div className="lg:w-64 sm:w-24 md:w-48 rounded-xl">
+    <div className="flex flex-col p-4 md:p-6 lg:p-10 bg-white/10 rounded-xl items-center justify-between gap-3 lg:gap-6 w-80 self-center lg:w-96 md:h-auto">
+      <div className="w-4/5 md:w-[90%] rounded-xl">
         <img
           src={boardgame.bg_picture}
           alt={boardgame.bg_name}
@@ -117,12 +117,12 @@ export default function GameDetailLeft({
       </div>
 
       <div className="space-y-1 w-full">
-        <div className="flex flex-row justify-between text-md text-gs_white/50 w-full">
+        <div className="flex flex-row justify-between text-sm md:text-base text-gs_white/50 w-full">
           <p>name</p>
           <p>baht / day</p>
         </div>
 
-        <div className="flex flex-row justify-between text-2xl font-semibold text-gs_white w-full gap-10">
+        <div className="flex flex-row justify-between text-lg md:text-xl lg:text-2xl font-semibold text-gs_white w-full gap-10">
           <p>{boardgame.bg_name}</p>
           <p>{boardgame.price}</p>
         </div>
@@ -160,59 +160,54 @@ export default function GameDetailLeft({
       )}
 
       <dialog open={openDialog} className="modal">
-        <div className="w-[40vw] h-[55vh] bg-slate-50 flex flex-row items-center justify-center rounded-md">
-          {isSending ? (
-            <span className="loading loading-spinner loading-xl"></span>
-          ) : (
-            <div className="modal-box bg-slate-50 flex-frow w-full flex flex-col text-black space-y-5 shadow-none">
-              <p className="font-bold text-3xl">Booking Request</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="modal-box bg-slate-50 w-1/2  flex flex-col text-black space-y-5 shadow-none">
+            <p className="font-bold text-lg md:text-xl lg:text-2xl">Booking Request</p>
 
-              <div className="flex flex-row w-full">
-                <p className="w-[20%] font-semibold">Name :</p>
-                <p className="w-[80%]">{boardgame.bg_name}</p>
-              </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Name :</p>
+              <p>{boardgame.bg_name}</p>
+            </div>
 
-              <div className="flex flex-row w-full">
-                <p className="w-[20%] font-semibold">Store :</p>
-                <p className="w-[80%]">
-                  {provider ? provider.username : "N/A"}
-                </p>
-              </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Store :</p>
+              <p>{provider ? provider.username : "N/A"}</p>
+            </div>
 
-              <div className="flex flex-row w-full">
-                <p className="w-[20%] font-semibold">Price :</p>
-                <p className="w-[80%]">{boardgame.price} Bath/Day</p>
-              </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Price :</p>
+              <p>{boardgame.price} Bath/Day</p>
+            </div>
 
-              <div className="flex flex-row w-full items-center">
-                <p className="w-[20%] font-semibold">Date :</p>
-                <div className="flex flex-row gap-4">
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
-                  />
-                  <p>to</p>
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-white text-black border-slate-700 text-center rounded-md border black-calendar-icon"
-                  />
-                </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Date :</p>
+              <div className="flex flex-col md:flex-row gap-0 md:gap-2 lg:gap-4">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                />
+                <p>to</p>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                />
               </div>
+            </div>
 
-              <div className="flex flex-row w-full">
-                <p className="w-[20%] font-semibold">Total :</p>
-                <p
-                  className={`w-[80%] ${totalDate < 0 ? "text-red-600 font-bold" : ""}`}
-                >
-                  {totalDate < 0
-                    ? "Invalid date"
-                    : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
-                </p>
-              </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Total :</p>
+              <p
+                className={`${totalDate < 0 ? "text-red-600 font-bold" : ""}`}
+              >
+                {totalDate < 0
+                  ? "Invalid date"
+                  : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
+              </p>
+            </div>
 
               <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
                 <button
