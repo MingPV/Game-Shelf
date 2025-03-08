@@ -277,43 +277,42 @@ export const updateBaordgameStatus = async (
   renting: Number
 ) => {
   const supabase = await createClient();
-  const { data, error: error_message } = await supabase
+  const { data, error } = await supabase
     .from("boardgames")
     .update({
       status: status,
       renting: renting,
     })
     .eq("id", bg_id);
+
+  return { data, error };
 };
 
-
-export const updateBoardgameRentingCount = async (
-  bg_id: Number,
-) => {
+export const updateBoardgameRentingCount = async (bg_id: Number) => {
   const supabase = await createClient();
 
   const { data, error: fetchError } = await supabase
-  .from("boardgames")
-  .select("renting")
-  .eq("id", bg_id)
-  .single();
+    .from("boardgames")
+    .select("renting")
+    .eq("id", bg_id)
+    .single();
 
-if (fetchError) {
-  console.error("Error fetching boardgame:", fetchError);
-  return;
-}
+  if (fetchError) {
+    console.error("Error fetching boardgame:", fetchError);
+    return;
+  }
 
-const { error: updateError } = await supabase
-  .from("boardgames")
-  .update({
-    renting: data.renting - 1,
-    status: "available",
-  })
-  .eq("id", bg_id);
+  const { error: updateError } = await supabase
+    .from("boardgames")
+    .update({
+      renting: data.renting - 1,
+      status: "available",
+    })
+    .eq("id", bg_id);
 
-if (updateError) {
-  console.error("Error updating boardgame:", updateError);
-} else {
-  console.log("Boardgame updated successfully");
-}
+  if (updateError) {
+    console.error("Error updating boardgame:", updateError);
+  } else {
+    console.log("Boardgame updated successfully");
+  }
 };

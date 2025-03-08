@@ -16,6 +16,7 @@ import { Boardgame, RentingRequest } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import { useEffect, useState } from "react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 interface RequestCardProps {
   rentalRequest: RentingRequest;
@@ -27,6 +28,8 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
   const [customer, setCustomer] = useState<UserData>();
   const [isHidden, setIsHidden] = useState(false);
   const [overallPrice, setOverallPrice] = useState<Number>();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
     //   if (params.users.profilePicture) {
@@ -104,7 +107,13 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
     }
   }
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
+    // Close the modal
+    const modal = document.getElementById(
+      `my_modal_2_${rentalRequest.id}`
+    ) as HTMLDialogElement;
+    modal?.close();
+
     if (!boardgame) {
       alert("no boardgame");
       return;
@@ -114,6 +123,7 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
       return;
     }
     if (!customer || !boardgame) {
+      alert("no customer or boardgame.");
       return;
     }
 
@@ -123,47 +133,127 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
       new_status = "unavailable";
     }
 
-    updateBaordgameStatus(boardgame.id, new_status, new_renting);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#359368",
+      cancelButtonColor: "#FF2525",
+      confirmButtonText: "Accept",
+      customClass: {
+        popup: "custom-swal-popup",
+        title: "custom-swal-title",
+        confirmButton: "custom-swal-confirm-button",
+        cancelButton: "custom-swal-cancel-button",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsUpdating(true);
 
-    console.log("ming12");
-    updateRentingRequestStatus(rentalRequest.id, "unpaid");
-    console.log("ming13");
+        const { data, error } = await updateBaordgameStatus(
+          boardgame.id,
+          new_status,
+          new_renting
+        );
+        if (error) {
+          Swal.fire({
+            title: "Can not accept this request.",
+            text: "Please try again later.",
+            icon: "error",
+            customClass: {
+              popup: "custom-swal-popup",
+              title: "custom-swal-title",
+              confirmButton: "custom-swal-confirm-button",
+            },
+          }).then(() => {
+            // Close the modal
+          });
+          return;
+        }
+        await updateRentingRequestStatus(rentalRequest.id, "unpaid");
 
-    if (overallPrice !== undefined) {
-      createCheckoutSession(
-        overallPrice as number,
-        boardgame?.bg_name || "",
-        rentalRequest.customer_id,
-        rentalRequest.provider_id,
-        rentalRequest.id
-      );
-    } else {
-      console.error("Overall price is undefined");
-    }
+        if (overallPrice !== undefined) {
+          await createCheckoutSession(
+            overallPrice as number,
+            boardgame?.bg_name || "",
+            rentalRequest.customer_id,
+            rentalRequest.provider_id,
+            rentalRequest.id
+          );
+        } else {
+          console.error("Overall price is undefined");
+        }
+        setIsUpdating(false);
+        setIsHidden(true);
 
-    setIsHidden(true);
+        Swal.fire({
+          title: "Request accepted",
+          text: "This request has been accepted.",
+          icon: "success",
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+        }).then(() => {
+          // Close the modal
+        });
+      }
+    });
   };
 
-  const handleDeny = () => {
-    if (!customer || !boardgame) {
-      return;
-    }
-
-    deleteRentingRequest(rentalRequest.id);
-    // send notification and insert it and send email
-    const message = `Your rental request for the board game ${boardgame?.bg_name} has been denied. We're sorry for the inconvenience.`;
-    if (customer?.uid) {
-      createNotificationByUserId(customer.uid, message);
-    }
-
+  const handleDeny = async () => {
     // Close the modal
     const modal = document.getElementById(
       `my_modal_2_${rentalRequest.id}`
     ) as HTMLDialogElement;
     modal?.close();
 
-    // Remove the card from UI
-    setIsHidden(true);
+    if (!customer || !boardgame) {
+      return;
+    }
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#359368",
+      cancelButtonColor: "#FF2525",
+      confirmButtonText: "Yes, Canceled it!",
+      customClass: {
+        popup: "custom-swal-popup",
+        title: "custom-swal-title",
+        confirmButton: "custom-swal-confirm-button",
+        cancelButton: "custom-swal-cancel-button",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsUpdating(true);
+        await deleteRentingRequest(rentalRequest.id);
+        // send notification and insert it and send email
+        const message = `Your rental request for the board game ${boardgame?.bg_name} has been denied. We're sorry for the inconvenience.`;
+        if (customer?.uid) {
+          await createNotificationByUserId(customer.uid, message);
+        }
+        setIsUpdating(false);
+        setIsHidden(true);
+
+        Swal.fire({
+          title: "Canceled!",
+          text: "Your file has been canceled.",
+          icon: "success",
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+        }).then(() => {
+          // Close the modal
+        });
+      }
+    });
   };
 
   return !isHidden ? (
