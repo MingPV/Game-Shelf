@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
+import LoadingGameCard from "@/components/search-game/loading-card";
 
 export default function GameDetails() {
     const { gid } = useParams();
@@ -64,7 +65,7 @@ export default function GameDetails() {
     }, [bg]);
 
     if (loading) {
-        return <div className="w-full place-items-center text-center">Loading...</div>;
+        return <LoadingGameCard/>;
     }
 
     if (!bg) {
@@ -81,8 +82,8 @@ export default function GameDetails() {
     }, {});
 
     return (
-        <div className="flex flex-row w-[90%] space-x-20 justify-center self-center">
-            <GameDetailLeft boardgame={bg} provider={provider} />
+        <div className="flex flex-col md:flex-row w-[90%] space-y-10 md:space-x-10 lg:space-x-20 justify-center self-center">
+            <GameDetailLeft boardgame={bg} provider={provider}/>
             <GameDetailRight boardgame={bg} boardgame_type={mappedBoardgameType} provider={provider} />
         </div>
     );
