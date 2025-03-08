@@ -8,6 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { getMyUserData } from "@/app/(user-pages)/actions";
 import { createRentalRequest } from "@/app/(rental-pages)/actions";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function GameDetailLeft({
   boardgame,
@@ -81,21 +82,67 @@ export default function GameDetailLeft({
       return;
     }
 
-    setIsSending(true);
+    setOpenDialog(false);
 
-    const { data, error } = await createRentalRequest(
-      start,
-      end,
-      myData.uid,
-      provider.uid,
-      boardgame.id
-    );
-    if (!error) {
-      setIsSending(false);
-      setOpenDialog(false);
-    } else {
-      setIsSending(false);
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#359368",
+      cancelButtonColor: "#FF2525",
+      confirmButtonText: "Yes",
+      customClass: {
+        popup: "custom-swal-popup",
+        title: "custom-swal-title",
+        confirmButton: "custom-swal-confirm-button",
+        cancelButton: "custom-swal-cancel-button",
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setIsSending(true);
+
+        const { data, error } = await createRentalRequest(
+          start,
+          end,
+          myData.uid,
+          provider.uid,
+          boardgame.id
+        );
+        if (!error) {
+          setIsSending(false);
+          setOpenDialog(false);
+        } else {
+          setIsSending(false);
+          Swal.fire({
+            title: "This boardgame is not available!",
+            text: "Please try again later.",
+            icon: "error",
+            customClass: {
+              popup: "custom-swal-popup",
+              title: "custom-swal-title",
+              confirmButton: "custom-swal-confirm-button",
+            },
+          }).then(() => {
+            // Close the modal
+          });
+          return;
+        }
+
+        Swal.fire({
+          title: "Requested",
+          text: "Rental request was sent!",
+          icon: "success",
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+        }).then(() => {
+          // Close the modal
+        });
+      }
+    });
   };
 
   const handleModal = () => {
@@ -160,9 +207,11 @@ export default function GameDetailLeft({
       )}
 
       <dialog open={openDialog} className="modal">
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
           <div className="modal-box bg-slate-50 w-1/2  flex flex-col text-black space-y-5 shadow-none">
-            <p className="font-bold text-lg md:text-xl lg:text-2xl">Booking Request</p>
+            <p className="font-bold text-lg md:text-xl lg:text-2xl">
+              Booking Request
+            </p>
 
             <div className="flex flex-col md:flex-row w-full">
               <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Name :</p>
@@ -200,31 +249,28 @@ export default function GameDetailLeft({
 
             <div className="flex flex-col md:flex-row w-full">
               <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Total :</p>
-              <p
-                className={`${totalDate < 0 ? "text-red-600 font-bold" : ""}`}
-              >
+              <p className={`${totalDate < 0 ? "text-red-600 font-bold" : ""}`}>
                 {totalDate < 0
                   ? "Invalid date"
                   : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
               </p>
             </div>
 
-              <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
-                <button
-                  onClick={() => setOpenDialog(false)}
-                  className="w-1/2 border rounded-xl bg-red-500"
-                >
-                  cancel
-                </button>
-                <button
-                  className="w-1/2 border rounded-xl bg-green-500"
-                  onClick={checkOK}
-                >
-                  confirm
-                </button>
-              </div>
+            <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
+              <button
+                onClick={() => setOpenDialog(false)}
+                className="w-1/2 border rounded-xl bg-red-500"
+              >
+                cancel
+              </button>
+              <button
+                className="w-1/2 border rounded-xl bg-green-500"
+                onClick={checkOK}
+              >
+                confirm
+              </button>
             </div>
-          )}
+          </div>
         </div>
       </dialog>
     </div>
