@@ -37,6 +37,14 @@ export function SearchItems() {
       setPage(1);
     }
 
+    // console.log("input data");
+    // console.log(searchValue);
+    // console.log(price); 
+    // console.log(page);
+    // console.log(itemsPerPage);
+    // console.log(maxPage);
+    // console.log(selectedTypeFilter);
+
     const { fetch_data: data, count_items: count_games } =
       await selectGamesByFilterAction(
         searchValue,

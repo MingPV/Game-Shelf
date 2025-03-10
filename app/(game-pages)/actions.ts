@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { json } from "stream/consumers";
+import { fetchGamesByFilterAction } from "@/lib/testService";
 
 export const addGameAction = async (formData: FormData) => {
   const boardgame_name = formData.get("boardgame_name")?.toString();
@@ -269,6 +270,7 @@ export const selectGamesByFilterAction = async (
   }
 
   return { fetch_data, count_items };
+  // return fetchGamesByFilterAction(name, price, page, itemsPerPage, maxPage, selectedTypeFilter);
 };
 
 export const updateBaordgameStatus = async (

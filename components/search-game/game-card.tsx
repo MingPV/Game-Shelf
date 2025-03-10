@@ -20,7 +20,9 @@ export default function GameCard({
   const router = useRouter();
 
   return (
-    <div className="flex flex-col p-3 w-64 bg-white/10 rounded-xl items-center justify-between space-y-2">
+    <div className="flex flex-col p-3 w-64 bg-white/10 rounded-xl items-center justify-between space-y-2"
+         data-testid="game-card"
+    >
       <div className="flex flex-col gap-1 w-full">
         <div className="w-32 h-32 self-center md:h-56 md:w-56 rounded-xl">
           <img
@@ -38,7 +40,7 @@ export default function GameCard({
         </div>
         <div className="flex flex-col w-full">
           <div className="flex flex-row justify-between text-base text-gs_white w-full">
-            <p>{boardgame.bg_name}</p>
+            <p data-testid="game-title">{boardgame.bg_name}</p>
             <p>{boardgame.price}</p>
           </div>
         </div>
