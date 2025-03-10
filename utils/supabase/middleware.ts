@@ -71,38 +71,36 @@ export const updateSession = async (request: NextRequest) => {
     // };
     // const secretKey = await importJWK(secretJWK, "HS256");
 
-    const token = request.cookies.get("token");
-    if (!token || token.value === "") {
-      await signOutAction();
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    } else {
-      try {
-        // const { payload } = await jwtVerify(token.value, secretKey);
-        // console.log("ming", payload);
-        // if (payload.exp && payload.exp * 1000 < Date.now()) {
-        //   console.log("Token expired");
-        //   await signOutAction();
-        // }
-      } catch (error) {
-        console.log("Invalid token:", error);
-        await signOutAction2();
-        return NextResponse.redirect(new URL("/sign-in", request.url));
-      }
-    }
+    // const token = request.cookies.get("token");
+    // if (!token || token.value === "") {
+    //   await signOutAction2();
+    //   return NextResponse.redirect(new URL("/home", request.url));
+    // } else {
+    //   try {
+    //     // const { payload } = await jwtVerify(token.value, secretKey);
+    //     // console.log("ming", payload);
+    //     // if (payload.exp && payload.exp * 1000 < Date.now()) {
+    //     //   console.log("Token expired");
+    //     //   await signOutAction();
+    //     // }
+    //   } catch (error) {
+    //     console.log("Invalid token:", error);
+    //     await signOutAction2();
+    //     return NextResponse.redirect(new URL("/sign-in", request.url));
+    //   }
+    // }
 
     // for provider
 
     if (request.nextUrl.pathname.startsWith("/home")) {
       const token = request.cookies.get("token");
-      if (!token || token.value == "") {
-        await signOutAction2();
-        return NextResponse.redirect(new URL("/home", request.url));
-      }
-      const payload = JSON.parse(atob(token.value.split(".")[1]));
-      const userData = payload.userData as UserData;
+      if (token) {
+        const payload = JSON.parse(atob(token.value.split(".")[1]));
+        const userData = payload.userData as UserData;
 
-      if (userData.isProvider) {
-        return NextResponse.redirect(new URL("/provider-home", request.url));
+        if (userData.isProvider) {
+          return NextResponse.redirect(new URL("/provider-home", request.url));
+        }
       }
     }
 
@@ -161,6 +159,19 @@ export const updateSession = async (request: NextRequest) => {
         return NextResponse.redirect(new URL("/home", request.url));
       }
     }
+    if (request.nextUrl.pathname.startsWith("/shipping")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction2();
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
+      const userData = payload.userData as UserData;
+
+      if (!userData.isProvider) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
 
     // // for admin
 
@@ -188,6 +199,34 @@ export const updateSession = async (request: NextRequest) => {
       const userData = payload.userData as UserData;
 
       if (!userData.is_admin) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+
+    // for player
+    if (request.nextUrl.pathname.startsWith("/my-rental")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction2();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
+      const userData = payload.userData as UserData;
+
+      if (userData.isProvider) {
+        return NextResponse.redirect(new URL("/home", request.url));
+      }
+    }
+    if (request.nextUrl.pathname.startsWith("/to-pay")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction2();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
+      const payload = JSON.parse(atob(token.value.split(".")[1]));
+      const userData = payload.userData as UserData;
+
+      if (userData.isProvider) {
         return NextResponse.redirect(new URL("/home", request.url));
       }
     }
