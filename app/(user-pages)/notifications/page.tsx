@@ -3,16 +3,32 @@ import { Notification } from "@/app/types/notification";
 import { useEffect, useState } from "react";
 import { getAllNotifications } from "../actions";
 import { IoNotifications } from "react-icons/io5";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [notifications, setNotifications] = useState<Notification[]>();
+  const supabase = createClient();
+
+  const router = useRouter();
 
   useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.push("/sign-in");
+      }
+    };
+
     const fetchNotifications = async () => {
       const fetchData = await getAllNotifications();
       setNotifications(fetchData);
     };
 
+    getUser();
     fetchNotifications();
   }, []);
 

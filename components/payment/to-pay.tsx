@@ -5,7 +5,6 @@ import { selectMyToPayBoardGame } from "@/app/(payment-pages)/actions";
 import { useEffect, useState, useCallback } from "react";
 import { UserData } from "@/app/types/user";
 import Skeleton from "./skeleton";
-import { useDebouncedCallback } from "use-debounce";
 
 export default function ToPayList() {
   const [userData, setUserData] = useState<UserData | null>(null);
