@@ -103,7 +103,7 @@ export default function ProviderForm({
             name="id"
             placeholder="ID"
             value={user.uid}
-            className={` font-normal  col-span-8 border-white border-opacity-60 ${editMode ? "" : "border-none bg-transparent"}`}
+            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none bg-transparent"}`}
             disabled
           />
           <Label
@@ -117,9 +117,9 @@ export default function ProviderForm({
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={` font-normal  col-span-8 border-white border-opacity-60 ${editMode ? "" : "border-none bg-transparent"}`}
-            disabled={!editMode}
-            style={{ color: "white", opacity: 1 }}
+            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none bg-transparent"}`}
+            disabled
+            style={{ color: "white", opacity: editMode ? 0.5 : 1 }}
           />
 
           <Label
@@ -132,9 +132,9 @@ export default function ProviderForm({
             name="email"
             placeholder="E-mail"
             value={user.email}
-            className={` font-normal  col-span-8 border-white border-opacity-60 ${editMode ? "" : "border-none bg-transparent"}`}
-            disabled={!editMode}
-            style={{ color: "white", opacity: 1 }}
+            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none bg-transparent"}`}
+            disabled
+            style={{ color: "white", opacity: editMode ? 0.5 : 1 }}
           />
           <Label
             htmlFor="phoneNumber"
@@ -147,7 +147,7 @@ export default function ProviderForm({
             placeholder="Phone Number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className={` font-normal  col-span-8 border-white border-opacity-60 ${editMode ? "" : "border-none bg-transparent"}`}
+            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none bg-transparent"}`}
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
           />
@@ -161,7 +161,7 @@ export default function ProviderForm({
             name="location"
             placeholder="Location"
             value={location}
-            className={` w-full font-normal bg-transparent col-span-8 border-white border-opacity-60 ${editMode ? "border border-white rounded-md" : "resize-none border-none bg-transparent"} py-2 px-3`}
+            className={` w-full font-normal bg-transparent col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "border border-white rounded-md" : "resize-none border-none bg-transparent"} py-2 px-3`}
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
             onChange={(e) => {
@@ -179,21 +179,21 @@ export default function ProviderForm({
             placeholder="Credentials"
             value={credentials}
             onChange={(e) => setCredentials(e.target.value)}
-            className={` font-normal  col-span-8 border-white border-opacity-60 ${editMode ? "" : "border-none bg-transparent"}`}
+            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none bg-transparent"}`}
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
           />
         </div>
         {editMode && (
-          <div className=" grid grid-cols-2 w-full pt-5">
+          <div className=" grid grid-cols-2 w-full pt-5 gap-4">
             <button
-              className="cols-span-1  btn btn-outline  bg-transparent  border-white border-opacity-80 mx-4 border-1"
+              className="cols-span-1  btn btn-outline  bg-transparent  border-white border-opacity-80  border-1"
               onClick={handleClickCancel}
             >
               Cancel
             </button>
             <button
-              className="cols-span-1  btn btn-outline  bg-transparent  border-white border-opacity-80 mx-4 border-1"
+              className="cols-span-1  btn btn-outline  bg-transparent  border-white border-opacity-80  border-1"
               onClick={handleClickUpdate}
             >
               Update

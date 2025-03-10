@@ -6,7 +6,7 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import GotoPage from "./goto-from-sidebar";
 import { GrGamepad } from "react-icons/gr";
 import { CiViewList } from "react-icons/ci";
-
+import { IoIosArrowForward } from "react-icons/io";
 export default function Provider({ user }: { user: UserData }) {
   const [window, setWindow] = useState("profile");
 
@@ -17,40 +17,60 @@ export default function Provider({ user }: { user: UserData }) {
   };
 
   return (
-    <main className="flex-row p-4 flex md:grid md:grid-cols-4 w-full ">
+    <main className="flex-row p-4 flex md:grid md:grid-cols-4 w-full">
       <ul className="hidden md:grid col-span-1 menu bg-white bg-opacity-10 rounded-xl ml-auto mb-auto w-full">
-        <li className="menu-title text-xl">Account</li>
+        <li className="menu-title text-xl ">Account</li>
         <li>
           <a
             onClick={() => setWindow("profile")}
-            className={`${window == "profile" ? "active" : ""}`}
+            className={`block w-full  ${window == "profile" ? "active" : ""}`}
           >
-            My Profile
+            <div className="flex flex-row justify-between items-center w-full">
+              <p>My Profile</p>
+              <span className={`${window == "profile" ? "block" : "hidden"}`}>
+                <IoIosArrowForward className="text-white" />
+              </span>
+            </div>
           </a>
         </li>
 
         <li>
           <a
             onClick={() => setWindow("inventory")}
-            className={`${window == "inventory" ? "active" : ""}`}
+            className={`block w-full  ${window == "inventory" ? "active" : ""}`}
           >
-            My Inventory
+            <div className="flex flex-row justify-between items-center w-full">
+              <p>My Inventory</p>
+              <span className={`${window == "inventory" ? "block" : "hidden"}`}>
+                <IoIosArrowForward className="text-white" />
+              </span>
+            </div>
           </a>
         </li>
-        <li>
+        <li className="">
           <a
             onClick={() => setWindow("dashboard")}
-            className={`${window == "dashboard" ? "active" : ""}`}
+            className={`block w-full ${window == "dashboard" ? "active" : ""}`}
           >
-            My Dashboard
+            <div className="flex flex-row justify-between items-center w-full">
+              <p>My Dashboard</p>
+              <span className={`${window == "dashboard" ? "block" : "hidden"}`}>
+                <IoIosArrowForward className="text-white" />
+              </span>
+            </div>
           </a>
         </li>
         <li>
           <a
             onClick={() => setWindow("income")}
-            className={`${window == "income" ? "active" : ""}`}
+            className={`block w-full ${window == "income" ? "active" : ""}`}
           >
-            My income
+            <div className="flex flex-row justify-between items-center w-full">
+              <p>My Income</p>
+              <span className={`${window == "income" ? "block" : "hidden"}`}>
+                <IoIosArrowForward className="text-white" />
+              </span>
+            </div>
           </a>
         </li>
       </ul>

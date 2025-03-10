@@ -81,7 +81,7 @@ export default function ProviderStat({ user }: { user: UserData }) {
         totalAmount += parseInt(review.amount.toString(), 10);
       });
       totalAmount = parseFloat(totalAmount.toFixed(2));
-      setReceiptAmount(totalAmount / receipts.length);
+      setReceiptAmount(totalAmount);
     }
   }, [reviews, boardgames, receipts]);
   return (
@@ -111,7 +111,12 @@ export default function ProviderStat({ user }: { user: UserData }) {
           <div className="stat-figure ">
             <FaBahtSign className="text-3xl" />
           </div>
-          <div className="stat-value text-3xl">{receiptAmount.toString()}</div>
+          <div className="stat-value text-3xl">
+            {new Intl.NumberFormat("en", {
+              notation: "compact",
+              maximumFractionDigits: 1,
+            }).format(receiptAmount)}
+          </div>
           <div className="stat-desc text-center">baht</div>
         </div>
       </div>
