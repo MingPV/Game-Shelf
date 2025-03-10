@@ -330,3 +330,20 @@ export const cancelMultipleInvoices = async (formData: FormData) => {
   }
   return;
 };
+
+export const selectRentalRequestById = async (request_id: number) => {
+  const supabase = await createClient();
+
+  const { data: rental_requests, error: getRequestsError } = await supabase
+    .from("rental_requests")
+    .select("*")
+    .eq("id", request_id)
+    .single();
+
+  if (getRequestsError) {
+    console.log(getRequestsError);
+    throw new Error("Failed to fetch a rental request");
+  }
+
+  return rental_requests;
+};

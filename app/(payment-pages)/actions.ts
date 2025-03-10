@@ -4,6 +4,9 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { selectRentalRequestById } from "../(rental-pages)/actions";
+import { Receipt } from "../types/receipt";
+import { selectGameAction } from "../(game-pages)/actions";
 
 export const selectMyToPayBoardGame = async () => {
   const supabase = await createClient();
@@ -58,4 +61,78 @@ export const selectToPayBoardGameById = async (playerId: string) => {
 
   console.log("Payments: ", payments);
   return payments;
+};
+
+export const selectMyReceipts = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  //console.log(user);
+
+  if (!user) {
+    return redirect("/sign-in");
+  }
+
+  let user_data_value = null;
+
+  const { data: user_data, error: userError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+
+  if (userError) {
+    throw new Error(`Select user failed: ${userError.message}`);
+  }
+
+  const { data, error } = await supabase
+    .from("receipts")
+    .select("*")
+    .eq("provider_id", user_data[0].uid);
+
+  if (error) {
+    throw new Error(`Select receipts failed: ${error.message}`);
+  }
+
+  return data;
+};
+
+export const selectInvoiceById = async (invoiceId: number) => {
+  const supabase = await createClient();
+
+  // Fetch unpaid board game payments
+  const { data, error } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("id", invoiceId)
+    .single();
+
+  if (error) {
+    throw new Error(`Select invoice failed: ${error.message}`);
+  }
+
+  return data;
+};
+
+export const selectBoardgameByReceiptId = async (receiptId: number) => {
+  const supabase = await createClient();
+
+  // Fetch unpaid board game payments
+  const { data: receiptData, error: receiptError } = await supabase
+    .from("receipts")
+    .select("*")
+    .eq("id", receiptId)
+    .single();
+
+  if (receiptError) {
+    throw new Error(`Select receipts failed: ${receiptError.message}`);
+  }
+
+  const invoiceData = await selectInvoiceById(receiptData.invoice_id);
+  const rentalData = await selectRentalRequestById(invoiceData.request_id);
+  const boardgame = await selectGameAction(rentalData.bg_id);
+
+  return boardgame;
 };
