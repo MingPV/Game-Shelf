@@ -204,6 +204,13 @@ export const signOutAction = async () => {
   return redirect("/home");
 };
 
+export const signOutAction2 = async () => {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  (await cookies()).set("token", "");
+  return;
+};
+
 export const checkUsernameUnique = async (username: string) => {
   if (username === "" || username === null) {
     return null;

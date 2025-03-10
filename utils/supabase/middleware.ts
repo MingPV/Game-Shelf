@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
-import { jwtVerify, importJWK } from "jose";
+// import { jwtVerify, importJWK } from "jose";
 import { UserData } from "@/app/types/user";
-import { signOutAction } from "@/app/(auth-pages)/actions";
+import { signOutAction, signOutAction2 } from "@/app/(auth-pages)/actions";
 
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
@@ -33,37 +33,43 @@ export const updateSession = async (request: NextRequest) => {
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("X-XSS-Protection", "1; mode=block");
 
-    // const supabase = createServerClient(
-    //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    //   {
-    //     cookies: {
-    //       getAll() {
-    //         return request.cookies.getAll();
-    //       },
-    //       setAll(cookiesToSet) {
-    //         cookiesToSet.forEach(({ name, value }) =>
-    //           request.cookies.set(name, value)
-    //         );
-    //         response = NextResponse.next({
-    //           request,
-    //         });
-    //         cookiesToSet.forEach(({ name, value, options }) =>
-    //           response.cookies.set(name, value, options)
-    //         );
-    //       },
-    //     },
-    //   }
-    // );
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            );
+            response = NextResponse.next({
+              request,
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
 
-    const secretJWK = {
-      kty: "oct",
-      k: process.env.JOSE_SECRET,
-    };
-    const secretKey = await importJWK(secretJWK, "HS256");
+    const user = await supabase.auth.getUser();
+
+    if (user.data.user == null) {
+      await signOutAction2();
+    }
+
+    // const secretJWK = {
+    //   kty: "oct",
+    //   k: process.env.JOSE_SECRET,
+    // };
+    // const secretKey = await importJWK(secretJWK, "HS256");
 
     const token = request.cookies.get("token");
     if (!token || token.value === "") {
@@ -79,7 +85,7 @@ export const updateSession = async (request: NextRequest) => {
         // }
       } catch (error) {
         console.log("Invalid token:", error);
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/sign-in", request.url));
       }
     }
@@ -89,7 +95,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/home")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -103,7 +109,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/provider-home")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -118,7 +124,7 @@ export const updateSession = async (request: NextRequest) => {
       const token = request.cookies.get("token");
 
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -132,7 +138,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/add-game")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -145,7 +151,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/rental-request")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -161,7 +167,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/admin-homepage")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
@@ -175,7 +181,7 @@ export const updateSession = async (request: NextRequest) => {
     if (request.nextUrl.pathname.startsWith("/manage-provider")) {
       const token = request.cookies.get("token");
       if (!token || token.value == "") {
-        await signOutAction();
+        await signOutAction2();
         return NextResponse.redirect(new URL("/home", request.url));
       }
       const payload = JSON.parse(atob(token.value.split(".")[1]));
