@@ -27,6 +27,21 @@ export default function HomeList() {
     fetchUserData();
     fetchTopProvider();
   }, []);
+
+  function formatDateRange(endDateStr: string): string {
+    const endDate = new Date(endDateStr);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "short",
+    };
+
+    const endStr = endDate.toLocaleDateString("en-GB", options);
+    const year = endDate.getFullYear();
+
+    return `${endStr} ${year}`;
+  }
+
   return (
     <div className="hidden md:flex flex-col gap-6 ml-12">
       <div className="card  bg-neutral-800 bg-opacity-40 w-full border border-white border-opacity-20">
@@ -53,8 +68,8 @@ export default function HomeList() {
             <div>Member since : </div>
             <div className="text-opacity-60 text-white">
               {userData?.created_at
-                ? new Date(userData.created_at).toLocaleDateString()
-                : "1/1/2025"}
+                ? formatDateRange(userData.created_at)
+                : "1 Jan 2025"}
             </div>
           </div>
           <div className="flex flex-row gap-2">

@@ -262,6 +262,20 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
     });
   };
 
+  function formatDateRange(endDateStr: string): string {
+    const endDate = new Date(endDateStr);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "short",
+    };
+
+    const endStr = endDate.toLocaleDateString("en-GB", options);
+    const year = endDate.getFullYear();
+
+    return `${endStr} ${year}`;
+  }
+
   return !isHidden ? (
     <>
       <div
@@ -295,26 +309,8 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
             {boardgame?.price} Bath/day
           </div>
           <div className="hidden lg:flex col-span-3 text-sm  items-center justify-start">
-            {String(new Date(rentalRequest.start_date).getDate()).padStart(
-              2,
-              "0"
-            )}
-            {"/"}
-            {String(new Date(rentalRequest.start_date).getMonth() + 1).padStart(
-              2,
-              "0"
-            )}
-            {" - "}
-            {String(new Date(rentalRequest.end_date).getDate()).padStart(
-              2,
-              "0"
-            )}
-            {"/"}
-            {String(new Date(rentalRequest.end_date).getMonth() + 1).padStart(
-              2,
-              "0"
-            )}{" "}
-            {new Date(rentalRequest.end_date).getFullYear()}
+            {formatDateRange(rentalRequest.start_date)} -{" "}
+            {formatDateRange(rentalRequest.end_date)}
           </div>
           <div className="col-span-1 text-sm flex gap-2  items-center justify-end">
             <button className="btn btn-outline btn-sm">

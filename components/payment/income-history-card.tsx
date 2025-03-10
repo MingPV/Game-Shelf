@@ -1,24 +1,11 @@
 "use client";
 
-import {
-  selectGameAction,
-  updateBaordgameStatus,
-} from "@/app/(game-pages)/actions";
 import { selectBoardgameByReceiptId } from "@/app/(payment-pages)/actions";
-import {
-  deleteRentingRequest,
-  updateRentingRequestStatus,
-} from "@/app/(rental-pages)/actions";
-import {
-  createNotificationByUserId,
-  selectUserById,
-} from "@/app/(user-pages)/actions";
-import { Boardgame, RentingRequest } from "@/app/types/game";
+import { selectUserById } from "@/app/(user-pages)/actions";
+import { Boardgame } from "@/app/types/game";
 import { Receipt } from "@/app/types/receipt";
 import { UserData } from "@/app/types/user";
 import { useEffect, useState } from "react";
-import { FaCheck, FaXmark } from "react-icons/fa6";
-import Swal from "sweetalert2";
 
 interface ReceiptCardProps {
   receipt: Receipt;
