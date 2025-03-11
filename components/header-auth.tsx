@@ -117,7 +117,7 @@ export default function AuthButton() {
           </li>
           {myData.isProvider ? (
             <li>
-              <Link href="/home">Rental History</Link>
+              <Link href="/income-history">Income History</Link>
             </li>
           ) : (
             <>
