@@ -45,7 +45,7 @@ export default function ReviewCard({ reviewData }: ReviewCardProps) {
           }
         </div>
       </div>
-      <div className=" flex flex-row justify-center text-md  w-full bg-black bg-opacity-20 p-1 text-yellow-500">
+      <div className=" flex flex-row justify-center text-md  w-full bg-black bg-opacity-20 p-1 text-yellow-500 rounded-b-xl">
         <div className="rating">
           <input
             type="radio"
