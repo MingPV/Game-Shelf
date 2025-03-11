@@ -77,6 +77,7 @@ export default function NotificationInNavbar() {
             <Link
               className="btn btn-primary btn-block btn-sm "
               href="/notifications"
+              prefetch={true}
             >
               see all
             </Link>

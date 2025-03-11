@@ -24,7 +24,7 @@ export default function GotoPage({
       <p className="text-lg text-gs_white pt-6">{announce}</p>{" "}
       {/* Dynamic announcement */}
       {/* Button to go to the destination page */}
-      <Link href={topage}>
+      <Link href={topage} prefetch={true}>
         <button className="mt-4 px-6 py-2 btn btn-outline  text-white rounded-lg ">
           Go to {topage.replace("/", "").toUpperCase()} Page
         </button>

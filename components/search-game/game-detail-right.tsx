@@ -39,6 +39,7 @@ export default function GameDetailRight({
         <Link
           className="flex flex-row items-center gap-3 w-fit hover:bg-white/10 p-2 rounded-md"
           href={`/profile/${provider?.username}`}
+          prefetch={true}
         >
           <img
             alt="mock_provider"

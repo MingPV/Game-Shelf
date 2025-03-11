@@ -86,6 +86,7 @@ export default function HomeList() {
                     ) : (
                       <Link
                         href="/provider-form"
+                        prefetch={true}
                         className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
                       >
                         Verify your account ✎

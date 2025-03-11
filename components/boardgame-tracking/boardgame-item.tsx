@@ -172,6 +172,7 @@ export function BoardgameItems() {
                     <Link
                       className="flex justify-center items-center bg-black bg-opacity-20 px-4 py-2 mx-4 rounded-lg text-white text-opacity-80 hover:bg-opacity-40 hover:cursor-pointer transition-all duration-300 hover:text-opacity-90"
                       href={"/add-game"}
+                      prefetch={true}
                     >
                       + Add Boardgame
                     </Link>
@@ -211,7 +212,11 @@ export function BoardgameItems() {
                   </g>
                 </svg>
                 <p>There is no Boardgame matched with your filter.</p>
-                <Link className="btn btn-neutral" href={"/add-game"}>
+                <Link
+                  className="btn btn-neutral"
+                  href={"/add-game"}
+                  prefetch={true}
+                >
                   add new boardgame
                 </Link>
               </div>

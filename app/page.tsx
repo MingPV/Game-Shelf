@@ -1,7 +1,6 @@
 "use client";
 
 import { NavbarGetStarted } from "@/components/navbar-getstart";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default function Home() {
@@ -33,7 +32,11 @@ export default function Home() {
             {/* <button className="btn bg-rose-500 hover:bg-rose-900 hover:shadow-xl hover:shadow-stone-100">
               Get Started
             </button> */}
-            <Link className="btn bg-rose-500 hover:bg-rose-900" href="/home">
+            <Link
+              className="btn bg-rose-500 hover:bg-rose-900"
+              href="/home"
+              prefetch={true}
+            >
               Get Started
             </Link>
           </div>

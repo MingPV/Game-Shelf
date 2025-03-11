@@ -47,7 +47,11 @@ export default function VerificationButton({
       )}
       {sentVerifyReq === "" && (
         <div className="flex flex-col items-center">
-          <Link className="btn btn-outline btn-primary" href="/provider-form">
+          <Link
+            className="btn btn-outline btn-primary"
+            href="/provider-form"
+            prefetch={true}
+          >
             Request For Verification
           </Link>
           <div className="font-normal text-gray-400 pt-2">

@@ -138,6 +138,7 @@ export default function MyRentalCard({
               <Link
                 href="/to-pay"
                 className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7"
+                prefetch={true}
               >
                 Go to payment page
               </Link>

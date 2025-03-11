@@ -41,6 +41,7 @@ export default function ProviderCard({ provider }: { provider: UserData }) {
         <Link
           className="w-full font-semibold text-sm px-4  text-center rounded-xl py-2 self-end hover:border border border-white border-opacity-10 bg-white bg-opacity-10 hover:bg-opacity-15"
           href={`/profile/${provider.username}`}
+          prefetch={true}
         >
           Go to Profile
         </Link>

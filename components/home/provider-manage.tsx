@@ -74,6 +74,7 @@ export function ProviderManage() {
         <div className="w-full bg-black bg-opacity-20 flex flex-row gap-4 overflow-x-auto px-4 py-8">
           <Link
             href="/dashboard"
+            prefetch={true}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Dashboard
@@ -83,6 +84,7 @@ export function ProviderManage() {
           </Link>
           <Link
             href="/inventory"
+            prefetch={true}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Inventory
@@ -92,18 +94,21 @@ export function ProviderManage() {
           </Link>
           <Link
             href="/rental-request"
+            prefetch={true}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Rental request
           </Link>
           <Link
             href="/shipping"
+            prefetch={true}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Manage Shipping
           </Link>
           <Link
             href={`/profile/${provider?.username}`}
+            prefetch={true}
             className="flex flex-row justify-center items-center gap-2 bg-white bg-opacity-20 rounded-lg p-4 hover:bg-opacity-10 text-white text-opacity-80 hover:text-opacity-30 font-bold transition duration-300 "
           >
             Reviews

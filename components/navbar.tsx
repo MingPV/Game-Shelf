@@ -9,7 +9,7 @@ export const Navbar = () => {
     <>
       <div className="navbar bg-transparent">
         <div className="flex-1">
-          <Link className="btn btn-ghost text-xl" href="/home">
+          <Link className="btn btn-ghost text-xl" href="/home" prefetch={true}>
             GameShelf
           </Link>
         </div>
@@ -18,19 +18,29 @@ export const Navbar = () => {
             <div className="hidden flex-row  items-center justify-center lg:flex">
               <ul className="menu menu-horizontal md:px-1">
                 <li className="">
-                  <Link href="/home">Home</Link>
+                  <Link href="/home" prefetch={true}>
+                    Home
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/games">Boardgame</Link>
+                  <Link href="/games" prefetch={true}>
+                    Boardgame
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/providers">Provider</Link>
+                  <Link href="/providers" prefetch={true}>
+                    Provider
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/support">Support</Link>
+                  <Link href="/support" prefetch={true}>
+                    Support
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/contact">Contact</Link>
+                  <Link href="/contact" prefetch={true}>
+                    Contact
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -57,26 +67,36 @@ export const Navbar = () => {
                   className="dropdown-content menu gap-2 border border-neutral-500 bg-transparent  rounded-box z-[1] w-44 md:w-52 p-2 shadow pb-12 pt-4"
                 >
                   <li className="border-b-[0.1px]">
-                    <Link href="/home">➙ Home</Link>
+                    <Link href="/home" prefetch={true}>
+                      ➙ Home
+                    </Link>
                   </li>
                   <li className="border-b-[0.1px]">
-                    <Link href="/games">➙ Boardgame </Link>
+                    <Link href="/games" prefetch={true}>
+                      ➙ Boardgame{" "}
+                    </Link>
                   </li>
                   <li className="border-b-[0.1px]">
-                    <Link href="/providers">➙ Provider </Link>
+                    <Link href="/providers" prefetch={true}>
+                      ➙ Provider{" "}
+                    </Link>
                   </li>
                   <li className="border-b-[0.1px]">
-                    <Link href="/support">➙ Support </Link>
+                    <Link href="/support" prefetch={true}>
+                      ➙ Support{" "}
+                    </Link>
                   </li>
                   <li className="border-b-[0.1px]">
-                    <Link href="/contact">➙ Contact </Link>
+                    <Link href="/contact" prefetch={true}>
+                      ➙ Contact{" "}
+                    </Link>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="flex-row gap-4 mt-2 hidden md:flex">
               <NotificationInNavbar />
-              <Link href="/to-pay">
+              <Link href="/to-pay" prefetch={true}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"

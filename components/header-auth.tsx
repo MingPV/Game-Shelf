@@ -71,7 +71,9 @@ export default function AuthButton() {
               disabled
               className="opacity-75 cursor-none pointer-events-none"
             >
-              <Link href="/sign-in">Sign in</Link>
+              <Link href="/sign-in" prefetch={true}>
+                Sign in
+              </Link>
             </Button>
             <Button
               asChild
@@ -80,7 +82,9 @@ export default function AuthButton() {
               disabled
               className="opacity-75 cursor-none pointer-events-none"
             >
-              <Link href="/sign-up">Sign up</Link>
+              <Link href="/sign-up" prefetch={true}>
+                Sign up
+              </Link>
             </Button>
           </div>
         </div>
@@ -107,25 +111,33 @@ export default function AuthButton() {
           className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
         >
           <li>
-            <Link className="justify-between" href="/profile">
+            <Link className="justify-between" href="/profile" prefetch={true}>
               Profile
               <span className="badge">New</span>
             </Link>
           </li>
           <li>
-            <Link href="/account-settings">Settings</Link>
+            <Link href="/account-settings" prefetch={true}>
+              Settings
+            </Link>
           </li>
           {myData.isProvider ? (
             <li>
-              <Link href="/income-history">Income History</Link>
+              <Link href="/income-history" prefetch={true}>
+                Income History
+              </Link>
             </li>
           ) : (
             <>
               <li>
-                <Link href="/my-rental">My-Rental</Link>
+                <Link href="/my-rental" prefetch={true}>
+                  My-Rental
+                </Link>
               </li>
               <li>
-                <Link href="/to-pay">To-Pay</Link>
+                <Link href="/to-pay" prefetch={true}>
+                  To-Pay
+                </Link>
               </li>
             </>
           )}
@@ -145,10 +157,14 @@ export default function AuthButton() {
     <>
       <div className="flex gap-2">
         <Button asChild size="sm" variant={"outline"}>
-          <Link href="/sign-in">Sign in</Link>
+          <Link href="/sign-in" prefetch={true}>
+            Sign in
+          </Link>
         </Button>
         <Button asChild size="sm" variant={"default"}>
-          <Link href="/sign-up">Sign up</Link>
+          <Link href="/sign-up" prefetch={true}>
+            Sign up
+          </Link>
         </Button>
       </div>
     </>
