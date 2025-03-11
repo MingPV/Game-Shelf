@@ -66,7 +66,7 @@ export default function Home() {
     return <></>;
   } else {
     return (
-      <div className="flex flex-col w-9/12">
+      <div className="flex flex-col w-11/12">
         <div className="flex flex-col items-center">
           <label className="cursor-pointer">
             <img
@@ -81,8 +81,9 @@ export default function Home() {
           ) : null}
         </div>
 
-        <main className="flex-row p-4 flex md:grid md:grid-cols-4 w-full">
-          <ul className="hidden md:grid col-span-1 menu bg-white bg-opacity-10 rounded-xl ml-auto mb-auto w-full">
+        {/* <main className="flex-row justify-center p-4 flex md:grid md:grid-cols-5 w-full"> */}
+        <main className="flex-col justify-center p-4 gap-4 flex w-full">
+          {/* <ul className="hidden md:grid col-span-1 menu bg-white bg-opacity-10 rounded-xl ml-auto mb-auto w-full">
             <li className="menu-title text-xl">Menu</li>
             <li>
               <a
@@ -99,7 +100,6 @@ export default function Home() {
                 </div>
               </a>
             </li>
-            {/* <li><a onClick={()=>setWindow('fav')} className={`${window == "fav" ? "active" : ""}`}>My favourite</a></li> */}
             <li>
               <a
                 onClick={() => setWindow("boardgames")}
@@ -130,13 +130,13 @@ export default function Home() {
                 </div>
               </a>
             </li>
-          </ul>
-          <div className="col-span-3">
+          </ul> */}
+          {/* <div className="col-span-4">
             {window == "profile" ? (
               <ProfileUsernameForm user={data} setWindow={setWindow} />
             ) : null}
             {window == "boardgames" ? (
-              <div className="p-2 flex flex-row overflow-x-scroll h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
+              <div className="p-2 grid grid-flow-row overflow-y-scroll grid-cols-1 md:grid-cols-2 lg:grid-cols-3 h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
                 {!isLoadingBoardgame ? (
                   boardgames && boardgames.length > 0 ? (
                     <>
@@ -175,6 +175,47 @@ export default function Home() {
                 )}
               </div>
             ) : null}
+          </div> */}
+          <ProfileUsernameForm user={data} setWindow={setWindow} />
+          <div className="text-xl font-bold ml-12">Boardgames</div>
+          <div className="p-2 grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
+            {!isLoadingBoardgame ? (
+              boardgames && boardgames.length > 0 ? (
+                <>
+                  {boardgames.map((boardgame) => (
+                    <div
+                      className="flex w-full justify-center"
+                      key={boardgame.id}
+                    >
+                      <BoardgameCard boardgameData={boardgame} />
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
+                  This provider does not have any boardgame
+                </div>
+              )
+            ) : (
+              <>
+                <BoardgameLoadingCard />
+                <BoardgameLoadingCard />
+                <BoardgameLoadingCard />
+                <BoardgameLoadingCard />
+              </>
+            )}
+          </div>
+          <div className="text-xl font-bold ml-12">Reviews</div>
+          <div className="p-2 flex flex-row overflow-x-scroll h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
+            {reviews && reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <ReviewCard reviewData={review} key={index} />
+              ))
+            ) : (
+              <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
+                There are no customer reviews yet.
+              </div>
+            )}
           </div>
         </main>
       </div>

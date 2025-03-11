@@ -3,6 +3,7 @@
 import { Boardgame } from "@/app/types/game";
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 interface BoardgameCardProps {
   boardgameData: Boardgame;
@@ -10,7 +11,10 @@ interface BoardgameCardProps {
 
 export default function BoardgameCard({ boardgameData }: BoardgameCardProps) {
   return (
-    <div className="flex flex-col p-3  w-56  bg-white/10 rounded-xl items-center space-y-2 justify-between mr-4">
+    <Link
+      className="flex flex-col p-3  w-56  bg-white/10 rounded-xl items-center space-y-2 justify-between mr-4 hover:bg-white/20"
+      href={`/games/${boardgameData.id}`}
+    >
       <div className="flex flex-col gap-1">
         <div className="h-48 w-48 rounded-xl ">
           <img
@@ -33,7 +37,7 @@ export default function BoardgameCard({ boardgameData }: BoardgameCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
