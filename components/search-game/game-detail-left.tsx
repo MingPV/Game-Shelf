@@ -53,6 +53,11 @@ export default function GameDetailLeft({
   const today = new Date().toISOString().split("T")[0];
 
   const checkOK = async () => {
+    if (!myData) {
+      router.push("/sign-in");
+      return;
+    }
+
     const start = new Date(startDate);
     const end = new Date(endDate);
     const todayDate = new Date(today);
@@ -146,10 +151,6 @@ export default function GameDetailLeft({
   };
 
   const handleModal = () => {
-    if (!myData) {
-      router.push("/sign-in");
-      return;
-    }
     setOpenDialog(true);
   };
 

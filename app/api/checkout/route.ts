@@ -33,8 +33,8 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:3000`,
-      cancel_url: `http://localhost:3000`,
+      success_url: `https://boardgame-shelf.vercel.app/`,
+      cancel_url: `https://boardgame-shelf.vercel.app/`,
     });
     console.log(session);
 
