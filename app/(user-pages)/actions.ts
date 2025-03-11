@@ -366,18 +366,21 @@ export const selectReviewByProviderId = async (userId: string) => {
 };
 
 export const updateUserAction = async (formData: FormData) => {
-  const supabase = await createClient();  
+  const supabase = await createClient();
   const id = formData.get("id")?.toString();
   const username = formData.get("username")?.toString();
   const phoneNumber = formData.get("phoneNumber")?.toString();
   const location = formData.get("location")?.toString();
 
-
   const { data, error } = await supabase
-  .from('users')
-  .update({ username: username, phoneNumber: phoneNumber, location: location })
-  .eq('uid', id)
-  
+    .from("users")
+    .update({
+      username: username,
+      phoneNumber: phoneNumber,
+      location: location,
+    })
+    .eq("uid", id);
+
   if (error) {
     encodedRedirect("error", "/", "Failed to update profile.");
   }
@@ -388,19 +391,23 @@ export const updateUserAction = async (formData: FormData) => {
 };
 
 export const updateProviderAction2 = async (formData: FormData) => {
-  const supabase = await createClient();  
+  const supabase = await createClient();
   const id = formData.get("id")?.toString();
   const username = formData.get("username")?.toString();
   const phoneNumber = formData.get("phoneNumber")?.toString();
   const location = formData.get("location")?.toString();
   const credentials = formData.get("credentials")?.toString();
 
-
   const { data, error } = await supabase
-  .from('users')
-  .update({ username: username, phoneNumber: phoneNumber, location: location, credentials: credentials })
-  .eq('uid', id)
-  
+    .from("users")
+    .update({
+      username: username,
+      phoneNumber: phoneNumber,
+      location: location,
+      credentials: credentials,
+    })
+    .eq("uid", id);
+
   if (error) {
     encodedRedirect("error", "/", "Failed to update profile.");
   }
@@ -438,10 +445,9 @@ export const updateProfilePicAction = async (formData: FormData) => {
       .getPublicUrl(fileName).data.publicUrl;
 
     const { data, error } = await supabase
-      .from('users')
+      .from("users")
       .update({ profilePicture: publicProfilePictureURL })
-      .eq('uid', id)
-
+      .eq("uid", id);
   }
 
   if (error_message2) {
@@ -450,4 +456,19 @@ export const updateProfilePicAction = async (formData: FormData) => {
   revalidatePath("/");
   // return encodedRedirect("success", "/home", "Update boardgame success.");
   return;
+};
+
+export const selectReceiptsByProviderId = async (providerId: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("receipts")
+    .select("*")
+    .eq("provider_id", providerId);
+
+  if (error) {
+    throw new Error("Failed to fetch top providers.");
+  }
+
+  return data;
 };
