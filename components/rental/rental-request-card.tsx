@@ -23,7 +23,10 @@ interface RequestCardProps {
   setRequests: Dispatch<SetStateAction<RentingRequest[]>>;
 }
 
-export default function RequestCard({ rentalRequest, setRequests }: RequestCardProps) {
+export default function RequestCard({
+  rentalRequest,
+  setRequests,
+}: RequestCardProps) {
   const [profileURL, setProfileURL] = useState("/mock_provider.jpeg");
   const [boardgame, setBoardgame] = useState<Boardgame>();
   const [customer, setCustomer] = useState<UserData>();
@@ -192,8 +195,8 @@ export default function RequestCard({ rentalRequest, setRequests }: RequestCardP
         }
 
         setRequests((prevRequests) =>
-          prevRequests.filter((req) =>
-            (req.bg_id != boardgame.id) || (new_status != "unavailable")
+          prevRequests.filter(
+            (req) => req.bg_id != boardgame.id || new_status != "unavailable"
           )
         );
 
@@ -319,14 +322,20 @@ export default function RequestCard({ rentalRequest, setRequests }: RequestCardP
             {formatDateRange(rentalRequest.start_date)} -{" "}
             {formatDateRange(rentalRequest.end_date)}
           </div>
-          <div className="col-span-1 text-sm flex gap-2  items-center justify-end">
-            <button className="btn btn-outline btn-sm">
-              <FaXmark />
-            </button>
-            <button className="btn btn-success btn-sm">
-              <FaCheck />
-            </button>
-          </div>
+          {boardgame?.status == "available" ? (
+            <>
+              <div className="col-span-1 text-sm flex gap-2  items-center justify-end">
+                <button className="btn btn-outline btn-sm">
+                  <FaXmark />
+                </button>
+                <button className="btn btn-success btn-sm">
+                  <FaCheck />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-red-500 text-xs">boardgame unavailable</div>
+          )}
         </div>
       </div>
       <dialog id={`my_modal_2_${rentalRequest.id}`} className="modal">
@@ -398,23 +407,29 @@ export default function RequestCard({ rentalRequest, setRequests }: RequestCardP
               <div>
                 {" "}
                 <div className="col-span-1 text-sm flex gap-2  items-center justify-end ">
-                  <button
-                    className="btn btn-outline btn-sm border border-slate-400 hover:bg-slate-200 "
-                    onClick={handleDeny}
-                  >
-                    <div className="opacity-80 text-slate-400 hidden sm:block">
-                      Denine
-                    </div>
+                  {boardgame?.status == "available" ? (
+                    <>
+                      <button
+                        className="btn btn-outline btn-sm border border-slate-400 hover:bg-slate-200 "
+                        onClick={handleDeny}
+                      >
+                        <div className="opacity-80 text-slate-400 hidden sm:block">
+                          Denine
+                        </div>
 
-                    <FaXmark className="text-slate-400" />
-                  </button>
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={handleAccept}
-                  >
-                    <div className="opacity-80 hidden sm:block">Accept</div>
-                    <FaCheck />
-                  </button>
+                        <FaXmark className="text-slate-400" />
+                      </button>
+                      <button
+                        className="btn btn-success btn-sm"
+                        onClick={handleAccept}
+                      >
+                        <div className="opacity-80 hidden sm:block">Accept</div>
+                        <FaCheck />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="text-red-500 ">boardgame unavailable</div>
+                  )}
                 </div>
               </div>
             </div>
