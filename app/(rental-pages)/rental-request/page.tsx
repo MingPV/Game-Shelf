@@ -2,6 +2,6 @@
 
 import RentalRequestList from "@/components/rental/rental-request";
 
-export default function ManageReuqest() {
+export default function ManageRequest() {
   return <RentalRequestList />;
 }

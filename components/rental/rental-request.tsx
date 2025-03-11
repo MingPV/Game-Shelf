@@ -46,7 +46,7 @@ export default function RentalRequestList() {
               {requests.length > 0 ? (
                 requests?.map((item) =>
                   item.status == "pending" ? (
-                    <RequestCard rentalRequest={item} key={item.id} />
+                    <RequestCard rentalRequest={item} key={item.id} setRequests={setRequests} />
                   ) : null
                 )
               ) : isLoadingReq ? (

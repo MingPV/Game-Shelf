@@ -14,15 +14,16 @@ import {
 } from "@/app/(user-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
-import { useEffect, useState } from "react";
+import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
 import Swal from "sweetalert2";
 
 interface RequestCardProps {
   rentalRequest: RentingRequest;
+  setRequests: Dispatch<SetStateAction<RentingRequest[]>>;
 }
 
-export default function RequestCard({ rentalRequest }: RequestCardProps) {
+export default function RequestCard({ rentalRequest, setRequests }: RequestCardProps) {
   const [profileURL, setProfileURL] = useState("/mock_provider.jpeg");
   const [boardgame, setBoardgame] = useState<Boardgame>();
   const [customer, setCustomer] = useState<UserData>();
@@ -189,6 +190,12 @@ export default function RequestCard({ rentalRequest }: RequestCardProps) {
         if (customer?.uid) {
           await createNotificationByUserId(customer.uid, message);
         }
+
+        setRequests((prevRequests) =>
+          prevRequests.filter((req) =>
+            (req.bg_id != boardgame.id) || (new_status != "unavailable")
+          )
+        );
 
         setIsUpdating(false);
         setIsHidden(true);
