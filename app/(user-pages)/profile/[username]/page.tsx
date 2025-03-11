@@ -63,7 +63,11 @@ export default function Home() {
   }, []); // Fetch when `uname` updates
 
   if (isLoading || !data) {
-    return <></>;
+    return (
+      <>
+        <div>Loading . . .</div>
+      </>
+    );
   } else {
     return (
       <div className="flex flex-col w-11/12">
