@@ -252,7 +252,9 @@ export default function HomeList() {
                       </div>
                     </div>
                   </td>
-                  <td className="text-center">32</td>
+                  <td className="text-center">
+                    {provider.rental_success.toString()}
+                  </td>
                 </tr>
               ))
             )}

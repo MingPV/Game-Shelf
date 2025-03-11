@@ -141,6 +141,7 @@ export const selectTopProvider = async () => {
     .from("users")
     .select("*")
     .eq("isProvider", true)
+    .order("rental_success", { ascending: false })
     .limit(10);
 
   if (error) {

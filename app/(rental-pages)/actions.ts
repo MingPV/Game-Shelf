@@ -347,3 +347,41 @@ export const selectRentalRequestById = async (request_id: number) => {
 
   return rental_requests;
 };
+
+export const updateUserRentalSuccess = async (rental_id: number) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("rental_requests")
+    .select("*")
+    .eq("id", rental_id)
+    .single();
+
+  if (error) {
+    throw new Error("Failed to fetch a rental request");
+  }
+
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", data.provider_id)
+    .single();
+
+  if (userError) {
+    throw new Error("Failed to fetch a user");
+  }
+
+  const new_rental_success = userData.rental_success + 1;
+
+  const { data: updateData, error: updateError } = await supabase
+    .from("users")
+    .update({ rental_success: new_rental_success })
+    .eq("uid", data.provider_id)
+    .select();
+
+  if (updateError) {
+    throw new Error("Failed to update a user");
+  }
+
+  return updateData;
+};

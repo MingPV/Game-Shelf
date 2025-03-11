@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { UserData } from "@/app/types/user";
+import Link from "next/link";
 
 type BoardgameType = {
   [key: string]: string;
@@ -37,12 +38,12 @@ export default function ProviderCard({ provider }: { provider: UserData }) {
       </div>
 
       <div className="flex flex-row w-full gap-2">
-        <button
-          className="w-full font-semibold text-sm px-4  rounded-xl py-2 self-end hover:border border border-white border-opacity-10 bg-white bg-opacity-10 hover:bg-opacity-15"
-          onClick={() => alert("clicked!")}
+        <Link
+          className="w-full font-semibold text-sm px-4  text-center rounded-xl py-2 self-end hover:border border border-white border-opacity-10 bg-white bg-opacity-10 hover:bg-opacity-15"
+          href={`/profile/${provider.username}`}
         >
           Go to Profile
-        </button>
+        </Link>
       </div>
     </div>
   );

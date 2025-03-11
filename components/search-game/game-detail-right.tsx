@@ -1,6 +1,7 @@
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import RentalRequestList from "../rental/rental-request";
+import Link from "next/link";
 
 type BoardgameType = {
   [key: string]: string;
@@ -35,7 +36,10 @@ export default function GameDetailRight({
 
       <div>
         <p className="text-sm md:text-base text-gs_white/50 mb-2">Store</p>
-        <div className="flex flex-row items-center gap-3">
+        <Link
+          className="flex flex-row items-center gap-3 w-fit hover:bg-white/10 p-2 rounded-md"
+          href={`/profile/${provider?.username}`}
+        >
           <img
             alt="mock_provider"
             src={provider ? provider.profilePicture : "./mock_provider.jpeg"}
@@ -44,12 +48,12 @@ export default function GameDetailRight({
           <p className="text-md md:text-lg lg:text-xl font-bold">
             {provider ? provider.username : "N/A"}
           </p>
-        </div>
+        </Link>
       </div>
 
       <div>
         <p className="text-sm md:text-base text-gs_white/50">Detail</p>
-        <p className="text-md md:text-lg">{boardgame.description || 'N/A'}</p>
+        <p className="text-md md:text-lg">{boardgame.description || "N/A"}</p>
       </div>
     </div>
   );

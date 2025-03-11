@@ -3,6 +3,7 @@
 import {
   selectMyRentingRequestByStatus2,
   updateRentingRequestStatus,
+  updateUserRentalSuccess,
 } from "@/app/(rental-pages)/actions";
 import { updateBoardgameRentingCount } from "@/app/(game-pages)/actions";
 import { useState, useEffect } from "react";
@@ -66,7 +67,10 @@ export default function RentingShippingCard({
         setRequests((prev) => prev.filter((r) => r.id !== req.id));
         if (setNextRequest) setNextRequest((prev) => [...prev, req]);
         updateRentingRequestStatus(req.id, nextStatus);
-        if (status == "renting") updateBoardgameRentingCount(req.bg_id);
+        if (status == "renting") {
+          updateBoardgameRentingCount(req.bg_id);
+          updateUserRentalSuccess(req.id);
+        }
       });
     setSelectedRequestIds(new Set());
   };
