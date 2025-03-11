@@ -472,3 +472,17 @@ export const selectReceiptsByProviderId = async (providerId: string) => {
 
   return data;
 };
+
+export const selectInfoByUsername = async (username: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("username", username)
+    .single();
+  if (error) {
+    throw new Error("Failed to fetch info from username");
+  }
+  return data;
+};

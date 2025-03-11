@@ -1,5 +1,5 @@
 "use client";
-import Profile from "@/components/profile/profile";
+import ProfileHeader from "@/components/profile/profile-header";
 import { getMyUserData } from "@/app/(user-pages)/actions";
 import User from "@/components/profile/user";
 import Provider from "@/components/profile/provider";
@@ -31,7 +31,7 @@ export default function ProfileDetail() {
     <main className="flex-1 flex flex-col gap-6 px-4 w-2/3">
       {data ? (
         <div className="flex flex-col items-center justify-center font-bold w-full">
-          <Profile user={data} />
+          <ProfileHeader user={data} />
           {data ? <div className="text-2xl mt-2">{data.username}</div> : null}
           {data ? (
             <div className="text-sm opacity-50 mt-1">{data.email}</div>
