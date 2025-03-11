@@ -32,6 +32,18 @@ export default function Home() {
     fetchNotifications();
   }, []);
 
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(date);
+  };
+
   return (
     <>
       <main className="flex-1 flex flex-col gap-6 w-full px-2 sm:px-10 md:px-20 lg:px-44  ">
@@ -62,10 +74,16 @@ export default function Home() {
                     src={"/mock_provider.jpeg"}
                     className="rounded-full w-16 h-16"
                   />
-                  <div className="flex flex-col min-h-24 gap-1 mt-2">
-                    <p className="text-white">
-                      A new message from {item.admin_id ? "admin" : "system"}
-                    </p>
+                  <div className="flex flex-col min-h-24 gap-1 mt-2 w-full">
+                    <div className="flex flex-row justify-between w-full">
+                      <p className="text-white">
+                        A new message from {item.admin_id ? "admin" : "system"}
+                      </p>
+                      <p className="text-white/50">
+                        {formatTimestamp(item.created_at)}
+                      </p>
+                    </div>
+
                     <p className="text-white text-opacity-60 text-sm">
                       {item.message}
                     </p>
