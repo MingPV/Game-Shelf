@@ -13,6 +13,7 @@ import { JSX } from "react";
 import { SetStateAction, Dispatch } from "react";
 import RentingShippingModal from "./shipping-modal";
 import RentingShippingLoading from "./shipping-loading";
+import Link from "next/link";
 
 type RentingListProps = {
   title: string;
@@ -110,7 +111,12 @@ export default function RentingShippingCard({
                     </td>
                     <th>{item.boardgames.bg_name}</th>
                     <td className="hidden sm:table-cell">
-                      {item.customer.username}
+                      <Link
+                        href={`/profile/${item.customer.username}`}
+                        className="hover:underline"
+                      >
+                        {item.customer.username}
+                      </Link>
                     </td>
                     <td>{dateFormatter.format(new Date(item.start_date))}</td>
                     <th>

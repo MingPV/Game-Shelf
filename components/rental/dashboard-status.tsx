@@ -1,6 +1,7 @@
 "use client";
 import { selectMyRentingRequestByStatus } from "@/app/(rental-pages)/actions";
 import { RentingRequest } from "@/app/types/game";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export function DashBoardStatus({ status }: { status: string }) {
@@ -182,9 +183,12 @@ export function DashBoardStatus({ status }: { status: string }) {
                         </div>
                       </div>
                     </div>
-                    <div className="col-span-4">
+                    <Link
+                      className="col-span-4 hover:underline"
+                      href={`/profile/${record.users?.username}`}
+                    >
                       {record.users?.username || "Unknown"}
-                    </div>
+                    </Link>
                     <div className="col-span-3">
                       <div className="text-xs">
                         {convertDate(record.start_date)} -{" "}

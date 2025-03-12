@@ -74,9 +74,9 @@ export default function Home() {
         <div className="flex flex-col items-center">
           <label className="cursor-pointer">
             <img
-              src={data.profilePicture}
+              src={data.profilePicture || "/mock_provider.jpeg"}
               alt="profile picture"
-              className="w-32 h-32 object-cover border rounded-full"
+              className="w-32 h-32 object-cover border rounded-full cursor-default"
             />
           </label>
           {data ? <div className="text-2xl mt-2">{data.username}</div> : null}
@@ -181,46 +181,50 @@ export default function Home() {
             ) : null}
           </div> */}
           <ProfileUsernameForm user={data} setWindow={setWindow} />
-          <div className="text-xl font-bold ml-12">Boardgames</div>
-          <div className="p-2 grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
-            {!isLoadingBoardgame ? (
-              boardgames && boardgames.length > 0 ? (
-                <>
-                  {boardgames.map((boardgame) => (
-                    <div
-                      className="flex w-full justify-center"
-                      key={boardgame.id}
-                    >
-                      <BoardgameCard boardgameData={boardgame} />
+          {data.isProvider ? (
+            <>
+              <div className="text-xl font-bold ml-12">Boardgames</div>
+              <div className="p-2 grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
+                {!isLoadingBoardgame ? (
+                  boardgames && boardgames.length > 0 ? (
+                    <>
+                      {boardgames.map((boardgame) => (
+                        <div
+                          className="flex w-full justify-center"
+                          key={boardgame.id}
+                        >
+                          <BoardgameCard boardgameData={boardgame} />
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4 w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
+                      This provider does not have any boardgame
                     </div>
-                  ))}
-                </>
-              ) : (
-                <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
-                  This provider does not have any boardgame
-                </div>
-              )
-            ) : (
-              <>
-                <BoardgameLoadingCard />
-                <BoardgameLoadingCard />
-                <BoardgameLoadingCard />
-                <BoardgameLoadingCard />
-              </>
-            )}
-          </div>
-          <div className="text-xl font-bold ml-12">Reviews</div>
-          <div className="p-2 flex flex-row overflow-x-scroll h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
-            {reviews && reviews.length > 0 ? (
-              reviews.map((review, index) => (
-                <ReviewCard reviewData={review} key={index} />
-              ))
-            ) : (
-              <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
-                There are no customer reviews yet.
+                  )
+                ) : (
+                  <>
+                    <BoardgameLoadingCard />
+                    <BoardgameLoadingCard />
+                    <BoardgameLoadingCard />
+                    <BoardgameLoadingCard />
+                  </>
+                )}
               </div>
-            )}
-          </div>
+              <div className="text-xl font-bold ml-12">Reviews</div>
+              <div className="p-2 flex flex-row overflow-x-scroll h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">
+                {reviews && reviews.length > 0 ? (
+                  reviews.map((review, index) => (
+                    <ReviewCard reviewData={review} key={index} />
+                  ))
+                ) : (
+                  <div className="w-full h-full flex justify-center items-center text-white text-opacity-30 text-sm">
+                    There are no customer reviews yet.
+                  </div>
+                )}
+              </div>
+            </>
+          ) : null}
         </main>
       </div>
     );

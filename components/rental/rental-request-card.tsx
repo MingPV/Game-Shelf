@@ -14,6 +14,7 @@ import {
 } from "@/app/(user-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
+import Link from "next/link";
 import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import { FaCheck, FaXmark } from "react-icons/fa6";
 import Swal from "sweetalert2";
@@ -387,7 +388,10 @@ export default function RequestCard({
                 ).padStart(2, "0")}{" "}
                 {new Date(rentalRequest.end_date).getFullYear()}
               </div>
-              <div className="flex flex-row gap-2 mt-6">
+              <Link
+                className="flex flex-row gap-2 mt-6 w-fit p-2 rounded-md hover:bg-black/10"
+                href={`/profile/${customer?.username}`}
+              >
                 <div className="flex relative h-7 w-7 rounded-full ">
                   <img
                     alt="provider profile"
@@ -397,7 +401,7 @@ export default function RequestCard({
                   />
                 </div>
                 {customer?.username}
-              </div>
+              </Link>
             </div>
             <div className="flex flex-col flex-1 justify-end items-end h-full">
               <div className="opacity-30 mb-1 text-sm">overall price</div>
