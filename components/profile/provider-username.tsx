@@ -92,17 +92,21 @@ export default function ProfileUsernameForm({
           >
             {user.phoneNumber}
           </p>
-          <Label
-            htmlFor="location"
-            className="font-bold md:text-md col-span-3  py-3"
-          >
-            Location :
-          </Label>
-          <p
-            className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent `}
-          >
-            {user.location}
-          </p>
+          {!user.admin_id && (
+            <Label
+              htmlFor="location"
+              className="font-bold md:text-md col-span-3  py-3"
+            >
+              Location :
+            </Label>
+          )}
+          {!user.admin_id && (
+            <p
+              className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent `}
+            >
+              {user.location}
+            </p>
+          )}
         </div>
       </div>
     </>

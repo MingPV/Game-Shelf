@@ -181,7 +181,7 @@ export default function Home() {
             ) : null}
           </div> */}
           <ProfileUsernameForm user={data} setWindow={setWindow} />
-          {data.isProvider ? (
+          {data.isProvider && !data.is_admin ? (
             <>
               <div className="text-xl font-bold ml-12">Boardgames</div>
               <div className="p-2 grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-full bg-gs_white bg-opacity-10 mx-4 rounded-xl gap-2">

@@ -487,3 +487,51 @@ export const selectInfoByUsername = async (username: string) => {
   }
   return data;
 };
+
+export const selectInfoById = async (id: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", id)
+    .single();
+  if (error) {
+    throw new Error("Failed to fetch info from username");
+  }
+  return data;
+};
+
+export const selectReports = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+  console.log(user);
+
+  const { data: user_data, error: getUserError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("uid", user?.id);
+  console.log(user_data);
+
+  if (getUserError) {
+    console.log(getUserError);
+    throw new Error("Failed to fetch user");
+  }
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .select("*")
+    .eq("customer_id", user?.id);
+
+  if (error) {
+    throw new Error("Failed to fetch report from player id.");
+  }
+  return data;
+};
