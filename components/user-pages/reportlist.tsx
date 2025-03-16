@@ -33,7 +33,7 @@ export default function ReportList() {
         </div>
       ) : (
         <div className="bg-gs_white bg-opacity-10 rounded-xl w-full">
-          <div className="flex flex-col p-4 gap-4">
+          <div className="flex flex-col p-4 gap-4 ">
             {reports.map((report, index) => (
               <ReportCard key={index} report={report} />
             ))}

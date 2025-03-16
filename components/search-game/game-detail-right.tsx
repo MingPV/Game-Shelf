@@ -2,7 +2,10 @@ import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import RentalRequestList from "../rental/rental-request";
 import Link from "next/link";
-
+import { useState, useEffect } from "react";
+import { FaStar } from "react-icons/fa6";
+import { ReviewData } from "@/app/types/review";
+import { selectReviewByProviderId } from "@/app/(user-pages)/actions";
 type BoardgameType = {
   [key: string]: string;
 };
@@ -16,6 +19,35 @@ export default function GameDetailRight({
   boardgame_type: BoardgameType;
   provider: UserData | null;
 }) {
+  const [reviewScore, setReviewScore] = useState<number>(-1);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        // Fetch the reviews for the provider
+        if (provider) {
+          const reviewData = await selectReviewByProviderId(provider?.uid);
+          setReviews(reviewData); // Set the fetched reviews
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+    fetchReview();
+  }, [provider?.uid]);
+
+  useEffect(() => {
+    console.log(reviews);
+
+    let totalScore = 0;
+    if (reviews.length > 0) {
+      reviews.forEach((review) => {
+        totalScore += parseInt(review.rating.toString(), 10);
+      });
+      totalScore = parseFloat(totalScore.toFixed(2));
+      setReviewScore(totalScore / reviews.length);
+    }
+  }, [reviews]);
   return (
     <div className="w-[90%] md:w-1/2 flex flex-col space-y-4 md:space-y-6 lg:space-y-8">
       <div>
@@ -46,8 +78,12 @@ export default function GameDetailRight({
             src={provider ? provider.profilePicture : "./mock_provider.jpeg"}
             className="rounded-full w-12"
           />
-          <p className="text-md md:text-lg lg:text-xl font-bold">
+          <p className="text-md md:text-lg lg:text-xl font-bold flex flex-row gap-4 items-center">
             {provider ? provider.username : "N/A"}
+            <span className="flex flex-row w-full text-gs_white/80">
+              <FaStar className=" text-gs_yellow mr-2 text-2xl " />{" "}
+              {reviewScore != -1 ? reviewScore : "N/A"}
+            </span>
           </p>
         </Link>
       </div>
