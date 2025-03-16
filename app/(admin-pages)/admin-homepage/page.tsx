@@ -70,7 +70,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="text-xs font-light text-red-500 w-64 sm:w-80 pl-4 mt-2">
+            <div className="text-xs font-light text-red-500 w-64 sm:w-96 pl-4 mt-2">
               Warning: You are logged in as an admin. Please use this account
               carefully and log out when you are not at your computer to ensure
               security.
