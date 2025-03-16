@@ -2,6 +2,7 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 import { Navbar } from "@/components/navbar";
+import Footer from "@/components/footer";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -30,6 +31,7 @@ export default function RootLayout({
             <div className="flex-1 w-full flex flex-col  items-center">
               <Navbar />
               <div className="flex flex-col flex-1 p-5 w-full">{children}</div>
+              {/* <Footer /> */}
             </div>
           </main>
         </ThemeProvider>

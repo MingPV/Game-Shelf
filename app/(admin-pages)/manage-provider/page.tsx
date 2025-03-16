@@ -1,5 +1,7 @@
+"use client";
+
 import VerificationList from "@/components/admin-pages/verification-list";
 
-export default async function ManageProvider() {
+export default function ManageProvider() {
   return <VerificationList />;
 }
