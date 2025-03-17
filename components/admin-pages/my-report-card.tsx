@@ -17,21 +17,24 @@ import { UserData } from "@/app/types/user";
 import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import Swal from "sweetalert2";
 import { Dispute } from "@/app/types/admin";
-import { updateReport, updateTakeReport } from "@/app/(admin-pages)/actions";
+import {
+  updateReport,
+  updateReportVerdict,
+  updateTakeReport,
+} from "@/app/(admin-pages)/actions";
 import Link from "next/link";
 
-export default function ReportCard({
+export default function MyReportCard({
   dispute,
   myData,
-  setMyDispute,
 }: {
   dispute: Dispute;
   myData: UserData;
-  setMyDispute: Dispatch<SetStateAction<Dispute[]>>;
 }) {
   const [profileURL, setProfileURL] = useState("/mock_provider.jpeg");
   const [reporter, setReporter] = useState<UserData>();
   const [reported, setReported] = useState<UserData>();
+  const [verdict, setVerdict] = useState("");
   const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
@@ -59,10 +62,14 @@ export default function ReportCard({
   };
 
   const handleSubmit = async () => {
+    if (verdict == "") {
+      alert("verdict is missing.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("id", dispute.id.toString());
-    formData.append("status", "considering");
-    formData.append("admin_id", myData.uid.toString());
+    formData.append("verdict", verdict);
 
     Swal.fire({
       title: "Are you sure?",
@@ -81,8 +88,7 @@ export default function ReportCard({
     }).then(async (result) => {
       if (result.isConfirmed) {
         setIsHidden(true);
-        setMyDispute((prev) => [...prev, dispute]);
-        await updateTakeReport(formData);
+        await updateReportVerdict(formData);
 
         Swal.fire({
           title: "Report accepted",
@@ -138,7 +144,7 @@ export default function ReportCard({
             {formatDate(dispute.created_at)} {dispute.id}
           </div>
           <button
-            className="px-3 py-2 border bg-white/10 border-white/10 hover:bg-white/20 rounded-md"
+            className="px-3 py-2 bg-gs_purple_gradient rounded-md text-sm"
             onClick={() => {
               const modal = document.getElementById(
                 `my_modal_manage_report_${dispute.id}`
@@ -148,7 +154,7 @@ export default function ReportCard({
               }
             }}
           >
-            Take
+            Manage
           </button>
         </div>
       </div>
@@ -233,28 +239,24 @@ export default function ReportCard({
                 </li>
               </ul>
             </div> */}
-            {/* <Label className="col-span-1 font-bold">Verdict : </Label>
-            <textarea
-              className="textarea bg-white border-1 border-black border-opacity-60 col-span-4"
-              value={verdict}
-              onChange={(e) => setVerdict(e.target.value)}
-            ></textarea> */}
+            <div className="col-span-5 font-bold">
+              Verdict :{" "}
+              <textarea
+                className="textarea bg-white border-1 border-black/20 border-opacity-60 col-span-4 focus:border-black/20 w-full"
+                value={verdict}
+                onChange={(e) => setVerdict(e.target.value)}
+              ></textarea>
+            </div>
           </div>
           <form method="dialog" className="flex justify-center items-center">
-            {/* <button
-              className="rounded-md py-1 px-14 mx-2 bg-red-500"
-              onClick={() => {
-                setStatus(dispute.status);
-                setVerdict(dispute.verdict);
-              }}
-            >
+            <button className="rounded-md py-2 px-14 mx-2 border border-black/20 hover:bg-black/10 transition-all duration-300">
               Cancel
-            </button> */}
+            </button>
             <button
               className="rounded-md py-2 px-12 mx-2 bg-gs_purple_gradient text-white/90"
               onClick={handleSubmit}
             >
-              Add to my responsibilities
+              Submit
             </button>
           </form>
         </div>

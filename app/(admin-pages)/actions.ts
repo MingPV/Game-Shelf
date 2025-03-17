@@ -132,14 +132,17 @@ export const selectVerificationRequestByPageAction = async (page: number) => {
 export const getAllReports = async () => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("disputes").select("*").order("id", { ascending: true });
+  const { data, error } = await supabase
+    .from("disputes")
+    .select("*")
+    .order("id", { ascending: true });
 
   if (error) {
     throw new Error("Failed to fetch disputes");
   }
 
-  return data;
-}
+  return data as Dispute[];
+};
 
 export const updateReport = async (formData: FormData) => {
   const id = formData.get("id")?.toString();
@@ -149,9 +152,38 @@ export const updateReport = async (formData: FormData) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-  .from('disputes')
-  .update({ status: status, verdict: verdict })
-  .eq('id', id)
-  .select()
-        
-}
+    .from("disputes")
+    .update({ status: status, verdict: verdict })
+    .eq("id", id)
+    .select();
+};
+
+export const updateTakeReport = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const admin_id = formData.get("admin_id")?.toString();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .update({ status: "considering", admin_id: admin_id })
+    .eq("id", id)
+    .select();
+
+  return data;
+};
+
+export const updateReportVerdict = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const verdict = formData.get("verdict")?.toString();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .update({ status: "complete", verdict: verdict })
+    .eq("id", id)
+    .select();
+
+  return data;
+};
