@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
+import { Dispute } from "../types/admin";
 
 export const addVerificationRequest = async (formData: FormData) => {
   const provider_id = formData.get("provider_id")?.toString();
@@ -124,6 +125,65 @@ export const selectVerificationRequestByPageAction = async (page: number) => {
   if (error) {
     throw new Error("Failed to fetch verification requests.");
   }
+
+  return data;
+};
+
+export const getAllReports = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (error) {
+    throw new Error("Failed to fetch disputes");
+  }
+
+  return data as Dispute[];
+};
+
+export const updateReport = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const status = formData.get("status")?.toString();
+  const verdict = formData.get("verdict")?.toString();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .update({ status: status, verdict: verdict })
+    .eq("id", id)
+    .select();
+};
+
+export const updateTakeReport = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const admin_id = formData.get("admin_id")?.toString();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .update({ status: "considering", admin_id: admin_id })
+    .eq("id", id)
+    .select();
+
+  return data;
+};
+
+export const updateReportVerdict = async (formData: FormData) => {
+  const id = formData.get("id")?.toString();
+  const verdict = formData.get("verdict")?.toString();
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .update({ status: "complete", verdict: verdict })
+    .eq("id", id)
+    .select();
 
   return data;
 };
