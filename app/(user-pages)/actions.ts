@@ -528,7 +528,8 @@ export const selectReports = async () => {
   const { data, error } = await supabase
     .from("disputes")
     .select("*")
-    .eq("customer_id", user?.id);
+    .eq("reporter", user?.id)
+    .order("status", { ascending: false });
 
   if (error) {
     throw new Error("Failed to fetch report from player id.");

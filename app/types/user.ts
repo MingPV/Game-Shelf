@@ -15,6 +15,7 @@ export interface UserData {
   admin_id: Number;
   is_admin: boolean;
   rental_success: Number;
+  rating: Number;
 }
 
 export interface verificationRequests {

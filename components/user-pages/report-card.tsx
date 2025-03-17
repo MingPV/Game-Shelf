@@ -15,17 +15,11 @@ export default function ReportCard({ report }: { report: Dispute }) {
     });
   }
 
-  const bgcolor =
-    report.status === "waiting"
-      ? "bg-gs_gray"
-      : report.status === "considering"
-        ? "bg-gs_yellow"
-        : "bg-gs_green";
-
   const [isDetailsVisible, setIsDetailsVisible] = useState<boolean>(false);
   const [isVerdictVisible, setIsVerdictVisible] = useState<boolean>(false);
   const [isClick, setIsClick] = useState<boolean>(false); // State to toggle ReportTimeline visibility
   const [adminInfo, setAdminInfo] = useState<UserData>();
+  const [reportToInfo, setReportToInfo] = useState<UserData>();
 
   // Function to truncate text to the first n characters or words
   const truncateText = (
@@ -46,29 +40,72 @@ export default function ReportCard({ report }: { report: Dispute }) {
   useEffect(() => {
     const fetchAvatar = async () => {
       console.log(report.admin_id);
-      const fetchData = await selectInfoById(report.admin_id);
-      setAdminInfo(fetchData);
+      if (report.status != "waiting") {
+        const fetchData = await selectInfoById(report.admin_id);
+        setAdminInfo(fetchData);
+      }
+      const fetchDataReportTo = await selectInfoById(report.report_to);
+      setReportToInfo(fetchDataReportTo);
+      console.log(fetchDataReportTo);
     };
 
-    if (report.status != "waiting") {
-      fetchAvatar();
-    }
+    fetchAvatar();
   }, [report]);
 
   return (
     <div className="w-full grid grid-cols-12 text-sm border border-gs_white border-opacity-50 p-4 rounded-xl">
-      <div className="flex flex-col gap-2 justify-between col-span-10 ">
+      <div className="flex flex-col gap-2 justify-between col-span-12  text-xs sm:text-sm">
+        <div className="grid grid-cols-12 justify-between pt-2 w-full">
+          <p className="col-span-10 font-bold text-md sm:text-xl">
+            {report.title}
+          </p>
+          <div className="sm:flex items-start justify-end col-span-2 hidden ">
+            <button
+              onClick={() => setIsClick(!isClick)} // Toggle ReportTimeline visibility
+              className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                report.status === "waiting"
+                  ? "bg-gray-300 text-gray-700"
+                  : report.status === "considering"
+                    ? "bg-yellow-400 text-white"
+                    : "bg-green-500 text-white"
+              } `}
+            >
+              {report.status}
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-6 pt-2">
-          <p className="col-span-1 font-bold">Created At:</p>
-          <p className="col-span-5 opacity-70">
+          <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+            Report date:
+          </p>
+          <p className="col-span-4  md:col-span-4 lg:col-span-5 opacity-70">
             {convertTimestamp(report.created_at)}
+          </p>
+        </div>
+        <div className="grid grid-cols-6 pt-2">
+          <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+            Type :
+          </p>
+          <p className="col-span-4  md:col-span-4 lg:col-span-5 opacity-70">
+            {report.type}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-6 pt-2 sm:hidden">
+          <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+            Status :
+          </p>
+          <p className="col-span-4  md:col-span-4 lg:col-span-5 opacity-70">
+            {report.status}
           </p>
         </div>
 
         {/* Details Section */}
         <div className="grid grid-cols-6">
-          <p className="col-span-1 font-bold">Detail:</p>
-          <div className="col-span-5 opacity-70">
+          <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+            Detail:
+          </p>
+          <div className="col-span-4  md:col-span-4 lg:col-span-5 opacity-70">
             {isDetailsVisible
               ? report.details
               : truncateText(report.details, 160, false)}
@@ -87,8 +124,10 @@ export default function ReportCard({ report }: { report: Dispute }) {
         {/* Verdict Section */}
         {report.status === "complete" && (
           <div className="grid grid-cols-6">
-            <p className="col-span-1 font-bold">Verdict:</p>
-            <div className="col-span-5 opacity-70">
+            <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+              Verdict:
+            </p>
+            <div className="col-span-4  md:col-span-4 lg:col-span-5 opacity-70">
               {isVerdictVisible
                 ? report.verdict
                 : truncateText(report.verdict, 160, false)}
@@ -105,9 +144,30 @@ export default function ReportCard({ report }: { report: Dispute }) {
           </div>
         )}
 
+        <div className="grid grid-cols-6">
+          <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+            Report to:
+          </p>
+          <Link
+            href={`/profile/${reportToInfo?.username}`}
+            className="flex flex-row gap-3 hover:bg-white hover:bg-opacity-10 transition duration-300 p-1 rounded-md items-center"
+          >
+            <img
+              src={reportToInfo?.profilePicture}
+              alt={reportToInfo?.profilePicture}
+              className="w-10 h-10 rounded-full"
+            />
+            <p className="text-sm font-bold text-white text-opacity-90">
+              {reportToInfo?.username}
+            </p>
+          </Link>
+        </div>
+
         {report.status !== "waiting" && (
           <div className="grid grid-cols-6">
-            <p className="col-span-1 font-bold">Considered By:</p>
+            <p className="col-span-2  md:col-span-2 lg:col-span-1 font-bold">
+              Considered By:
+            </p>
             <Link
               href={`/profile/${adminInfo?.username}`}
               className="flex flex-row gap-3 hover:bg-white hover:bg-opacity-10 transition duration-300 p-1 rounded-md items-center"
@@ -136,8 +196,8 @@ export default function ReportCard({ report }: { report: Dispute }) {
           {isClick && (
             <div className="w-full">
               <div className="grid grid-cols-6">
-                <p className="col-span-1 font-bold"></p>
-                <div className="col-span-5 opacity-70 w-full py-2">
+                <p className="col-span-6  md:col-span-2 lg:col-span-1 font-bold"></p>
+                <div className="col-span-6  md:col-span-4 lg:col-span-5 opacity-70 w-full py-2">
                   <ReportTimeline report={report} />
                 </div>
               </div>
@@ -147,20 +207,6 @@ export default function ReportCard({ report }: { report: Dispute }) {
       </div>
 
       {/* Status Button */}
-      <div className="flex items-start justify-end col-span-2 ">
-        <button
-          onClick={() => setIsClick(!isClick)} // Toggle ReportTimeline visibility
-          className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-            report.status === "waiting"
-              ? "bg-gray-300 text-gray-700"
-              : report.status === "considering"
-                ? "bg-yellow-400 text-white"
-                : "bg-green-500 text-white"
-          } `}
-        >
-          {report.status}
-        </button>
-      </div>
     </div>
   );
 }

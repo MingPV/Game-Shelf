@@ -2,6 +2,10 @@ import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import RentalRequestList from "../rental/rental-request";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { FaStar } from "react-icons/fa6";
+import { ReviewData } from "@/app/types/review";
+import { selectReviewByProviderId } from "@/app/(user-pages)/actions";
 
 type BoardgameType = {
   [key: string]: string;
@@ -46,8 +50,14 @@ export default function GameDetailRight({
             src={provider ? provider.profilePicture : "./mock_provider.jpeg"}
             className="rounded-full w-12"
           />
-          <p className="text-md md:text-lg lg:text-xl font-bold">
+          <p className="text-md md:text-lg lg:text-xl font-bold flex flex-row gap-4 items-center">
             {provider ? provider.username : "N/A"}
+            <span className="flex flex-row w-full text-gs_white/80">
+              <FaStar className=" text-gs_yellow mr-2 text-2xl " />{" "}
+              {provider?.rating.toString() == "0"
+                ? "N/A"
+                : provider?.rating.toString()}
+            </span>
           </p>
         </Link>
       </div>

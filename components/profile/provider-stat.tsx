@@ -16,23 +16,11 @@ import { selectProviderBoardgameByFilterAction } from "@/app/(user-pages)/action
 import { Receipt } from "@/app/types/receipt";
 
 export default function ProviderStat({ user }: { user: UserData }) {
-  const [reviews, setReviews] = useState<ReviewData[]>([]);
-  const [reviewScore, setReviewScore] = useState<number>(-1);
   const [boardgames, setBoardgames] = useState<Boardgame[]>([]);
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [receiptAmount, setReceiptAmount] = useState<number>(0);
 
   useEffect(() => {
-    const fetchReview = async () => {
-      try {
-        // Fetch the reviews for the provider
-        const reviewData = await selectReviewByProviderId(user.uid);
-        setReviews(reviewData); // Set the fetched reviews
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
     const fetchBoardgame = async () => {
       try {
         const { data: fetchData } = await selectProviderBoardgameByFilterAction(
@@ -56,24 +44,13 @@ export default function ProviderStat({ user }: { user: UserData }) {
       }
     };
 
-    fetchReview();
     fetchBoardgame();
     fetchReceipt();
   }, [user.uid]);
 
   useEffect(() => {
-    console.log(reviews);
     console.log(boardgames);
     console.log(receipts);
-
-    let totalScore = 0;
-    if (reviews.length > 0) {
-      reviews.forEach((review) => {
-        totalScore += parseInt(review.rating.toString(), 10);
-      });
-      totalScore = parseFloat(totalScore.toFixed(2));
-      setReviewScore(totalScore / reviews.length);
-    }
 
     let totalAmount = 0;
     if (receipts.length > 0) {
@@ -83,7 +60,7 @@ export default function ProviderStat({ user }: { user: UserData }) {
       totalAmount = parseFloat(totalAmount.toFixed(2));
       setReceiptAmount(totalAmount);
     }
-  }, [reviews, boardgames, receipts]);
+  }, [boardgames, receipts]);
   return (
     <div className="flex flex-row gap-4">
       <div className="stats shadow my-4 bg-transparent border border-gs_white border-opacity-50">
@@ -101,7 +78,7 @@ export default function ProviderStat({ user }: { user: UserData }) {
             <FaRegStar className="text-3xl" />
           </div>
           <div className="stat-value text-3xl">
-            {reviewScore == -1 ? "N/A" : reviewScore.toString()}
+            {user.rating == 0 ? "N/A" : user.rating.toString()}
           </div>
           <div className="stat-desc text-center">rating</div>
         </div>
