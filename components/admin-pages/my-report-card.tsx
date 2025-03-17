@@ -1,18 +1,9 @@
 "use client";
 
 import {
-  selectGameAction,
-  updateBaordgameStatus,
-} from "@/app/(game-pages)/actions";
-import {
-  deleteRentingRequest,
-  updateRentingRequestStatus,
-} from "@/app/(rental-pages)/actions";
-import {
   createNotificationByUserId,
   selectUserById,
 } from "@/app/(user-pages)/actions";
-import { Boardgame, RentingRequest } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import Swal from "sweetalert2";
@@ -106,6 +97,20 @@ export default function MyReportCard({
     });
   };
 
+  function formatDateRange(dateStr: string): string {
+    const DateTmp = new Date(dateStr);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "short",
+    };
+
+    const endStr = DateTmp.toLocaleDateString("en-GB", options);
+    const year = DateTmp.getFullYear();
+
+    return `${endStr} ${year}`;
+  }
+
   return (
     <>
       <div
@@ -141,7 +146,7 @@ export default function MyReportCard({
             {dispute.type}
           </div>
           <div className="hidden lg:block col-span-3 text-sm items-center justify-start text-center">
-            {formatDate(dispute.created_at)} {dispute.id}
+            {formatDateRange(dispute.created_at)}
           </div>
           <button
             className="px-3 py-2 bg-gs_purple_gradient rounded-md text-sm"
