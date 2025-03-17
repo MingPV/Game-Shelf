@@ -15,6 +15,7 @@ import { BoardgameLoadingCard } from "@/components/home/boardgame-card";
 import LastBoardgameCard from "@/components/home/last-boardgame-card";
 import { ReviewData } from "@/app/types/review";
 import { Boardgame } from "@/app/types/game";
+import ProviderStat from "@/components/profile/provider-stat";
 export default function Home() {
   const { username } = useParams();
   const [data, setData] = useState<UserData>();
@@ -180,6 +181,7 @@ export default function Home() {
               </div>
             ) : null}
           </div> */}
+
           <ProfileUsernameForm user={data} setWindow={setWindow} />
           {data.isProvider && !data.is_admin ? (
             <>
