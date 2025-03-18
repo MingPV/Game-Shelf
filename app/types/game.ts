@@ -26,6 +26,10 @@ export interface RentingRequest {
   provider_id: string;
   boardgames?: Boardgame;
   users?: UserData;
+  before_ship: string;
+  after_ship: string;
+  before_return: string;
+  after_return: string;
 }
 
 export interface Boardgame_type {

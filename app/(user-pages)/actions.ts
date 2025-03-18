@@ -391,6 +391,31 @@ export const updateUserAction = async (formData: FormData) => {
   return;
 };
 
+export const banUserAction = async (uid: string, ban_until: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .update({
+      is_banned: true,
+      ban_until: new Date(ban_until),
+    })
+    .eq("uid", uid);
+
+  if (error) {
+    throw new Error("Failed to ban user");
+  }
+
+  console.log("ming");
+  console.log(uid);
+  console.log(ban_until);
+  console.log(new Date(ban_until));
+
+  // revalidatePath("/");
+  // return encodedRedirect("success", "/home", "Update boardgame success.");
+  return;
+};
+
 export const updateProviderAction2 = async (formData: FormData) => {
   const supabase = await createClient();
   const id = formData.get("id")?.toString();

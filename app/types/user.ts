@@ -16,6 +16,8 @@ export interface UserData {
   is_admin: boolean;
   rental_success: Number;
   rating: Number;
+  is_banned: boolean;
+  ban_until: string;
 }
 
 export interface verificationRequests {

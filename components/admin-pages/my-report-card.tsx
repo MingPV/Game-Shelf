@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  banUserAction,
   createNotificationByUserId,
   selectUserById,
 } from "@/app/(user-pages)/actions";
@@ -14,6 +15,10 @@ import {
   updateTakeReport,
 } from "@/app/(admin-pages)/actions";
 import Link from "next/link";
+import { RentingRequest } from "@/app/types/game";
+import { selectRentalRequestById } from "@/app/(rental-pages)/actions";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MyReportCard({
   dispute,
@@ -27,6 +32,12 @@ export default function MyReportCard({
   const [reported, setReported] = useState<UserData>();
   const [verdict, setVerdict] = useState("");
   const [isHidden, setIsHidden] = useState(false);
+  const [rental, setRental] = useState<RentingRequest>();
+  const [banDuration, setBanDuration] = useState<number>(1);
+  const [isRefund, setIsRefund] = useState(false);
+  const [isBan, setIsBan] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchPlayer() {
@@ -38,6 +49,13 @@ export default function MyReportCard({
       if (res2.length > 0) {
         setReported(res2[0]);
       }
+    }
+    async function fetchRental() {
+      const res = await selectRentalRequestById(dispute.rental_id);
+      setRental(res);
+    }
+    if (dispute.rental_id) {
+      fetchRental();
     }
     fetchPlayer();
     setProfileURL(reporter?.profilePicture || "/mock_provider.jpeg");
@@ -62,6 +80,21 @@ export default function MyReportCard({
     formData.append("id", dispute.id.toString());
     formData.append("verdict", verdict);
 
+    let datestring: string = "";
+    if (reported) {
+      if (reported.is_banned) {
+        const currentBanDate = new Date(reported.ban_until);
+        currentBanDate.setDate(currentBanDate.getDate() + banDuration);
+        datestring = currentBanDate.toISOString();
+      } else {
+        const newBanDate = new Date();
+        newBanDate.setDate(newBanDate.getDate() + banDuration);
+        datestring = newBanDate.toISOString();
+      }
+    }
+
+    // console.log("Ban until:", datestring);
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -80,10 +113,15 @@ export default function MyReportCard({
       if (result.isConfirmed) {
         setIsHidden(true);
         await updateReportVerdict(formData);
+        if (reported?.uid && isBan) {
+          await banUserAction(reported.uid, datestring);
+        } else {
+          console.error("Reported user UID is undefined.");
+        }
 
         Swal.fire({
-          title: "Report accepted",
-          text: "The report has been taken to my responsibilities.",
+          title: "Judgment completed",
+          text: "The decision has been made and a message has been sent to the reporter and the reported person.",
           icon: "success",
           customClass: {
             popup: "custom-swal-popup",
@@ -210,14 +248,131 @@ export default function MyReportCard({
                 className="text-black/60 font-normal hover:underline"
                 href={`profile/${reported?.username}`}
               >
-                {reported?.username}
+                {reported?.username}{" "}
               </Link>
+              <span
+                className={`text-red-600 text-sm mx-2 p-2 bg-red-800/10 rounded-md ${reported?.is_banned ? "" : "hidden"}`}
+              >
+                {reported?.is_banned
+                  ? `Currently banned (${formatDateRange(reported.ban_until)})`
+                  : ""}
+              </span>
             </div>
             <div className="col-span-5 font-bold bg-black/10 rounded-md p-4">
               Details :{" "}
               <span className="text-black/60 font-normal ">
                 {dispute.details}
               </span>
+            </div>
+            {dispute.type == "rental" ? (
+              <>
+                <div className="flex flex-row col-span-5 gap-2">
+                  <div className="flex flex-col items-center  bg-black/10 rounded-md  p-1">
+                    <Image
+                      src={
+                        rental?.before_ship ||
+                        "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
+                      }
+                      alt={rental?.status || ""}
+                      width={300}
+                      height={300}
+                      className="hover:cursor-pointer border-4 hover:border-amber-500/80"
+                      onClick={() => {
+                        window.open(rental?.before_ship, "_blank");
+                      }}
+                    />
+                    <div className="text-xs ">Before ship</div>
+                  </div>
+                  <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
+                    <Image
+                      src={
+                        rental?.before_ship ||
+                        "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
+                      }
+                      alt={rental?.status || ""}
+                      width={300}
+                      height={300}
+                      className="hover:cursor-pointer border-4 hover:border-amber-500/80"
+                      onClick={() => {
+                        window.open(rental?.before_ship, "_blank");
+                      }}
+                    />
+                    <div className="text-xs ">After Ship</div>
+                  </div>
+                  <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
+                    <Image
+                      src={
+                        rental?.before_ship ||
+                        "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
+                      }
+                      alt={rental?.status || ""}
+                      width={300}
+                      height={300}
+                      className="hover:cursor-pointer border-4 hover:border-amber-500/80"
+                      onClick={() => {
+                        window.open(rental?.before_ship, "_blank");
+                      }}
+                    />
+                    <div className="text-xs ">Before Return</div>
+                  </div>
+                  <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
+                    <Image
+                      src={
+                        rental?.before_ship ||
+                        "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
+                      }
+                      alt={rental?.status || ""}
+                      width={300}
+                      height={300}
+                      className="hover:cursor-pointer border-4 hover:border-amber-500/80"
+                      onClick={() => {
+                        window.open(rental?.before_ship, "_blank");
+                      }}
+                    />
+                    <div className="text-xs ">After Return</div>
+                  </div>
+                </div>
+                <div className="col-span-5 flex flex-row items-center">
+                  <input
+                    className="checkbox text-black bg-black/10"
+                    type="checkbox"
+                    onClick={() => setIsRefund(!isRefund)}
+                    onChange={(e) => {}}
+                    checked={isRefund}
+                  />
+                  <div className="mx-2 text-sm text-lime-600 font-bold">
+                    Refund to player
+                  </div>
+                </div>
+              </>
+            ) : null}
+            <div className="col-span-5 flex flex-row items-start">
+              <input
+                className="checkbox text-black bg-black/10"
+                type="checkbox"
+                onClick={() => setIsBan(!isBan)}
+                onChange={(e) => {}}
+                checked={isBan}
+              />
+              <div className="mx-2 text-sm text-red-600 font-bold">
+                {reported?.is_banned ? "Extend " : ""}Ban {reported?.username}
+              </div>
+              <select
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const numericValue = parseInt(value.replace("days", ""), 10);
+                  setBanDuration(numericValue);
+                }}
+                className={`select bg-white border border-black/20 focus:border-black/20 mx-2 ${isBan ? "" : "hidden"}`}
+              >
+                <option value="1days">1 day</option>
+                <option value="3days">3 days</option>
+                <option value="7days">7 days</option>
+                <option value="30days">30 days</option>
+                <option value="60days">60 days</option>
+                <option value="120days">120 days</option>
+                <option value="365days">365 days</option>
+              </select>
             </div>
             {/* <Label className="col-span-1">Status : </Label> */}
             {/* <div className="dropdown col-span-4 mr-auto">
