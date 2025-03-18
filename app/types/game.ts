@@ -72,6 +72,8 @@ export interface RentingRequestJoinBoardgameJoinProvider {
   provider_id: string;
   boardgames: Boardgame;
   provider: UserData;
+  after_ship: string;
+  before_return: string;
 }
 
 export interface RentingRequestJoinBoardgameJoinCustomer {
