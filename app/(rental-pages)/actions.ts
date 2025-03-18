@@ -4,6 +4,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { randomUUID } from "crypto";
+import { encodedRedirect } from "@/utils/utils";
 
 export const selectMyRentingRequest = async () => {
   const supabase = await createClient();
@@ -384,4 +386,49 @@ export const updateUserRentalSuccess = async (rental_id: number) => {
   }
 
   return updateData;
+};
+
+export const addImagetoRentalRequest = async (img: File, tag: string, request_id: number) => {
+  const supabase = await createClient();
+
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
+
+  // if (!user) {
+  //   console.error("User not authenticated");
+  //   return;
+  // }
+
+  let publicImageURL = null;
+
+  if (img.size > 0) {
+    const randomName = `${request_id}-${tag}-${randomUUID()}`;
+    console.log("File name:", randomName);
+
+    const { error: uploadError } = await supabase.storage
+      .from("evidence")
+      .upload(randomName, img);
+
+    if (uploadError) {
+      console.log("Upload file error.", uploadError);
+      return;
+    }
+
+    publicImageURL = supabase.storage
+      .from("evidence")
+      .getPublicUrl(randomName).data.publicUrl;
+
+    console.log("evidence:", publicImageURL);
+  }
+
+  const { data, error } = await supabase
+    .from("rental_requests")
+    .update({ [tag]: publicImageURL })
+    .eq("id", request_id);
+
+  if (error) {
+    console.log(error);
+    // encodedRedirect("error", "/my-rental", "Failed to update rental request.");
+  }
 };

@@ -4,10 +4,14 @@ import Image from "next/image";
 import mockBoardGame from "../../public/mock_user.jpeg";
 import { RentingRequestJoinBoardgameJoinProvider } from "@/app/types/game";
 import Link from "next/link";
+import { LuImagePlus } from "react-icons/lu";
+import { FaRegCheckCircle } from "react-icons/fa";
+import MyRentalModal from "./my-rental-modal";
+import { useState, useEffect } from "react";
 
 function StatusTag({ status }: { status: string }) {
   const statusClassMap = new Map<string, string>([
-    ["completed", "badge-outline"],
+    ["complete", "border border-white"],
     ["pending", "bg-sky-500 text-slate-100"],
     ["unpaid", "bg-amber-600 text-slate-100"],
     ["canceled", "badge-error"],
@@ -28,7 +32,7 @@ function StatusTag({ status }: { status: string }) {
 function ReviewTag({ score }: { score: number | null }) {
   if (!score || score > 5)
     return (
-      <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7">
+      <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 my-1">
         <span className="flex">
           Review<span className="hidden sm:block pl-1">this boardgame</span>
         </span>
@@ -90,6 +94,18 @@ export default function MyRentalCard({
   // Calculate total price
   const totalPrice = days * data.boardgames.price;
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [tag, setTag] = useState<string>("after_ship");
+  useEffect(() => {
+    if (data.after_ship != null) {
+      if (data.before_return != null) {
+        setTag(""); // No tag needed
+      } else {
+        setTag("before_return");
+      }
+    }
+  }, [data]);
+
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center w-full border p-4 sm:p-6 rounded-lg gap-3 sm:gap-6">
       <div className="relative w-full sm:w-[160px] h-[160px] sm:aspect-square">
@@ -126,6 +142,44 @@ export default function MyRentalCard({
             <div className="font-bold w-24 sm:w-36">Total price:</div>
             <div>{totalPrice}&nbsp;Baht</div>
           </div>
+
+          {/* After recieved image */}
+          {data.status == "renting" && tag == "after_ship" && (
+            <div className="flex">
+              <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
+              <button
+                className="btn bg-pink-500 hover:bg-pink-500 border-none min-h-7 h-7 mr-2"
+                onClick={() => setShowModal(true)}
+              >
+                <LuImagePlus />
+              </button>
+            </div>
+          )}
+          {data.status == "renting" && tag != "after_ship" && (
+            <div className="flex items-center">
+              <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
+              <FaRegCheckCircle />
+            </div>
+          )}
+
+          {/* Before return image */}
+          {data.status == "renting" && tag == "before_return" && (
+            <div className="flex">
+              <div className="font-bold w-24 sm:w-36 pb-1">Before return:</div>
+              <button
+                className="btn bg-pink-500 hover:bg-pink-500 border-none min-h-7 h-7 mr-2"
+                onClick={() => setShowModal(true)}
+              >
+                <LuImagePlus />
+              </button>
+            </div>
+          )}
+          {data.status == "renting" && tag == "" && (
+            <div className="flex items-center">
+              <div className="font-bold w-24 sm:w-36 pb-1">Before return:</div>
+              <FaRegCheckCircle />
+            </div>
+          )}
           {(data.status == "renting" || data.status == "completed") && (
             <div className="flex">
               <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
@@ -146,6 +200,15 @@ export default function MyRentalCard({
           )}
         </div>
       </div>
+
+      {showModal && (
+        <MyRentalModal
+          tag={tag}
+          request_id={data.id}
+          setShowModal={setShowModal}
+          setTag={setTag}
+        />
+      )}
     </div>
   );
 }
