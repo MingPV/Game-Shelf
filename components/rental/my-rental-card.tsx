@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 
 function StatusTag({ status }: { status: string }) {
   const statusClassMap = new Map<string, string>([
-    ["complete", "border border-white"], 
+    ["complete", "border border-white"],
     ["pending", "bg-sky-500 text-slate-100"],
     ["unpaid", "bg-amber-600 text-slate-100"],
     ["canceled", "badge-error"],
@@ -99,7 +99,7 @@ export default function MyRentalCard({
   useEffect(() => {
     if (data.after_ship != null) {
       if (data.before_return != null) {
-        setTag("");  // No tag needed
+        setTag(""); // No tag needed
       } else {
         setTag("before_return");
       }
@@ -145,12 +145,11 @@ export default function MyRentalCard({
 
           {/* After recieved image */}
           {data.status == "renting" && tag == "after_ship" && (
-            <div className="flex"
-              onClick={()=>setShowModal(true)}
-            >
+            <div className="flex">
               <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
               <button
                 className="btn bg-pink-500 hover:bg-pink-500 border-none min-h-7 h-7 mr-2"
+                onClick={() => setShowModal(true)}
               >
                 <LuImagePlus />
               </button>
@@ -159,18 +158,17 @@ export default function MyRentalCard({
           {data.status == "renting" && tag != "after_ship" && (
             <div className="flex items-center">
               <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
-                <FaRegCheckCircle />
+              <FaRegCheckCircle />
             </div>
           )}
 
           {/* Before return image */}
           {data.status == "renting" && tag == "before_return" && (
-            <div className="flex"
-              onClick={()=>setShowModal(true)}
-            >
-              <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
+            <div className="flex">
+              <div className="font-bold w-24 sm:w-36 pb-1">Before return:</div>
               <button
                 className="btn bg-pink-500 hover:bg-pink-500 border-none min-h-7 h-7 mr-2"
+                onClick={() => setShowModal(true)}
               >
                 <LuImagePlus />
               </button>
@@ -178,8 +176,8 @@ export default function MyRentalCard({
           )}
           {data.status == "renting" && tag == "" && (
             <div className="flex items-center">
-              <div className="font-bold w-24 sm:w-36 pb-1">After recieved:</div>
-                <FaRegCheckCircle />
+              <div className="font-bold w-24 sm:w-36 pb-1">Before return:</div>
+              <FaRegCheckCircle />
             </div>
           )}
           {(data.status == "renting" || data.status == "completed") && (
@@ -202,8 +200,15 @@ export default function MyRentalCard({
           )}
         </div>
       </div>
-      
-      { showModal && <MyRentalModal tag={tag} request_id={data.id} setShowModal={setShowModal} setTag={setTag} /> }
+
+      {showModal && (
+        <MyRentalModal
+          tag={tag}
+          request_id={data.id}
+          setShowModal={setShowModal}
+          setTag={setTag}
+        />
+      )}
     </div>
   );
 }
