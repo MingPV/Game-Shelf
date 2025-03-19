@@ -214,7 +214,11 @@ export const updateReportVerdict = async (formData: FormData) => {
 
   const { data, error } = await supabase
     .from("disputes")
-    .update({ status: "complete", verdict: verdict })
+    .update({
+      status: "complete",
+      verdict: verdict,
+      verdict_timestamp: new Date().toISOString(),
+    })
     .eq("id", id)
     .select();
 
