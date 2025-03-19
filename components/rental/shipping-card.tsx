@@ -14,6 +14,7 @@ import { SetStateAction, Dispatch } from "react";
 import MyRentalModal from "./my-rental-modal";
 import RentingShippingLoading from "./shipping-loading";
 import Link from "next/link";
+import { stat } from "fs";
 
 type RentingListProps = {
   title: string;
@@ -113,7 +114,11 @@ export default function RentingShippingCard({
                         {item.customer.username}
                       </Link>
                     </td>
-                    <td>{dateFormatter.format(new Date(item.start_date))}</td>
+                    <td>{
+                      status === "reserved"
+                        ? dateFormatter.format(new Date(item.start_date))
+                        : dateFormatter.format(new Date(item.end_date))
+                    }</td>
                     <th>
                       <button
                         className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 lg:min-h-7 lg:h-7 px-2"
