@@ -19,9 +19,11 @@ export default function MyRentalModal({
     if (img == null) return;
 
     setShowModal(false);
-    await addImagetoRentalRequest(img, tag, request_id);
     if (tag == "after_ship") setTag("before_return");
     else if (tag == "before_return") setTag("");
+    else if (tag == "before_ship" || tag == "after_return") setTag("done");
+    
+    await addImagetoRentalRequest(img, tag, request_id);
   };
 
   return (
@@ -37,7 +39,7 @@ export default function MyRentalModal({
       ></div>
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center items-center">
+        <div className="flex min-h-full justify-center p-4 text-center items-center">
           <form className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div className="bg-white pb-2 px-2">
               <div className="mt-5 text-center">

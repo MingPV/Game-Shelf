@@ -11,7 +11,8 @@ import { RentingRequestJoinBoardgameJoinCustomer } from "@/app/types/game";
 import Image from "next/image";
 import { JSX } from "react";
 import { SetStateAction, Dispatch } from "react";
-import RentingShippingModal from "./shipping-modal";
+// import RentingShippingModal from "./shipping-modal";
+import MyRentalModal from "./my-rental-modal";
 import RentingShippingLoading from "./shipping-loading";
 import Link from "next/link";
 
@@ -44,12 +45,14 @@ export default function RentingShippingCard({
   setRequests,
   setNextRequest,
 }: RentingListProps) {
-  const [selectedRequestIds, setSelectedRequestIds] = useState<Set<number>>(
-    new Set()
-  );
-  const [selectAll, setSelectAll] = useState<boolean>(false);
+  // const [selectedRequestIds, setSelectedRequestIds] = useState<Set<number>>(
+  //   new Set()
+  // );
+  // const [selectAll, setSelectAll] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [tag, setTag] = useState<string>("");
 
   useEffect(() => {
     async function fetchData() {
@@ -60,30 +63,50 @@ export default function RentingShippingCard({
     fetchData();
   }, [status]);
 
+  useEffect(() => {
+    if (tag != "done") return;
+    if (selectedId == null) return;
+    const selectedRequest = requests.find((r) => r.id === selectedId);
+    setRequests((prev) => prev.filter((r) => r.id !== selectedId));
+    if (setNextRequest && selectedRequest) setNextRequest((prev) => [...prev, selectedRequest]);
+    updateRentingRequestStatus(selectedId, nextStatus);
+    if (status == "renting") {
+      updateUserRentalSuccess(selectedId);
+      updateBoardgameRentingCount(selectedId);
+    }
+  }, [tag]);
+
   const handleUpdateStatus = () => {
-    setShowModal(false);
-    requests
-      .filter((req) => selectedRequestIds.has(req.id))
-      .forEach((req) => {
-        setRequests((prev) => prev.filter((r) => r.id !== req.id));
-        if (setNextRequest) setNextRequest((prev) => [...prev, req]);
-        updateRentingRequestStatus(req.id, nextStatus);
-        if (status == "renting") {
-          updateBoardgameRentingCount(req.bg_id);
-          updateUserRentalSuccess(req.id);
-        }
-      });
-    setSelectedRequestIds(new Set());
+    // setShowModal(false);
+    // requests
+    //   .filter((req) => selectedRequestIds.has(req.id))
+    //   .forEach((req) => {
+    //     setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    //     if (setNextRequest) setNextRequest((prev) => [...prev, req]);
+    //     updateRentingRequestStatus(req.id, nextStatus);
+    //     if (status == "renting") {
+    //       updateBoardgameRentingCount(req.bg_id);
+    //       updateUserRentalSuccess(req.id);
+    //     }
+    //   });
+    // setSelectedRequestIds(new Set());
+    if (selectedId == null) return;
+    const selectedRequest = requests.find((r) => r.id === selectedId);
+    setRequests((prev) => prev.filter((r) => r.id !== selectedId));
+    if (setNextRequest && selectedRequest) setNextRequest((prev) => [...prev, selectedRequest]);
+    updateRentingRequestStatus(selectedId, nextStatus);
+    if (status == "renting") updateUserRentalSuccess(selectedId);
+    // setSelectedId(null);
   };
 
   return (
     <div className="flex flex-col items-center bg-white/10 px-2 py-0 lg:p-4 rounded-lg w-full lg:w-1/2">
-      <div className="flex font-bold text-xl items-center gap-2 hidden lg:flex">
+      <div className="font-bold text-xl items-center gap-2 hidden lg:flex">
         To be {title} {icon}
       </div>
       {requests.length > 0 ? (
         <div>
-          <div className="overflow-y-auto flex-grow mt-4 rounded-lg h-[calc(100vh-360px)] lg:h-[calc(100vh-340px)]">
+          <div className="overflow-y-auto flex-grow mt-4 rounded-lg h-[calc(100vh-280px)] lg:h-[calc(100vh-270px)]">
             <table className="table">
               <thead>
                 <tr className="border-white border-opacity-50">
@@ -120,7 +143,7 @@ export default function RentingShippingCard({
                     </td>
                     <td>{dateFormatter.format(new Date(item.start_date))}</td>
                     <th>
-                      <input
+                      {/* <input
                         type="checkbox"
                         className="checkbox [--chkbg:theme(colors.purple.500)] [--chkfg:white]"
                         checked={selectedRequestIds.has(item.id) || selectAll}
@@ -132,8 +155,19 @@ export default function RentingShippingCard({
                               : updated.delete(item.id);
                             return updated;
                           });
+                        }} 
+                      />*/}
+
+                      <button
+                        className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 lg:min-h-7 lg:h-7 px-2"
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          setTag(status === "reserved" ? "before_ship" : "after_return");
+                          setShowModal(true);
                         }}
-                      />
+                      >
+                        {status === "reserved" ? "Ship" : "Return"}
+                      </button>
                     </th>
                   </tr>
                 ))}
@@ -141,7 +175,7 @@ export default function RentingShippingCard({
             </table>
           </div>
 
-          <button
+          {/* <button
             className="flex w-full justify-end underline pt-3"
             onClick={() => {
               const updated = new Set<number>();
@@ -159,7 +193,7 @@ export default function RentingShippingCard({
             >
               {status === "reserved" ? "Ship" : "Return"}
             </button>
-          </div>
+          </div> */}
         </div>
       ) : isLoading ? (
         <RentingShippingLoading />
@@ -168,12 +202,20 @@ export default function RentingShippingCard({
       )}
 
       {/* confirm modal */}
-      {showModal && (
+      {/* {showModal && (
         <RentingShippingModal
           title={title}
           count={selectedRequestIds.size}
           handleFunction={handleUpdateStatus}
           setShowModal={setShowModal}
+        />
+      )} */}
+      {showModal && selectedId && (
+        <MyRentalModal
+          tag={tag}
+          request_id={selectedId}
+          setShowModal={setShowModal}
+          setTag={setTag}
         />
       )}
     </div>
