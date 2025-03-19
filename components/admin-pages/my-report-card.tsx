@@ -113,10 +113,15 @@ export default function MyReportCard({
       if (result.isConfirmed) {
         setIsHidden(true);
         await updateReportVerdict(formData);
-        if (reported?.uid && isBan) {
+        if (reported?.uid) {
           await banUserAction(reported.uid, datestring);
         } else {
           console.error("Reported user UID is undefined.");
+        }
+
+        const message = `Your report has been reviewed and give a virdict. You can check report status at report-history`;
+        if (reporter) {
+          await createNotificationByUserId(reporter.uid, message);
         }
 
         Swal.fire({
