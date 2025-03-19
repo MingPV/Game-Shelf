@@ -90,19 +90,23 @@ export const updateSession = async (request: NextRequest) => {
     //   }
     // }
 
-    // for provider
-
     if (request.nextUrl.pathname.startsWith("/home")) {
       const token = request.cookies.get("token");
       if (token) {
         const payload = JSON.parse(atob(token.value.split(".")[1]));
         const userData = payload.userData as UserData;
 
+        if (userData.is_admin) {
+          return NextResponse.redirect(new URL("/admin-homepage", request.url));
+        }
+
         if (userData.isProvider) {
           return NextResponse.redirect(new URL("/provider-home", request.url));
         }
       }
     }
+
+    // for provider
 
     if (request.nextUrl.pathname.startsWith("/provider-home")) {
       const token = request.cookies.get("token");
