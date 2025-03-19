@@ -19,11 +19,12 @@ export default function MyRentalModal({
     if (img == null) return;
 
     setShowModal(false);
+    
+    if (tag == "before_ship" || tag == "after_return") setTag("done");
+
+    await addImagetoRentalRequest(img, tag, request_id);
     if (tag == "after_ship") setTag("before_return");
     else if (tag == "before_return") setTag("");
-    else if (tag == "before_ship" || tag == "after_return") setTag("done");
-    
-    await addImagetoRentalRequest(img, tag, request_id);
   };
 
   return (
