@@ -98,7 +98,7 @@ export default function Home() {
               </Link>
               <Link
                 className="mt-2 btn btn-outline btn-primary w-64 sm:w-80"
-                href="/admin-homepage"
+                href="/report-list"
               >
                 Manage Report
               </Link>
@@ -156,7 +156,7 @@ export default function Home() {
                 </div>
                 <Link
                   className="flex justify-center items-center w-full my-2 bg-white/10 p-4 border border-white/20 font-serif text-sm hover:bg-white/20 transition-all duration-300 "
-                  href={"/admin-homepage"}
+                  href={"/report-list"}
                 >
                   Manage all reports
                 </Link>
@@ -194,7 +194,7 @@ export default function Home() {
                 </div>
                 <Link
                   className="flex justify-center items-center w-full my-2 bg-white/10 p-4 border border-white/20 font-serif text-sm hover:bg-white/20 transition-all duration-300 "
-                  href={"/admin-homepage"}
+                  href={"/manage-provider"}
                 >
                   Manage all requests
                 </Link>
