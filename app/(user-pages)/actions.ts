@@ -636,7 +636,7 @@ export const selectRentalRequestsByProviderId = async (providerId: string) => {
 
   const { data, error } = await supabase
     .from("rental_requests")
-    .select("*")
+    .select("*, boardgames(*), users!rental_requests_customer_id_fkey(*)")
     .eq("provider_id", providerId)
     .order("created_at", { ascending: false });
 
@@ -652,7 +652,7 @@ export const selectRentalRequestsByPlayerId = async (playerId: string) => {
 
   const { data, error } = await supabase
     .from("rental_requests")
-    .select("*")
+    .select("*, boardgames(*), users!rental_requests_provider_id_fkey(*)")
     .eq("customer_id", playerId)
     .order("created_at", { ascending: false });
 
