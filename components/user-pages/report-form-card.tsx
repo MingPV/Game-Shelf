@@ -1,11 +1,12 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, useMemo} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createReport, selectUsersByFilterAction, selectRentalRequestsByPlayerId, selectRentalRequestsByProviderId } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
 import { RentingRequest } from "@/app/types/game";
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 
 export default function ReportFormCard({
   userData,
@@ -18,6 +19,7 @@ export default function ReportFormCard({
     const [rentalRequests, setRentalRequests] = useState<RentingRequest[]>([]);
     const [selectedGeneralReportedId, setSelectedGeneralReportedId] = useState<string>("");
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
+    // const [searchQuery, setSearchQuery] = useState<string>("");
 
     
     const fetchUsers = async () => {
@@ -38,8 +40,22 @@ export default function ReportFormCard({
         }
     };
 
+    const userOptions = useMemo(() => {
+        return users.map((user) => ({
+          value: user.uid,
+          label: user.username,
+        }));
+      }, [users]);
+    
 
-
+    
+    const [selectedUser, setSelectedUser] = useState<{value:string, label:string}>({ value: "", label: "" });
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    
+    const filteredOptions = userOptions.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -51,10 +67,16 @@ export default function ReportFormCard({
             const selectedRequest = rentalRequests.find((request) => request.id === Number(selectedRentalReportedId));
             const rentalValue = userData.isProvider ? selectedRequest?.customer_id : selectedRequest?.provider_id;
             formDataUser.set("reporter", userData.uid);
-            formDataUser.set("reported", reportType === "general" ? selectedGeneralReportedId : rentalValue || "");
+            formDataUser.set("reported", reportType === "general" ? selectedUser.value : rentalValue || "");
+            formDataUser.append("type", reportType);
 
-            createReport(formDataUser);
-            // console.log("user data", userData);
+            await createReport(formDataUser);
+            
+            // ✅ Reset form fields & state
+            //event.currentTarget.reset(); // รีเซ็ตค่า input ทั้งหมด
+            setSelectedUser({ value: "", label: "" }); // ล้างค่า user ที่เลือก
+            setSelectedRentalReportedId(""); // ล้างค่า Rental ID
+            setReportType("general"); // รีเซ็ตประเภทเป็นค่าเริ่มต้น
         }
 
         setIsSubmitting(false);
@@ -77,6 +99,7 @@ export default function ReportFormCard({
             setSelectedRentalReportedId(rentalValue); 
         }
     }, [rentalRequests]); 
+
     
     return (
         <div className="flex justify-center items-center w-full pt-4">
@@ -131,7 +154,7 @@ export default function ReportFormCard({
                     {reportType === "general" ? 
                         <>
                             <Label htmlFor="reported" className="content-center text-md col-span-1">Reported User:</Label>
-                            <select
+                            {/* <select
                                 className="w-full rounded-md border border-input px-3 py-2 text-sm bg-transparent col-span-2"
                                 name="reported"
                                 value={selectedGeneralReportedId}
@@ -139,11 +162,45 @@ export default function ReportFormCard({
                                 required
                             >
                                 {users.map((user) => (
-                                    <option key={user.uid} value={user.uid} className="bg-black w-fit rounded-md text-sm">
-                                        {user.username}
-                                    </option>
+                                <option key={user.uid} value={user.uid} className="bg-black w-fit rounded-md text-sm">
+                                    {user.username}
+                                </option>
                                 ))}
-                            </select>
+                            </select> */}
+
+                            <Listbox value={selectedUser} onChange={setSelectedUser}>
+                                    <div className="relative col-span-2">
+                                    <ListboxButton
+                                        className="select flex items-center w-full bg-transparent text-white border border-input focus:outline-none focus:border focus:border-input peer"
+                                    >
+                                        {selectedUser.label !="" ? selectedUser.label : <span className="text-gray-400">Select a User</span>}
+                                    </ListboxButton>
+                                        <ListboxOptions className="absolute w-full bg-gray-800 text-white mt-1 rounded-lg shadow-lg max-h-60 overflow-auto z-10">
+                                            {/* Search in dropdown */}
+                                            <div className="p-2 sticky top-0 bg-gray-800 z-20">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search..."
+                                                    className="input input-sm w-full bg-gray-600 text-white focus:outline-none"
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                />
+                                            </div>
+                                            {filteredOptions.map((option) => (
+                                                <ListboxOption
+                                                    key={option.value}
+                                                    value={option}
+                                                    className={({ active }) =>
+                                                    `cursor-pointer select-none p-2 ${
+                                                        active ? "bg-gray-600" : "bg-gray-800"
+                                                    }`
+                                                    }
+                                                >
+                                                    {option.label}
+                                                </ListboxOption>
+                                            ))}
+                                        </ListboxOptions>
+                                    </div>
+                            </Listbox>
 
                         </> 
                         :
@@ -198,24 +255,27 @@ export default function ReportFormCard({
                     ></textarea>
                 </div>
 
+                <div className="flex justify-center gap-10 mt-7">
+                    <button
+                        type="submit"
+                        className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        className="btn rounded-full text-md bg-gs_purple_gradient hover:bg-opacity-60 border-none w-min px-16"
+                    >
+                        {isSubmitting ? "Sending.." : "Submit"}
+                    </button>
+                </div>
+
             </form>
+
             </div>
 
-            <div className="flex justify-center gap-10 mt-7">
-                <button
-                    type="submit"
-                    className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
-                >
-                    Cancel
-                </button>
-
-                <button
-                    type="submit"
-                    className="btn rounded-full text-md bg-gs_purple_gradient hover:bg-opacity-60 border-none w-min px-16"
-                >
-                    {isSubmitting ? "Sending.." : "Submit"}
-                </button>
-            </div>
+            
 
         </div>
         </div>
