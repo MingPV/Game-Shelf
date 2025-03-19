@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import AuthButton from "./header-auth";
 import NotificationInNavbar from "./notification/notification-in-navbar";
 import Link from "next/link";
 
 export const Navbar = () => {
+  const [error, setError] = useState("");
+
   return (
     <>
       <div className="navbar bg-transparent">
@@ -119,7 +122,17 @@ export const Navbar = () => {
                   <summary className="px-6 rounded-xl">Wallet</summary>
                   <ul className="bg-base-100 rounded-t-none ">
                     <li className="px-8 py-4 ">0 Bath</li>
-                    <li className="px-8 btn">Add money</li>
+                    <li
+                      className="px-8 btn"
+                      onClick={() => setError("coming soon")}
+                    >
+                      Add money
+                    </li>
+                    <li
+                      className={`px-8 text-red-500 text-xs text-start mt-2 ${error ? "" : "hidden"}`}
+                    >
+                      {error}
+                    </li>
                   </ul>
                 </details>
               </li>
