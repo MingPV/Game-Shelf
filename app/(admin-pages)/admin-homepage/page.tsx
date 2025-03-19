@@ -1,20 +1,34 @@
 "use client";
 
 import { getMyUserData } from "@/app/(user-pages)/actions";
-import { UserData } from "@/app/types/user";
+import { Dispute } from "@/app/types/admin";
+import { UserData, verificationRequests } from "@/app/types/user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { getAllPendingReports, getAllPendingVerifications } from "../actions";
+import VerificationHomeCard from "@/components/admin-pages/verification-homecard";
 
 export default function Home() {
   const [userData, setUserData] = useState<UserData>();
+  const [incomingReports, setIncomingReports] = useState<Dispute[]>();
+  const [incomingVerfications, setIncomingVerifications] =
+    useState<verificationRequests[]>();
 
   useEffect(() => {
     const fetchMyData = async () => {
       const res = await getMyUserData();
       setUserData(res);
     };
+    const fetchIncomingData = async () => {
+      const res1 = await getAllPendingReports();
+      const res2 = await getAllPendingVerifications();
+
+      setIncomingReports(res1);
+      setIncomingVerifications(res2);
+    };
 
     fetchMyData();
+    fetchIncomingData();
   }, []);
 
   function formatDateRange(endDateStr: string): string {
@@ -94,6 +108,12 @@ export default function Home() {
               >
                 Report Statistic
               </Link>
+              <Link
+                className="mt-2 btn btn-outline btn-primary w-64 sm:w-80"
+                href="/successful-report"
+              >
+                Successful Reports
+              </Link>
             </div>
           </div>
           <div className="flex-1 flex-row m-4 hidden md:flex">
@@ -103,78 +123,36 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2 mt-6 overflow-hidden">
                 <div className="overflow-scroll flex flex-col gap-2">
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center">
-                      General
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center">
-                      General
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center">
-                      General
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center">
-                      General
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-red-600/70 p-2 rounded-md text-sm w-20 flex justify-center">
-                      Rental
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-red-600/70 p-2 rounded-md text-sm w-20 flex justify-center">
-                      Rental
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-red-600/70 p-2 rounded-md text-sm w-20 flex justify-center">
-                      Rental
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-red-600/70 p-2 rounded-md text-sm w-20 flex justify-center">
-                      Rental
-                    </div>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <div className="bg-red-600/70 p-2 rounded-md text-sm w-20 flex justify-center">
-                      Rental
-                    </div>
-                  </div>
+                  {!incomingReports ? (
+                    <>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                    </>
+                  ) : (
+                    incomingReports.map((item, index) => (
+                      <div
+                        className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center"
+                        key={index}
+                      >
+                        <div className="text-sm text-white/50">
+                          {item.title}
+                        </div>
+                        <div className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center">
+                          {item.type}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
                 <Link
                   className="flex justify-center items-center w-full my-2 bg-white/10 p-4 border border-white/20 font-serif text-sm hover:bg-white/20 transition-all duration-300 "
@@ -190,50 +168,29 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2 mt-6 overflow-hidden">
                 <div className="overflow-scroll flex flex-col gap-2">
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <Link
-                      className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center hover:bg-white/20 transition-all duration-300"
-                      href={"/manage-provider"}
-                    >
-                      Manage
-                    </Link>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <Link
-                      className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center hover:bg-white/20 transition-all duration-300"
-                      href={"/manage-provider"}
-                    >
-                      Manage
-                    </Link>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <Link
-                      className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center hover:bg-white/20 transition-all duration-300"
-                      href={"/manage-provider"}
-                    >
-                      Manage
-                    </Link>
-                  </div>
-                  <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
-                    <div className="text-sm text-white/50">
-                      Late return from player Dragon
-                    </div>
-                    <Link
-                      className="bg-white/10 p-2 rounded-md text-sm w-20 flex justify-center hover:bg-white/20 transition-all duration-300"
-                      href={"/manage-provider"}
-                    >
-                      Manage
-                    </Link>
-                  </div>
+                  {!incomingVerfications ? (
+                    <>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                      <div className="p-4 border border-white/10 bg-black/10 flex flex-row justify-between items-center">
+                        <div className="text-sm text-white/10">Loading</div>
+                      </div>
+                    </>
+                  ) : (
+                    incomingVerfications.map((item, index) => (
+                      <VerificationHomeCard verification={item} key={index} />
+                    ))
+                  )}
                 </div>
                 <Link
                   className="flex justify-center items-center w-full my-2 bg-white/10 p-4 border border-white/20 font-serif text-sm hover:bg-white/20 transition-all duration-300 "

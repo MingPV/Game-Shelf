@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
 import { Dispute } from "../types/admin";
+import { verificationRequests } from "../types/user";
 
 export const addVerificationRequest = async (formData: FormData) => {
   const provider_id = formData.get("provider_id")?.toString();
@@ -142,6 +143,38 @@ export const getAllReports = async () => {
   }
 
   return data as Dispute[];
+};
+
+export const getAllPendingReports = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("disputes")
+    .select("*")
+    .eq("status", "waiting")
+    .order("id", { ascending: false });
+
+  if (error) {
+    throw new Error("Failed to fetch disputes");
+  }
+
+  return data as Dispute[];
+};
+
+export const getAllPendingVerifications = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("verification_requests")
+    .select("*")
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error("Failed to fetch verification_requests");
+  }
+
+  return data as verificationRequests[];
 };
 
 export const updateReport = async (formData: FormData) => {

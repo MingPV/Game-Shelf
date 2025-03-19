@@ -121,13 +121,13 @@ export default function AuthButton() {
               Settings
             </Link>
           </li>
-          {myData.isProvider ? (
+          {myData.isProvider && !myData.is_admin ? (
             <li>
               <Link href="/income-history" prefetch={true}>
                 Income History
               </Link>
             </li>
-          ) : (
+          ) : myData.is_admin ? null : (
             <>
               <li>
                 <Link href="/my-rental" prefetch={true}>
