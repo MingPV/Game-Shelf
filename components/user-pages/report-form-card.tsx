@@ -25,9 +25,10 @@ export default function ReportFormCard({
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
     const [userData, setUserData] = useState<UserData>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [errors, setErrors] = useState<{ topic: boolean; details: boolean }>({
+    const [errors, setErrors] = useState<{ topic: boolean; details: boolean, reported: boolean }>({
         topic: false,
         details: false,
+        reported: false,
     });
     
     const router = useRouter();
@@ -79,9 +80,7 @@ export default function ReportFormCard({
     );
 
     const [selectedRental, setSelectedRental] = useState<RentingRequest>(
-        rentalRequests.length > 0 
-            ? rentalRequests[0] 
-            : {
+            {
                 id: 0,
                 start_date: "",
                 end_date: "",
@@ -110,13 +109,22 @@ export default function ReportFormCard({
         const formDataUser = new FormData(event.currentTarget);
 
         const topicValue = formDataUser.get("topic")?.toString().trim();
-        const detailsValue = formDataUser.get("details")?.toString().trim();
+        const detailsValue = formDataUser.get("details")?.toString().trim()
+        const reportedValue = (reportType === "general") ? selectedUser.value : selectedRentalReportedId;
 
-        if (!topicValue || !detailsValue) {
-            setErrors({
-                topic: !topicValue,
-                details: !detailsValue,
-            });
+        console.log("reportedValue", reportedValue)
+
+        const newErrors = {
+            topic: !topicValue,
+            details: !detailsValue,
+            reported: !reportedValue || reportedValue === "",
+        };
+    
+        setErrors(newErrors);
+    
+        if (Object.values(newErrors).some((error) => error)) {
+            setIsSubmitting(false);
+            console.log("found error", newErrors);
             return;
         }
 
@@ -124,7 +132,7 @@ export default function ReportFormCard({
             // const selectedRequest = rentalRequests.find((request) => { (userData.isProvider ? request.customer_id : request.provider_id) === selectedRentalReportedId });
             //const rentalValue = userData.isProvider ? selectedRequest?.customer_id : selectedRequest?.provider_id;
             formDataUser.set("reporter", userData.uid);
-            formDataUser.set("reported", reportType === "general" ? selectedUser.value :  selectedRentalReportedId || "");
+            formDataUser.set("reported", reportType === "general" ? selectedUser.value : selectedRentalReportedId);
             formDataUser.append("type", reportType);
             
             createReport(formDataUser);
@@ -150,18 +158,23 @@ export default function ReportFormCard({
         }
     }, [userData]);
 
-    useEffect(() => {
-        if (users.length > 0 && selectedGeneralReportedId === "") {
-            setSelectedGeneralReportedId(users[0].uid); 
-        }
-    }, [users]); 
+    // useEffect(() => {
+    //     if (users.length > 0 && selectedGeneralReportedId === "") {
+    //         setSelectedGeneralReportedId(users[0].uid); 
+    //     }
+    // }, [users]); 
     
+    // useEffect(() => {
+    //     if (rentalRequests.length > 0 && selectedRentalReportedId === "") {
+    //         const rentalValue = userData?.isProvider ? rentalRequests[0].customer_id : rentalRequests[0].provider_id;
+    //         setSelectedRentalReportedId(rentalValue); 
+    //     }
+    // }, [rentalRequests]); 
+
     useEffect(() => {
-        if (rentalRequests.length > 0 && selectedRentalReportedId === "") {
-            const rentalValue = userData?.isProvider ? rentalRequests[0].customer_id : rentalRequests[0].provider_id;
-            setSelectedRentalReportedId(rentalValue); 
-        }
-    }, [rentalRequests]); 
+        setErrors((prev) => ({ ...prev, reported: false }));
+    }, [reportType]);
+    
 
 
     if(isLoading){
@@ -176,7 +189,6 @@ export default function ReportFormCard({
                 </div>
 
                <div className={`card-body rounded-lg gap-7 py-10 bg-gs_gray bg-opacity-10 h-[400px]`}></div>
-                
                 
                 <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
                     <button className="btn rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
@@ -250,7 +262,9 @@ export default function ReportFormCard({
                                 <Listbox value={selectedUser} onChange={setSelectedUser}>
                                         <div className="relative col-span-2">
                                         <ListboxButton
-                                            className="select flex items-center w-full bg-transparent px-3 py-2 text-white border border-input focus:outline-none focus:border focus:border-input peer"
+                                             className={`select flex items-center w-full bg-transparent px-3 py-2 text-white border 
+                                                ${errors.reported ? "border-gs_red" : "border-input"}
+                                                focus:outline-none focus:border focus:border-input peer`}
                                         >
                                             {selectedUser.label !="" ? selectedUser.label : <span className="text-white/50">Select a User</span>}
                                         </ListboxButton>
@@ -285,7 +299,8 @@ export default function ReportFormCard({
                             <>
                                 <Label htmlFor="reported" className="content-center text-md col-span-1">Report to:</Label>
                                 <Input
-                                    className="placeholder:text-white/50 col-span-2 cursor-default"
+                                    className={`placeholder:text-white/50 col-span-2 cursor-default border 
+                                        ${errors.reported ? "border-gs_red" : "border-input"}`}
                                     name="reported"
                                     placeholder="Select Rental"
                                     value={selectedRental.users?.username || ""}
@@ -299,7 +314,7 @@ export default function ReportFormCard({
                         <div className="grid grid-cols-3 gap-14">
                             <Label htmlFor="topic" className="content-center text-md col-span-1">Topic:</Label>
                             <Input
-                                className={`placeholder:text-white/50 col-span-2 text-white-50 ${errors.topic ? "border-gs_red" : ""}`}
+                                className={`placeholder:text-white/50 col-span-2 text-white-50 border ${errors.topic ? "border-gs_red" : "border-input"}`}
                                 name="topic"
                                 placeholder="Topic"
                                 required
@@ -310,15 +325,16 @@ export default function ReportFormCard({
                         <div className="grid grid-cols-3 gap-14">
                             <Label htmlFor="details" className="text-md grid-cols-1">Details:</Label>
                             <textarea
-                                className={`flex min-h-36 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white-50
+                                className={`flex min-h-36 w-full rounded-md border bg-background px-3 py-2 text-sm text-white-50
                                             ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium 
                                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
                                             disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-white/50 col-span-2
-                                            ${errors.details ? "border-gs_red" : ""}`}
+                                            ${errors.details ? "border-gs_red" : "border-input"}`}
                                 name="details"
                                 placeholder="Details"
                                 required
                                 onBlur={handleBlur}
+                                
                             ></textarea>
                         </div>
 
