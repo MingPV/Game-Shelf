@@ -143,7 +143,7 @@ export default function ReportFormCard({
     
     return (
         <div className="flex justify-center items-center w-full pt-4">
-        <div className="card gap-2 w-11/12 md:w-4/5">
+        <div className="card gap-2 w-11/12 md:w-3/5">
             <h1 className="flex justify-center text-2xl font-medium">
                 Report Request Form
             </h1>
@@ -173,7 +173,7 @@ export default function ReportFormCard({
             <div className={` ${reportType === "rental" ? "grid grid-cols-2 gap-5" : ""}`}>
                 <div className={`card-body border border-input rounded-md gap-7 py-10 
                                 ${reportType === "rental" ?
-                                "col-span-1 px-7 max-lg:px-5" 
+                                "col-span-1 px-10 max-lg:px-5" 
                                 : 
                                 "pl-32 pr-36 max-lg:px-20 max-md:px-7 "}`}>
 
