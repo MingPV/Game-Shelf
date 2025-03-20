@@ -349,6 +349,38 @@ export const selectProvidersByFilterAction = async (
   return { fetch_data, count_items };
 };
 
+export const createReview = async (
+  customer_id: string,
+  provider_id: string,
+  comment: string,
+  rating: Number,
+  bg_id: Number,
+  is_anonymous: Boolean
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .insert([
+      {
+        customer_id: customer_id,
+        provider_id: provider_id,
+        comment: comment,
+        rating:rating,
+        is_anonymous:is_anonymous,
+        bg_id: bg_id,
+      },
+    ])
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Failed to create review");
+  }
+
+  return { data, error };
+};
+
 export const selectReviewByProviderId = async (userId: string) => {
   const supabase = await createClient();
 
