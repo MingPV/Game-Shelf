@@ -11,24 +11,22 @@ import ReportRentalCard from "@/components/user-pages/report-rental-card";
 import { getMyUserData } from "@/app/(user-pages)/actions";
 import { useDebouncedCallback } from "use-debounce";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
-export default function ReportFormCard({
-//   userData,
-}: {
-//   userData: UserData;
-}) {
+export default function ReportFormCard() {
     const [reportType, setReportType] = useState<"general" | "rental">("general");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
     const [users, setUsers] = useState<UserData[]>([]);
     const [rentalRequests, setRentalRequests] = useState<RentingRequest[]>([]);
     const [selectedGeneralReportedId, setSelectedGeneralReportedId] = useState<string>("");
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
     const [userData, setUserData] = useState<UserData>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [errors, setErrors] = useState<{ topic: boolean; details: boolean, reported: boolean }>({
+    const [errors, setErrors] = useState<{  reported: boolean, topic: boolean; details: boolean}>({
+        reported: false,
         topic: false,
         details: false,
-        reported: false,
     });
     
     const router = useRouter();
@@ -97,6 +95,7 @@ export default function ReportFormCard({
     const filteredRentals = rentalRequests.filter((rental) => rental.id);
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (!hasSubmitted) return;
         const { name, value } = event.target;
         setErrors((prev) => ({ ...prev, [name]: value.trim() === "" }));
     };
@@ -104,27 +103,43 @@ export default function ReportFormCard({
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setHasSubmitted(true);
         setIsSubmitting(true);
 
         const formDataUser = new FormData(event.currentTarget);
 
-        const topicValue = formDataUser.get("topic")?.toString().trim();
-        const detailsValue = formDataUser.get("details")?.toString().trim()
         const reportedValue = (reportType === "general") ? selectedUser.value : selectedRentalReportedId;
+        const topicValue = formDataUser.get("topic")?.toString().trim();
+        const detailsValue = formDataUser.get("details")?.toString().trim();
 
         // console.log("reportedValue", reportedValue)
 
         const newErrors = {
+            reported: !reportedValue,
             topic: !topicValue,
             details: !detailsValue,
-            reported: !reportedValue || reportedValue === "",
         };
     
         setErrors(newErrors);
     
         if (Object.values(newErrors).some((error) => error)) {
+           
+            Swal.fire({
+                title: "Can not accept this report.",
+                text: "Please fill all values.",
+                icon: "error",
+                customClass: {
+                    popup: "custom-swal-popup",
+                    title: "custom-swal-title",
+                    confirmButton: "custom-swal-confirm-button",
+                },
+            }).then(() => {
+            // Close the modal
+            });
+
             setIsSubmitting(false);
-            // console.log("found error", newErrors);
+            
+            console.log("found error", newErrors);
             return;
         }
 
@@ -133,16 +148,25 @@ export default function ReportFormCard({
             //const rentalValue = userData.isProvider ? selectedRequest?.customer_id : selectedRequest?.provider_id;
             formDataUser.set("reporter", userData.uid);
             formDataUser.set("reported", reportType === "general" ? selectedUser.value : selectedRentalReportedId);
-            formDataUser.append("rental_id", selectedRental.id.toString());
+            if(reportType === "rental"){
+                formDataUser.append("rental_id", selectedRental.id.toString());
+            }
             formDataUser.append("type", reportType);
             
             createReport(formDataUser);
             
-            // // ✅ Reset form fields & state
-            // //event.currentTarget.reset(); // รีเซ็ตค่า input ทั้งหมด
-            // setSelectedUser({ value: "", label: "" }); // ล้างค่า user ที่เลือก
-            // setSelectedRentalReportedId(""); // ล้างค่า Rental ID
-            // setReportType("general"); // รีเซ็ตประเภทเป็นค่าเริ่มต้น
+            Swal.fire({
+                title: "Report accepted",
+                text: "This report has been accepted.",
+                icon: "success",
+                customClass: {
+                    popup: "custom-swal-popup",
+                    title: "custom-swal-title",
+                    confirmButton: "custom-swal-confirm-button",
+                },
+            }).then(() => {
+                // Close the modal
+            });
         }
 
         setIsSubmitting(false);
@@ -150,6 +174,7 @@ export default function ReportFormCard({
 
     useEffect(() => {
         fetchMyData();
+        setHasSubmitted(false);
     }, []);
 
     useEffect(() => {
@@ -175,26 +200,35 @@ export default function ReportFormCard({
     useEffect(() => {
         setErrors((prev) => ({ ...prev, reported: false }));
     }, [reportType]);
+
+    useEffect(() => {
+        if (reportType === "general") {
+            setErrors((prev) => ({ ...prev, reported: selectedUser.value === "" }));
+        } else {
+            setErrors((prev) => ({ ...prev, reported: selectedRentalReportedId === "" }));
+        }
+    }, [selectedUser, selectedRentalReportedId, reportType]);
+    
     
 
 
     if(isLoading){
         return (
             <div className="flex justify-center items-center w-full pt-4">
-            <div className="card gap-2 w-11/12 md:w-3/5 ">
+            <div className="card gap-2 w-11/12 md:w-3/5">
                 <div className="flex gap-4 max-md:justify-center">
-                    <button  className={`btn w-24 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
+                    <button  className={`cursor-default w-24 h-12 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
                     </button>
-                    <button  className={`btn w-24 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
+                    <button  className={`cursor-default w-24 h-12 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
                     </button>
                 </div>
 
-               <div className={`card-body rounded-lg gap-7 py-10 bg-gs_gray bg-opacity-10 h-[400px]`}></div>
+               <div className={`card-body rounded-lg gap-7 py-10 h-[400px] skeleton bg-gs_gray bg-opacity-10`}></div>
                 
                 <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
-                    <button className="btn rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
+                    <button className="cursor-default h-12 rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
                     </button>
-                    <button className="btn rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
+                    <button className="cursor-default h-12 rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
                     </button>
                 </div>
             </div>
@@ -263,8 +297,8 @@ export default function ReportFormCard({
                                 <Listbox value={selectedUser} onChange={setSelectedUser}>
                                         <div className="relative col-span-2">
                                         <ListboxButton
-                                             className={`select flex items-center w-full bg-transparent px-3 py-2 text-white border 
-                                                ${errors.reported ? "border-gs_red" : "border-input"}
+                                             className={`select flex items-center w-full bg-transparent px-3 py-2 text-white border
+                                                ${hasSubmitted && errors.reported ? "border-gs_red" : "border-input"}
                                                 focus:outline-none focus:border focus:border-input peer`}
                                         >
                                             {selectedUser.label !="" ? selectedUser.label : <span className="text-white/50">Select a User</span>}
@@ -301,12 +335,11 @@ export default function ReportFormCard({
                                 <Label htmlFor="reported" className="content-center text-md col-span-1">Report to:</Label>
                                 <Input
                                     className={`placeholder:text-white/50 col-span-2 cursor-default border 
-                                        ${errors.reported ? "border-gs_red" : "border-input"}`}
+                                       ${hasSubmitted && errors.reported ? "border-gs_red" : "border-input"}`}
                                     name="reported"
                                     placeholder="Select Rental"
                                     value={selectedRental.users?.username || ""}
                                     readOnly
-                                    required
                                 />
                             </>
                         }
@@ -318,7 +351,6 @@ export default function ReportFormCard({
                                 className={`placeholder:text-white/50 col-span-2 text-white-50 border ${errors.topic ? "border-gs_red" : "border-input"}`}
                                 name="topic"
                                 placeholder="Topic"
-                                required
                                 onBlur={handleBlur}
                             />
                         </div>
@@ -333,7 +365,6 @@ export default function ReportFormCard({
                                             ${errors.details ? "border-gs_red" : "border-input"}`}
                                 name="details"
                                 placeholder="Details"
-                                required
                                 onBlur={handleBlur}
                                 
                             ></textarea>

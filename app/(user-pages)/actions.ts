@@ -545,28 +545,29 @@ export const createReport = async (formData: FormData) => {
   const reportType = formData.get("type")?.toString();
   const reporterId = formData.get("reporter")?.toString();  
   const reportedId = formData.get("reported")?.toString();
-  const rentalId = Number(formData.get("rental_id"));
+  const rentalIdRaw = formData.get("rental_id");
+  const rentalId = rentalIdRaw ? Number(rentalIdRaw) : null;
   const topic = formData.get("topic")?.toString();
   const details = formData.get("details")?.toString();
 
-  const { data, error } = await supabase
-    .from("disputes")
-    .insert([
-      {
-        type: reportType,
-        reporter: reporterId,
-        report_to: reportedId,
-        rental_id: rentalId,
-        title: topic,
-        details: details,
-        status: "waiting",
-      },
-    ]);
+  // const { data, error } = await supabase
+  //   .from("disputes")
+  //   .insert([
+  //     {
+  //       type: reportType,
+  //       reporter: reporterId,
+  //       report_to: reportedId,
+  //       rental_id: rentalId,
+  //       title: topic,
+  //       details: details,
+  //       status: "waiting",
+  //     },
+  //   ]);
   
-  if (error) {
-    console.log("error", error);
-    throw new Error("Failed to create report.");
-  }
+  // if (error) {
+  //   console.log("error", error);
+  //   throw new Error("Failed to create report.");
+  // }
 
   console.log([
     {
