@@ -545,6 +545,7 @@ export const createReport = async (formData: FormData) => {
   const reportType = formData.get("type")?.toString();
   const reporterId = formData.get("reporter")?.toString();  
   const reportedId = formData.get("reported")?.toString();
+  const rentalId = Number(formData.get("rental_id"));
   const topic = formData.get("topic")?.toString();
   const details = formData.get("details")?.toString();
 
@@ -555,6 +556,7 @@ export const createReport = async (formData: FormData) => {
         type: reportType,
         reporter: reporterId,
         report_to: reportedId,
+        rental_id: rentalId,
         title: topic,
         details: details,
         status: "waiting",
@@ -571,6 +573,7 @@ export const createReport = async (formData: FormData) => {
       type: reportType,
       reporter: reporterId,
       report_to: reportedId,
+      rental_id: rentalId,
       title: topic,
       details: details,
       status: "waiting",

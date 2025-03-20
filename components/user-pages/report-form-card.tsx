@@ -133,6 +133,7 @@ export default function ReportFormCard({
             //const rentalValue = userData.isProvider ? selectedRequest?.customer_id : selectedRequest?.provider_id;
             formDataUser.set("reporter", userData.uid);
             formDataUser.set("reported", reportType === "general" ? selectedUser.value : selectedRentalReportedId);
+            formDataUser.append("rental_id", selectedRental.id.toString());
             formDataUser.append("type", reportType);
             
             createReport(formDataUser);
