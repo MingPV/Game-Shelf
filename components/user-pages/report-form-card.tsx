@@ -23,9 +23,12 @@ export default function ReportFormCard({
     const [rentalRequests, setRentalRequests] = useState<RentingRequest[]>([]);
     const [selectedGeneralReportedId, setSelectedGeneralReportedId] = useState<string>("");
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
-    const [topic, setTopic] = useState<string>("");
-    const [details, setDetails] = useState<string>("");
     const [userData, setUserData] = useState<UserData>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errors, setErrors] = useState<{ topic: boolean; details: boolean }>({
+        topic: false,
+        details: false,
+    });
     
     const router = useRouter();
 
@@ -33,6 +36,7 @@ export default function ReportFormCard({
         const res = await getMyUserData();
         // console.log("userData loaded:", res);
         setUserData(res);
+        setIsLoading(false)
     }
     
     const fetchUsers = useDebouncedCallback(async () => {
@@ -92,6 +96,11 @@ export default function ReportFormCard({
     );
 
     const filteredRentals = rentalRequests.filter((rental) => rental.id);
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setErrors((prev) => ({ ...prev, [name]: value.trim() === "" }));
+    };
     
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -99,6 +108,17 @@ export default function ReportFormCard({
         setIsSubmitting(true);
 
         const formDataUser = new FormData(event.currentTarget);
+
+        const topicValue = formDataUser.get("topic")?.toString().trim();
+        const detailsValue = formDataUser.get("details")?.toString().trim();
+
+        if (!topicValue || !detailsValue) {
+            setErrors({
+                topic: !topicValue,
+                details: !detailsValue,
+            });
+            return;
+        }
 
         if (userData) {
             // const selectedRequest = rentalRequests.find((request) => { (userData.isProvider ? request.customer_id : request.provider_id) === selectedRentalReportedId });
@@ -143,6 +163,32 @@ export default function ReportFormCard({
         }
     }, [rentalRequests]); 
 
+
+    if(isLoading){
+        return (
+            <div className="flex justify-center items-center w-full pt-4">
+            <div className="card gap-2 w-11/12 md:w-3/5 ">
+                <div className="flex gap-4 max-md:justify-center">
+                    <button  className={`btn w-24 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
+                    </button>
+                    <button  className={`btn w-24 px-4 py-2 border border-input rounded-lg text-gs_gray text-opacity-10 bg-gs_gray bg-opacity-20`}>
+                    </button>
+                </div>
+
+               <div className={`card-body rounded-lg gap-7 py-10 bg-gs_gray bg-opacity-10 h-[400px]`}></div>
+                
+                
+                <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
+                    <button className="btn rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
+                    </button>
+                    <button className="btn rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        );
+    }
     
     return (
         <div className="flex justify-center items-center w-full pt-4">
@@ -173,10 +219,10 @@ export default function ReportFormCard({
                 </button>
             </div>
 
-            <div className={` ${reportType === "rental" ? "grid grid-cols-2 gap-5" : ""}`}>
+            <div className={` ${reportType === "rental" ? "grid grid-cols-2 gap-5 max-lg:flex max-lg:flex-col" : ""}`}>
                 <div className={`card-body border border-input rounded-md gap-7 py-10 
                                 ${reportType === "rental" ?
-                                "col-span-1 px-10 max-lg:px-5" 
+                                "col-span-1 px-10 " 
                                 : 
                                 "pl-32 pr-36 max-lg:px-20 max-md:px-7 "}`}>
 
@@ -188,7 +234,7 @@ export default function ReportFormCard({
                         <div className="grid grid-cols-3 gap-14">
                             <Label htmlFor="reporter" className="content-center text-md col-span-1">Reporter:</Label>
                             <Input
-                                className="text-white-50 col-span-2"
+                                className="text-white-50 col-span-2 cursor-default"
                                 name="reporter"
                                 placeholder="Reporter"
                                 value= {userData?.username}
@@ -239,7 +285,7 @@ export default function ReportFormCard({
                             <>
                                 <Label htmlFor="reported" className="content-center text-md col-span-1">Report to:</Label>
                                 <Input
-                                    className="placeholder:text-white/50 col-span-2"
+                                    className="placeholder:text-white/50 col-span-2 cursor-default"
                                     name="reported"
                                     placeholder="Select Rental"
                                     value={selectedRental.users?.username || ""}
@@ -253,23 +299,26 @@ export default function ReportFormCard({
                         <div className="grid grid-cols-3 gap-14">
                             <Label htmlFor="topic" className="content-center text-md col-span-1">Topic:</Label>
                             <Input
-                                className="placeholder:text-white/50 col-span-2 text-white-50"
+                                className={`placeholder:text-white/50 col-span-2 text-white-50 ${errors.topic ? "border-gs_red" : ""}`}
                                 name="topic"
                                 placeholder="Topic"
                                 required
+                                onBlur={handleBlur}
                             />
                         </div>
 
                         <div className="grid grid-cols-3 gap-14">
                             <Label htmlFor="details" className="text-md grid-cols-1">Details:</Label>
                             <textarea
-                                className="flex min-h-36 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white-50
+                                className={`flex min-h-36 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-white-50
                                             ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium 
                                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
-                                            disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-white/50 col-span-2"
+                                            disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-white/50 col-span-2
+                                            ${errors.details ? "border-gs_red" : ""}`}
                                 name="details"
                                 placeholder="Details"
                                 required
+                                onBlur={handleBlur}
                             ></textarea>
                         </div>
 
@@ -278,12 +327,12 @@ export default function ReportFormCard({
                 </div>
 
                 {reportType === "rental" &&
-                    <div className="col-span-1 bg-gs_black bg-opacity-50 rounded-md h-[420px] overflow-y-scroll">
+                    <div className="col-span-1 bg-gs_black bg-opacity-50 rounded-md h-[420px] max-lg:h-[270px] overflow-y-auto max-lg:overflow-x-auto flex lg:flex-col max-lg:flex-row gap-4 p-4">
                         {filteredRentals.length > 0 ? (
                             filteredRentals.map((rental) => (
                                 <div 
                                     key={rental.id} 
-                                    className= "cursor-pointer"
+                                    className= "cursor-pointer max-lg:min-w-[300px]  max-lg:flex-shrink-0"
                                     onClick={() => {
                                         setSelectedRental(rental);
                                         console.log(rental);
@@ -301,11 +350,12 @@ export default function ReportFormCard({
                         )}
                     </div>
                 }
+
             </div>
             
             <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
                 <button
-                    type="submit"
+                    type="button"
                     className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
                     onClick={() => router.push("/home")}
                 >

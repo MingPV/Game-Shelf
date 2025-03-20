@@ -25,7 +25,7 @@ export default function ReportRentalCard({
            const classes = statusClassMap.get(status);
            return (
              <span
-               className={`rounded-lg px-3 py-2 transition-transform transform ${classes} hidden sm:block`}
+               className={`rounded-lg px-3 py-2 transition-transform transform ${classes} block`}
              >
                {status}
              </span>
@@ -48,9 +48,9 @@ export default function ReportRentalCard({
 
     return (
         <div className={`card shadow-xl rounded-sm border border-white border-opacity-60 m-5 
-                        relative transition-all duration-300 grid grid-cols-3 gap-2 text-xs
+                        relative transition-all duration-300 grid grid-cols-3 gap-2 text-xs 
                         ${isSelected ? "bg-gs_gray bg-opacity-20" : ""} rounded-lg`}>
-            <div className="bg-white col-span-1 flex justify-start md:w-full h-32 m-2 md:m-4 max-lg:hidden overflow-hidden rounded-xl">
+            <div className="bg-white col-span-1 flex justify-start md:w-full m-2 h-32 md:m-4 max-lg:hidden overflow-hidden rounded-xl">
                 <img
                 src={rentalData.boardgames?.bg_picture}
                 alt="boardgame picture"
