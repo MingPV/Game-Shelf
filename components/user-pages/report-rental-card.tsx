@@ -50,7 +50,7 @@ export default function ReportRentalCard({
         <div className={`card shadow-xl rounded-sm border border-white border-opacity-60 m-5 
                         relative transition-all duration-300 grid grid-cols-3 gap-2 text-xs
                         ${isSelected ? "bg-gs_gray bg-opacity-20" : ""} rounded-lg`}>
-            <div className="bg-white col-span-1 flex justify-start md:w-full h-32 m-2 md:m-4 overflow-hidden rounded-xl">
+            <div className="bg-white col-span-1 flex justify-start md:w-full h-32 m-2 md:m-4 max-lg:hidden overflow-hidden rounded-xl">
                 <img
                 src={rentalData.boardgames?.bg_picture}
                 alt="boardgame picture"
@@ -58,7 +58,7 @@ export default function ReportRentalCard({
                 />
             </div>
 
-            <div className="card-body flex flex-col p-2 col-span-2 m-4">
+            <div className="card-body flex flex-col p-2 col-span-2 m-4 max-lg:col-span-3">
                 <div className="flex items-start justify-between w-full">
                     <p className="text-sm font-semibold capitalize break-all">
                         {rentalData.boardgames?.bg_name}

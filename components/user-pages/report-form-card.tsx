@@ -8,11 +8,13 @@ import { UserData } from "@/app/types/user";
 import { RentingRequest } from "@/app/types/game";
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import ReportRentalCard from "@/components/user-pages/report-rental-card";
+import { getMyUserData } from "@/app/(user-pages)/actions";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function ReportFormCard({
-  userData,
+//   userData,
 }: {
-  userData: UserData;
+//   userData: UserData;
 }) {
     const [reportType, setReportType] = useState<"general" | "rental">("general");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -22,24 +24,37 @@ export default function ReportFormCard({
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
     const [topic, setTopic] = useState<string>("");
     const [details, setDetails] = useState<string>("");
-    
-    const fetchUsers = async () => {
-        const { fetch_data: data } = await selectUsersByFilterAction("");
-        console.log("data", data);
-        setUsers(data || []);
-    }
+    const [userData, setUserData] = useState<UserData>();
 
-    const fetchRentalRequests = async () => {
-        if (userData.isProvider){
-            const data  = await selectRentalRequestsByProviderId(userData.uid);
+    const fetchMyData = async () => {
+        const res = await getMyUserData();
+        // console.log("userData loaded:", res);
+        setUserData(res);
+    }
+    
+    const fetchUsers = useDebouncedCallback(async () => {
+        // if (!userData) return;
+        const { fetch_data: data } = await selectUsersByFilterAction("");
+        console.log("users loaded:", data);
+        setUsers(data || []);
+    }, 300);
+
+    const fetchRentalRequests = useDebouncedCallback(async () => {
+        //if (!userData) return;
+        let data;
+        if(userData){
+            if (userData.isProvider) {
+                data = await selectRentalRequestsByProviderId(userData.uid);
+                console.log("rental request provider:", data);
+            } else {
+                data = await selectRentalRequestsByPlayerId(userData.uid);
+                console.log("rental request player:", data);
+            }
             setRentalRequests(data);
-            console.log("rental request provider", data);
-        } else  {
-            const data  = await selectRentalRequestsByPlayerId(userData.uid);
-            console.log("rental request player",data);
-            setRentalRequests(data);
+        } else {
+            console.log('wait for userData');
         }
-    };
+    }, 500);
 
     const userOptions = useMemo(() => {
         return users.map((user) => ({
@@ -48,7 +63,6 @@ export default function ReportFormCard({
         }));
       }, [users]);
     
-
     
     const [selectedUser, setSelectedUser] = useState<{value:string, label:string}>({ value: "", label: "" });
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -103,9 +117,15 @@ export default function ReportFormCard({
     };
 
     useEffect(() => {
-        fetchUsers();
-        fetchRentalRequests();
+        fetchMyData();
     }, []);
+
+    useEffect(() => {
+        if (userData) {
+            fetchUsers();
+            fetchRentalRequests();
+        }
+    }, [userData]);
 
     useEffect(() => {
         if (users.length > 0 && selectedGeneralReportedId === "") {
@@ -115,7 +135,7 @@ export default function ReportFormCard({
     
     useEffect(() => {
         if (rentalRequests.length > 0 && selectedRentalReportedId === "") {
-            const rentalValue = userData.isProvider ? rentalRequests[0].customer_id : rentalRequests[0].provider_id;
+            const rentalValue = userData?.isProvider ? rentalRequests[0].customer_id : rentalRequests[0].provider_id;
             setSelectedRentalReportedId(rentalValue); 
         }
     }, [rentalRequests]); 
@@ -123,12 +143,12 @@ export default function ReportFormCard({
     
     return (
         <div className="flex justify-center items-center w-full pt-4">
-        <div className="card gap-2 w-11/12 md:w-3/5">
+        <div className="card gap-2 w-11/12 md:w-4/5">
             <h1 className="flex justify-center text-2xl font-medium">
                 Report Request Form
             </h1>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-md:justify-center">
                 <button
                     type="button"
                     className={`px-4 py-2 border border-input rounded-lg text-white ${
@@ -153,9 +173,9 @@ export default function ReportFormCard({
             <div className={` ${reportType === "rental" ? "grid grid-cols-2 gap-5" : ""}`}>
                 <div className={`card-body border border-input rounded-md gap-7 py-10 
                                 ${reportType === "rental" ?
-                                "col-span-1 px-7" 
+                                "col-span-1 px-7 max-lg:px-5" 
                                 : 
-                                "pl-32 pr-36"}`}>
+                                "pl-32 pr-36 max-lg:px-20 max-md:px-7 "}`}>
 
                     <form className={`flex flex-col w-full gap-5 placeholder:text-gs_white ${reportType === "rental" ? "col-span-1" : ""}`}
                           onSubmit={handleSubmit}
@@ -264,7 +284,7 @@ export default function ReportFormCard({
                                     onClick={() => {
                                         setSelectedRental(rental);
                                         console.log(rental);
-                                        const rentalValue = userData.isProvider ? rental.customer_id : rental.provider_id;
+                                        const rentalValue = userData?.isProvider ? rental.customer_id : rental.provider_id;
                                         setSelectedRentalReportedId(rentalValue);
                                     }}
                                 >
@@ -280,7 +300,7 @@ export default function ReportFormCard({
                 }
             </div>
             
-            <div className="flex justify-center gap-10 mt-7">
+            <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
                 <button
                     type="submit"
                     className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
