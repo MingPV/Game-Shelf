@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState, useMemo} from "react";
+import { use, useEffect, useState, useMemo, useRef} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createReport, selectUsersByFilterAction, selectRentalRequestsByPlayerId, selectRentalRequestsByProviderId } from "@/app/(user-pages)/actions";
@@ -12,6 +12,7 @@ import { getMyUserData } from "@/app/(user-pages)/actions";
 import { useDebouncedCallback } from "use-debounce";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function ReportFormCard() {
     const [reportType, setReportType] = useState<"general" | "rental">("general");
@@ -22,6 +23,8 @@ export default function ReportFormCard() {
     const [selectedGeneralReportedId, setSelectedGeneralReportedId] = useState<string>("");
     const [selectedRentalReportedId, setSelectedRentalReportedId] = useState<string>("");
     const [userData, setUserData] = useState<UserData>();
+    const [topic, setTopic] = useState("");
+    const [details, setDetails] = useState("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errors, setErrors] = useState<{  reported: boolean, topic: boolean; details: boolean}>({
         reported: false,
@@ -30,6 +33,7 @@ export default function ReportFormCard() {
     });
     
     const router = useRouter();
+    const formRef = useRef<HTMLFormElement | null>(null);
 
     const fetchMyData = async () => {
         const res = await getMyUserData();
@@ -77,20 +81,18 @@ export default function ReportFormCard() {
         option.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const [selectedRental, setSelectedRental] = useState<RentingRequest>(
-            {
-                id: 0,
-                start_date: "",
-                end_date: "",
-                status: "",
-                customer_id: "",
-                bg_id: 0,
-                created_at: "",
-                provider_id: "",
-                boardgames: undefined,
-                users: { username: "" } as UserData, 
-            }
-    );
+    const [selectedRental, setSelectedRental] = useState<RentingRequest>({
+        id: 0,
+        start_date: "",
+        end_date: "",
+        status: "",
+        customer_id: "",
+        bg_id: 0,
+        created_at: "",
+        provider_id: "",
+        boardgames: undefined,
+        users: { username: "" } as UserData, 
+    });
 
     const filteredRentals = rentalRequests.filter((rental) => rental.id);
 
@@ -144,29 +146,76 @@ export default function ReportFormCard() {
         }
 
         if (userData) {
-            // const selectedRequest = rentalRequests.find((request) => { (userData.isProvider ? request.customer_id : request.provider_id) === selectedRentalReportedId });
-            //const rentalValue = userData.isProvider ? selectedRequest?.customer_id : selectedRequest?.provider_id;
-            formDataUser.set("reporter", userData.uid);
-            formDataUser.set("reported", reportType === "general" ? selectedUser.value : selectedRentalReportedId);
-            if(reportType === "rental"){
-                formDataUser.append("rental_id", selectedRental.id.toString());
-            }
-            formDataUser.append("type", reportType);
-            
-            createReport(formDataUser);
             
             Swal.fire({
-                title: "Report accepted",
-                text: "This report has been accepted.",
-                icon: "success",
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#359368",
+                cancelButtonColor: "#FF2525",
+                confirmButtonText: "Accept",
                 customClass: {
-                    popup: "custom-swal-popup",
-                    title: "custom-swal-title",
-                    confirmButton: "custom-swal-confirm-button",
+                popup: "custom-swal-popup",
+                title: "custom-swal-title",
+                confirmButton: "custom-swal-confirm-button",
+                cancelButton: "custom-swal-cancel-button",
                 },
-            }).then(() => {
-                // Close the modal
-            });
+            }).then(async (result) => {
+                if(result.isConfirmed){
+                    formDataUser.set("reporter", userData.uid);
+                    formDataUser.set("reported", reportType === "general" ? selectedUser.value : selectedRentalReportedId);
+                    formDataUser.set("topic", topic);
+                    formDataUser.set("details", details);
+                    if(reportType === "rental"){
+                        formDataUser.append("rental_id", selectedRental.id.toString());
+                    }
+                    formDataUser.append("type", reportType);
+                    
+                    await createReport(formDataUser);
+                    
+                    Swal.fire({
+                        title: "Report accepted",
+                        text: "This report has been accepted.",
+                        icon: "success",
+                        customClass: {
+                            popup: "custom-swal-popup",
+                            title: "custom-swal-title",
+                            confirmButton: "custom-swal-confirm-button",
+                        },
+                    }).then(() => {
+                        // Close the modal
+                        formRef.current?.reset();
+                        setTopic("");
+                        setDetails("");
+                        setReportType("general");
+                        setHasSubmitted(false);
+                        setIsSubmitting(false);
+                        setSelectedGeneralReportedId("");
+                        setSelectedRentalReportedId("");
+                        setSelectedUser({ value: "", label: "" });
+                        setSelectedRental({
+                            id: 0,
+                            start_date: "",
+                            end_date: "",
+                            status: "",
+                            customer_id: "",
+                            bg_id: 0,
+                            created_at: "",
+                            provider_id: "",
+                            boardgames: undefined,
+                            users: { username: "" } as UserData,
+                        });
+                        setErrors({
+                            reported: false,
+                            topic: false,
+                            details: false,
+                        });
+                    });
+
+                    setIsSubmitting(false);
+                }
+            } )
         }
 
         setIsSubmitting(false);
@@ -228,8 +277,6 @@ export default function ReportFormCard() {
                 <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
                     <button className="cursor-default h-12 rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
                     </button>
-                    <button className="cursor-default h-12 rounded-full text-md bg-white bg-opacity-10 border-none w-28 px-16">
-                    </button>
                 </div>
             </div>
         </div>
@@ -267,11 +314,15 @@ export default function ReportFormCard() {
             </div>
 
             <div className={` ${reportType === "rental" ? "grid grid-cols-2 gap-5 max-lg:flex max-lg:flex-col" : ""}`}>
+                <div className="absolute mt-5 px-5 cursor-pointer">
+                        <FaArrowLeft onClick={() => router.push("/home")}/>
+                </div>
                 <div className={`card-body border border-input rounded-md gap-7 py-10 
                                 ${reportType === "rental" ?
                                 "col-span-1 px-10 " 
                                 : 
                                 "pl-32 pr-36 max-lg:px-20 max-md:px-7 "}`}>
+                    
 
                     <form className={`flex flex-col w-full gap-5 placeholder:text-gs_white ${reportType === "rental" ? "col-span-1" : ""}`}
                           onSubmit={handleSubmit}
@@ -350,7 +401,9 @@ export default function ReportFormCard() {
                             <Input
                                 className={`placeholder:text-white/50 col-span-2 text-white-50 border ${errors.topic ? "border-gs_red" : "border-input"}`}
                                 name="topic"
+                                value={topic}
                                 placeholder="Topic"
+                                onChange={(e) => setTopic(e.target.value)}
                                 onBlur={handleBlur}
                             />
                         </div>
@@ -364,7 +417,9 @@ export default function ReportFormCard() {
                                             disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-white/50 col-span-2
                                             ${errors.details ? "border-gs_red" : "border-input"}`}
                                 name="details"
+                                value={details}
                                 placeholder="Details"
+                                onChange={(e) => setDetails(e.target.value)}
                                 onBlur={handleBlur}
                                 
                             ></textarea>
@@ -402,20 +457,20 @@ export default function ReportFormCard() {
             </div>
             
             <div className="flex justify-center gap-10 mt-7 max-md:gap-5 max-sm:gap-3">
-                <button
+                {/* <button
                     type="button"
                     className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
                     onClick={() => router.push("/home")}
                 >
                     Cancel
-                </button>
+                </button> */}
 
                 <button
                     type="submit"
                     form="reportForm"
-                    className="btn rounded-full text-md bg-gs_purple_gradient hover:bg-opacity-60 border-none w-min px-16"
+                    className="btn rounded-full text-md bg-gs_purple_gradient hover:bg-opacity-60 text-md border-none w-min px-16"
                 >
-                    {isSubmitting ? "Sending.." : "Submit"}
+                    Send
                 </button>
             </div>
 
