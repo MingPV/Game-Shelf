@@ -424,7 +424,10 @@ export const addImagetoRentalRequest = async (img: File, tag: string, request_id
 
   const { data, error } = await supabase
     .from("rental_requests")
-    .update({ [tag]: publicImageURL })
+    .update({ 
+      [tag]: publicImageURL,
+      [tag + "_timestamp"]: new Date().toISOString(),
+    })
     .eq("id", request_id);
 
   if (error) {
