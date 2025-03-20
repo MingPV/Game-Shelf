@@ -15,23 +15,27 @@ export default function UserForm({
   setWindow: Dispatch<SetStateAction<string>>;
 }) {
   const [username, setUsername] = useState<string>(user.username);
-  const [phoneNumber, setPhoneNumber] = useState<string>(user.phoneNumber);
-  const [location, setLocation] = useState<string>(user.location);
+  const [phoneNumber, setPhoneNumber] = useState<string>(
+    user.phoneNumber ? user.phoneNumber : "-"
+  );
+  const [location, setLocation] = useState<string>(
+    user.location ? user.location : "-"
+  );
   const [editMode, setEditMode] = useState<boolean>(false);
   const toggleEditMode = () => {
     if (editMode) {
       // Reset values when switching from edit mode to view mode
-      setUsername(user.username);
-      setPhoneNumber(user.phoneNumber);
-      setLocation(user.location);
+      setUsername(user.username || "-");
+      setPhoneNumber(user.phoneNumber || "-");
+      setLocation(user.location || "-");
     }
     setEditMode(!editMode);
   };
   const handleClickCancel = () => {
     console.log(user.location);
-    setUsername(user.username);
-    setPhoneNumber(user.phoneNumber);
-    setLocation(user.location);
+    setUsername(user.username || "-");
+    setPhoneNumber(user.phoneNumber || "-");
+    setLocation(user.location || "-");
     setEditMode(false);
   };
   const handleClickUpdate = () => {
@@ -71,6 +75,14 @@ export default function UserForm({
       }
     });
   };
+
+  if (!user) {
+    return (
+      <>
+        <div>loading</div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -166,7 +178,7 @@ export default function UserForm({
             name="phoneNumber"
             placeholder="Phone Number"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={(e) => setPhoneNumber(e.target.value || "-")}
             className={` font-normal  col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "" : "border-none "}`}
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
@@ -185,7 +197,7 @@ export default function UserForm({
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
             onChange={(e) => {
-              if (editMode) setLocation(e.target.value);
+              if (editMode) setLocation(e.target.value || "-");
             }}
           />
         </div>
