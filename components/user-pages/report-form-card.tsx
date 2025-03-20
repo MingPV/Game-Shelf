@@ -10,6 +10,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headless
 import ReportRentalCard from "@/components/user-pages/report-rental-card";
 import { getMyUserData } from "@/app/(user-pages)/actions";
 import { useDebouncedCallback } from "use-debounce";
+import { useRouter } from "next/navigation";
 
 export default function ReportFormCard({
 //   userData,
@@ -25,6 +26,8 @@ export default function ReportFormCard({
     const [topic, setTopic] = useState<string>("");
     const [details, setDetails] = useState<string>("");
     const [userData, setUserData] = useState<UserData>();
+    
+    const router = useRouter();
 
     const fetchMyData = async () => {
         const res = await getMyUserData();
@@ -304,7 +307,7 @@ export default function ReportFormCard({
                 <button
                     type="submit"
                     className="btn rounded-full text-md bg-gs_gray bg-opacity-50 hover:bg-black hover:bg-opacity-25 border-none w-min px-16"
-                    onClick={() => console.log("Cancelled")}
+                    onClick={() => router.push("/home")}
                 >
                     Cancel
                 </button>
@@ -317,8 +320,6 @@ export default function ReportFormCard({
                     {isSubmitting ? "Sending.." : "Submit"}
                 </button>
             </div>
-
-            
 
         </div>
         </div>
