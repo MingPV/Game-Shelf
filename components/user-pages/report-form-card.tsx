@@ -112,7 +112,7 @@ export default function ReportFormCard({
         const detailsValue = formDataUser.get("details")?.toString().trim()
         const reportedValue = (reportType === "general") ? selectedUser.value : selectedRentalReportedId;
 
-        console.log("reportedValue", reportedValue)
+        // console.log("reportedValue", reportedValue)
 
         const newErrors = {
             topic: !topicValue,
@@ -124,7 +124,7 @@ export default function ReportFormCard({
     
         if (Object.values(newErrors).some((error) => error)) {
             setIsSubmitting(false);
-            console.log("found error", newErrors);
+            // console.log("found error", newErrors);
             return;
         }
 
