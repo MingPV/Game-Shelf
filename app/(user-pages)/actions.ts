@@ -537,37 +537,35 @@ export const selectReports = async () => {
   return data;
 };
 
-export const createReport = async (formData: FormData) => { 
+export const createReport = async (formData: FormData) => {
   const supabase = await createClient();
 
   console.log("reportFormData: ", formData);
 
   const reportType = formData.get("type")?.toString();
-  const reporterId = formData.get("reporter")?.toString();  
+  const reporterId = formData.get("reporter")?.toString();
   const reportedId = formData.get("reported")?.toString();
   const rentalIdRaw = formData.get("rental_id");
   const rentalId = rentalIdRaw ? Number(rentalIdRaw) : null;
   const topic = formData.get("topic")?.toString();
   const details = formData.get("details")?.toString();
 
-  // const { data, error } = await supabase
-  //   .from("disputes")
-  //   .insert([
-  //     {
-  //       type: reportType,
-  //       reporter: reporterId,
-  //       report_to: reportedId,
-  //       rental_id: rentalId,
-  //       title: topic,
-  //       details: details,
-  //       status: "waiting",
-  //     },
-  //   ]);
-  
-  // if (error) {
-  //   console.log("error", error);
-  //   throw new Error("Failed to create report.");
-  // }
+  const { data, error } = await supabase.from("disputes").insert([
+    {
+      type: reportType,
+      reporter: reporterId,
+      report_to: reportedId,
+      rental_id: rentalId,
+      title: topic,
+      details: details,
+      status: "waiting",
+    },
+  ]);
+
+  if (error) {
+    console.log("error", error);
+    throw new Error("Failed to create report.");
+  }
 
   console.log([
     {
@@ -580,59 +578,53 @@ export const createReport = async (formData: FormData) => {
       status: "waiting",
     },
   ]);
-
-
 };
 
-export const selectUsersByFilterAction  = async (
-    name: string,
-  ) => {
-  
-    const supabase = await createClient();
-  
-    // Step 1: Get total count first
-  
-    let count_items;
-    let countError;
-  
-    const { count: count_itemstmp, error: countErrortmp } = await supabase
+export const selectUsersByFilterAction = async (name: string) => {
+  const supabase = await createClient();
+
+  // Step 1: Get total count first
+
+  let count_items;
+  let countError;
+
+  const { count: count_itemstmp, error: countErrortmp } = await supabase
+    .from("users")
+    .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+    .ilike("username", `%${name}%`);
+
+  count_items = count_itemstmp;
+  countError = countErrortmp;
+
+  let fetch_error = null;
+  let fetch_data = null;
+
+  if (countError) {
+    console.error(countError);
+  } else if (count_items !== null && count_items > 0) {
+    // Step 2: Only fetch data if count > 0
+
+    let query = supabase
       .from("users")
-      .select("*", { count: "exact", head: true }) // head: true gets only the count, not the rows
+      .select("*", { count: "exact" })
       .ilike("username", `%${name}%`);
-  
-    count_items = count_itemstmp;
-    countError = countErrortmp;
-  
-    let fetch_error = null;
-    let fetch_data = null;
-  
-    if (countError) {
-      console.error(countError);
-    } else if (count_items !== null && count_items > 0) {
-      // Step 2: Only fetch data if count > 0
-  
-      let query = supabase
-        .from("users")
-        .select("*", { count: "exact" })
-        .ilike("username", `%${name}%`)
 
-      // .overlaps("types", selectedTypeFilter);
-  
-      const { data, error } = await query;
-  
-      fetch_error = error;
-      fetch_data = data;
+    // .overlaps("types", selectedTypeFilter);
 
-    } else {
-      console.log("No matching rows");
-    }
-  
-    if (fetch_error) {
-      console.log(fetch_error);
-      throw new Error("Failed to fetch boardgames.");
-    }
-  
-    return { fetch_data, count_items };
+    const { data, error } = await query;
+
+    fetch_error = error;
+    fetch_data = data;
+  } else {
+    console.log("No matching rows");
+  }
+
+  if (fetch_error) {
+    console.log(fetch_error);
+    throw new Error("Failed to fetch boardgames.");
+  }
+
+  return { fetch_data, count_items };
 };
 
 export const selectRentalRequestsByProviderId = async (providerId: string) => {
@@ -649,7 +641,7 @@ export const selectRentalRequestsByProviderId = async (providerId: string) => {
   }
 
   return data;
-}
+};
 
 export const selectRentalRequestsByPlayerId = async (playerId: string) => {
   const supabase = await createClient();
@@ -665,4 +657,4 @@ export const selectRentalRequestsByPlayerId = async (playerId: string) => {
   }
 
   return data;
-}
+};
