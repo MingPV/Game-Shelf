@@ -110,6 +110,10 @@ export default function ReportFormCard() {
     provider_id: "",
     boardgames: undefined,
     users: { username: "" } as UserData,
+    before_ship: "",
+    after_ship: "",
+    before_return: "",
+    after_return: "",
   });
 
   const filteredRentals = rentalRequests.filter((rental) => rental.id);
@@ -229,6 +233,10 @@ export default function ReportFormCard() {
               provider_id: "",
               boardgames: undefined,
               users: { username: "" } as UserData,
+              before_ship: "",
+              after_ship: "",
+              before_return: "",
+              after_return: "",
             });
             setErrors({
               reported: false,
