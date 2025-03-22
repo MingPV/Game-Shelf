@@ -683,3 +683,69 @@ export const selectRentalRequestsByPlayerId = async (playerId: string) => {
 
   return data;
 };
+
+export const selectBannedUserByDateAndName = async (formData: FormData) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  const month = formData.get("month")?.toString() || "undefined";
+  const year = formData.get("year")?.toString() || "undefined";
+  const username = formData.get("username")?.toString() || "";
+
+  // if (month !== "undefined" && year !== "undefined") {
+  const curMonth = parseInt(month) + 1;
+  const curYear = parseInt(year);
+
+  const nextMonth = curMonth + 1;
+  const nextYear = nextMonth === 13 ? curYear + 1 : curYear;
+
+  let query = supabase
+    .from("users")
+    .select("*")
+    .eq("is_banned", true)
+    .lt(
+      "ban_start",
+      `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
+    ) // Started before the next month
+    .gt(
+      "ban_until",
+      `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
+    ); // Ends after the start of the selected month
+
+  // If username is provided, add it to the query
+  if (username != "") {
+    query = query.ilike("username", `%${username}%`);
+  }
+
+  const { data, error } = await query;
+
+  // const { data, error } = await supabase
+  //   .from("users")
+  //   .select("*")
+  //   .eq("is_banned", true)
+  //   .lt(
+  //     "ban_start",
+  //     `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
+  //   ) // Started before the next month
+  //   .gt(
+  //     "ban_until",
+  //     `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
+  //   ); // Ends after the start of the selected month
+
+  // if (error) {
+  //   console.log(error);
+  //   throw new Error("Failed to fetch my rental requests");
+  // }
+
+  // console.log(`${curYear}-${curMonth.toString().padStart(2, "0")}-01`);
+  // console.log(`${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`);
+  // console.log("----------------------------------------------------");
+  return data;
+}

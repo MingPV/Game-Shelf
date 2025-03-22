@@ -104,9 +104,9 @@ export default function Home() {
               </Link>
               <Link
                 className="mt-2 btn btn-outline btn-primary w-64 sm:w-80"
-                href="/admin-homepage"
+                href="/report-statistics"
               >
-                Report Statistic
+                Report Statistics
               </Link>
               <Link
                 className="mt-2 btn btn-outline btn-primary w-64 sm:w-80"
