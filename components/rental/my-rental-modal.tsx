@@ -33,6 +33,7 @@ export default function MyRentalModal({
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
+      onClick={() => setShowModal(false)} 
     >
       <div
         className="fixed inset-0 bg-gray-500/75 transition-opacity"
@@ -41,7 +42,10 @@ export default function MyRentalModal({
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full justify-center p-4 text-center items-center">
-          <form className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <form 
+            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="bg-white pb-2 px-2">
               <div className="mt-5 text-center">
                 <div className="text-black mb-4 font-bold">
