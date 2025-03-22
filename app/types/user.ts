@@ -17,6 +17,7 @@ export interface UserData {
   rental_success: Number;
   rating: Number;
   is_banned: boolean;
+  ban_start: string;
   ban_until: string;
 }
 
