@@ -258,3 +258,18 @@ export const countReportsByStatusAndDate = async (formData: FormData) => {
 
   return count;
 }
+
+export const getTopReportedUsers = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("get_top_reported_users_with_types");
+
+  if (error) {
+    console.error("Error fetching top reporters:", error);
+    return [];
+  }
+
+  console.log(data);
+  return data;
+};
+

@@ -37,7 +37,7 @@ export default function StatisticsOverview() {
   const [isYearOpen, setIsYearOpen] = useState(false);
 
   const [username, setUsername] = useState<string>("");
-  const [countStatus, setCountStatus] = useState<{"completed": number, "considering": number, "waiting": number}>({"completed": 0, "considering": 0, "waiting": 0});
+  const [countStatus, setCountStatus] = useState<{"complete": number, "considering": number, "waiting": number}>({"complete": 0, "considering": 0, "waiting": 0});
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -57,11 +57,11 @@ export default function StatisticsOverview() {
       formData.append("status", status);
 
       const data = await countReportsByStatusAndDate(formData);
-      if (data) setCountStatus((prev) => ({...prev, [status]: data}));
+      setCountStatus((prev) => ({ ...prev, [status]: data }));
     };
 
     fetchRequests();
-    fetchCount("completed");
+    fetchCount("complete");
     fetchCount("considering");
     fetchCount("waiting");
   }, [year, month, username]);
@@ -97,7 +97,6 @@ export default function StatisticsOverview() {
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // setIsHidden(true);
         setRecords(records.filter((record) => record.uid !== uid));
         await unbanUserAction(uid);
 
@@ -127,11 +126,6 @@ export default function StatisticsOverview() {
 
         <div className="flex flex-col w-full">
           <div className="flex flex-row w-full items-center justify-between ">
-            {/* <p
-              className={`text-white font-bold text-md px-4 py-2 rounded-md ${btnClass} `}
-            >
-              {status}
-            </p> */}
             <div className="flex flex-row join border border-white border-opacity-50 ">
               {/* Month Dropdown */}
               <div className="dropdown dropdown-end join-item">
@@ -202,7 +196,7 @@ export default function StatisticsOverview() {
           </div>
 
           <div className="pl-4 py-3" >
-            <li>{countStatus.completed} completed reports</li>
+            <li>{countStatus.complete} completed reports</li>
             <li>{countStatus.considering} considering reports</li>
             <li>{countStatus.waiting} waiting reports</li>
           </div>
