@@ -224,3 +224,37 @@ export const updateReportVerdict = async (formData: FormData) => {
 
   return data;
 };
+
+export const countReportsByStatusAndDate = async (formData: FormData) => {
+  const supabase = await createClient();
+
+  const month = formData.get("month")?.toString() || "undefined";
+  const year = formData.get("year")?.toString() || "undefined";
+  const status = formData.get("status")?.toString() || "";
+
+  // if (month !== "undefined" && year !== "undefined") {
+  const curMonth = parseInt(month) + 1;
+  const curYear = parseInt(year);
+
+  const nextMonth = curMonth + 1;
+  const nextYear = nextMonth === 13 ? curYear + 1 : curYear;
+
+  const { data, count, error } = await supabase
+    .from("disputes")
+    .select("*", { count: "exact" })
+    .eq("status", status)
+    .lt(
+      "created_at",
+      `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
+    ) // Started before the next month
+    .gte(
+      "created_at",
+      `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
+    ); // Ends after the start of the selected month
+
+  if (error) {
+    throw new Error("Failed to fetch disputes");
+  }
+
+  return count;
+}

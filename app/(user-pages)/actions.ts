@@ -725,27 +725,26 @@ export const selectBannedUserByDateAndName = async (formData: FormData) => {
   }
 
   const { data, error } = await query;
-
-  // const { data, error } = await supabase
-  //   .from("users")
-  //   .select("*")
-  //   .eq("is_banned", true)
-  //   .lt(
-  //     "ban_start",
-  //     `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
-  //   ) // Started before the next month
-  //   .gt(
-  //     "ban_until",
-  //     `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
-  //   ); // Ends after the start of the selected month
-
-  // if (error) {
-  //   console.log(error);
-  //   throw new Error("Failed to fetch my rental requests");
-  // }
-
-  // console.log(`${curYear}-${curMonth.toString().padStart(2, "0")}-01`);
-  // console.log(`${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`);
-  // console.log("----------------------------------------------------");
   return data;
 }
+
+export const unbanUserAction = async (uid: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .update({
+      is_banned: false,
+      ban_start: null,
+      ban_until: null,
+    })
+    .eq("uid", uid);
+
+  if (error) {
+    throw new Error("Failed to ban user");
+  }
+
+  // revalidatePath("/");
+  // return encodedRedirect("success", "/home", "Update boardgame success.");
+  return;
+};
