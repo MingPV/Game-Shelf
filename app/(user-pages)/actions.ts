@@ -349,13 +349,13 @@ export const selectProvidersByFilterAction = async (
   return { fetch_data, count_items };
 };
 
-export const createReview = async (
+export const createReviewAction = async (
   customer_id: string,
   provider_id: string,
   comment: string,
-  rating: Number,
-  bg_id: Number,
-  is_anonymous: Boolean
+  rating: number,
+  bg_id: number,
+  rental_id: number,
 ) => {
   const supabase = await createClient();
 
@@ -367,8 +367,8 @@ export const createReview = async (
         provider_id: provider_id,
         comment: comment,
         rating:rating,
-        is_anonymous:is_anonymous,
         bg_id: bg_id,
+        rental_id: rental_id
       },
     ])
     .select();
@@ -380,6 +380,21 @@ export const createReview = async (
 
   return { data, error };
 };
+
+export const updateRentalRequestRating = async (
+  rental_id: number,
+  rating: number,
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("rental_requests")
+    .update({
+      rating: rating,
+    })
+    .eq("id", rental_id)
+    .select();
+}
 
 export const selectReviewByProviderId = async (userId: string) => {
   const supabase = await createClient();

@@ -8,7 +8,7 @@ import { LuImagePlus } from "react-icons/lu";
 import { FaRegCheckCircle } from "react-icons/fa";
 import MyRentalModal from "./my-rental-modal";
 import { useState, useEffect } from "react";
-import ReviewTag from "./rate-boardgame";
+import ReviewTag from "./review-tag";
 
 function StatusTag({ status }: { status: string }) {
   const statusClassMap = new Map<string, string>([
@@ -138,7 +138,7 @@ export default function MyRentalCard({
           {(data.status == "renting" || data.status == "complete") && (
             <div className="flex">
               <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
-              <ReviewTag initialScore={null} bg={data.boardgames}/>
+              <ReviewTag initialScore={data.rating} bg={data.boardgames} rental_id={data.id}/>
             </div>
           )}
           {data.status == "unpaid" && (

@@ -3,14 +3,13 @@ import { useEffect, useRef, useState } from "react"
 import { UserData } from "@/app/types/user";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createReview, getMyUserData } from "@/app/(user-pages)/actions";
+import { createReviewAction, getMyUserData, updateRentalRequestRating } from "@/app/(user-pages)/actions";
 
-export default function ReviewTag({ initialScore, bg}: { initialScore: Number | null, bg: Boardgame}) {
+export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore: number | null, bg: Boardgame, rental_id:number}) {
 
     const [score,setScore] = useState(initialScore)
     const [openDialog, setOpenDialog] = useState(false)
-    const [providerRating,setProviderRating] = useState(0)
-    const [checked,setChecked] = useState(false)
+    const [rating,setRating] = useState(5)
     const [myData, setMyData] = useState<UserData>()
     const [isSending, setIsSending] = useState(false)
     const [comment,setComment] = useState('')
@@ -69,14 +68,16 @@ export default function ReviewTag({ initialScore, bg}: { initialScore: Number | 
           if (result.isConfirmed) {
             setIsSending(true);
     
-            const { data, error } = await createReview(
+            const { data, error } = await createReviewAction(
               myData.uid,
               bg.provider_id,
               comment,
-              providerRating,
+              rating,
               bg.id,
-              checked
+              rental_id
             );
+
+            await updateRentalRequestRating(rental_id,rating);
 
             if (!error) {
               setIsSending(false);
@@ -109,7 +110,7 @@ export default function ReviewTag({ initialScore, bg}: { initialScore: Number | 
               },
             }).then(() => {
               // Close the modal
-              setScore(providerRating)
+              setScore(rating)
             });
           }
         });
@@ -135,20 +136,20 @@ export default function ReviewTag({ initialScore, bg}: { initialScore: Number | 
                             <img
                                 src={bg.bg_picture}
                                 alt={bg.bg_name}
-                                className="rounded-xl w-full max-w-48 h-auto md:w-1/2 md:h-auto md:max-w-full"
+                                className="rounded-xl w-full max-w-48 h-auto md:w-2/5 lg:w-1/2 md:h-auto md:max-w-full"
                             />
                             <div className="flex flex-col space-y-2 md:space-y-4 md:ml-6 lg:space-y-6">
                                 <p className="font-semibold text-sm md:text-base lg:text-lg">{bg.bg_name}</p>
                                 <div className="flex flex-col text-sm md:text-base lg:text-lg">
-                                    <p>Rate Provider</p>
+                                    <p>Rating</p>
                                     <div className="flex flex-row rating">
                                         {[1, 2, 3, 4, 5].map((star) => (
                                             <input
                                                 key={star}
                                                 type="radio"
                                                 className="mask mask-star-2 bg-yellow-400"
-                                                checked={providerRating === star}
-                                                onChange={() => setProviderRating(star)}
+                                                checked={rating === star}
+                                                onChange={() => setRating(star)}
                                             />
                                         ))}
                                     </div>
@@ -168,11 +169,6 @@ export default function ReviewTag({ initialScore, bg}: { initialScore: Number | 
                                     setComment(e.target.value)
                                 }}>
                             </textarea>
-                        </div>
-
-                        <div className="flex flex-row space-x-3">
-                            <input type="checkbox" className="checkbox border border-slate-400" onClick={()=>setChecked(!checked)}/>
-                            <p>Review Anonymous</p>
                         </div>
 
                         <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
