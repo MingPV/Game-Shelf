@@ -398,6 +398,7 @@ export const banUserAction = async (uid: string, ban_until: string) => {
     .from("users")
     .update({
       is_banned: true,
+      ban_start: new Date(),
       ban_until: new Date(ban_until),
     })
     .eq("uid", uid);
