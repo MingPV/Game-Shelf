@@ -17,11 +17,14 @@ interface MostReportedUsers {
 
 export default function StatisticsMostReported() {
   const [records, setRecords] = useState<MostReportedUsers[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       const res = await getTopReportedUsers();
       setRecords(res);
+      setIsLoading(false);
     }
 
     fetchData();
@@ -45,8 +48,10 @@ export default function StatisticsMostReported() {
                   <div className="col-span-3 opacity-70"></div>
                 </div>
               </div>
+              
               <div className="overflow-y-auto py-1 h-[calc(100vh-320px)]">
-                {records.length > 0 ? (
+                { !isLoading ? (
+                records.length > 0 ? (
                   records.map((record, index) => (
                     <div
                       key={record.uid}
@@ -91,6 +96,14 @@ export default function StatisticsMostReported() {
                 ) : (
                   <div className="text-center flex py-4 h-full items-center justify-center">
                     <p className="font-bold">No records found</p>
+                  </div>
+                )) : (
+                  <div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
                   </div>
                 )}
               </div>

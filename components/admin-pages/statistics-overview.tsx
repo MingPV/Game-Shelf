@@ -41,7 +41,10 @@ export default function StatisticsOverview() {
   const [username, setUsername] = useState<string>("");
   const [countStatus, setCountStatus] = useState<{"complete": number, "considering": number, "waiting": number}>({"complete": 0, "considering": 0, "waiting": 0});
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const fetchRequests = async () => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("month", month.toString().padStart(2, "0"));
     formData.append("year", year);
@@ -49,6 +52,7 @@ export default function StatisticsOverview() {
 
     const data = await selectBannedUserByDateAndName(formData);
     if (data) setRecords(data);
+    setIsLoading(false);
   };
 
   const fetchCount = async (status: string) => {
@@ -228,8 +232,10 @@ export default function StatisticsOverview() {
                 <div className="col-span-2 opacity-70"></div>
               </div>
             </div>
+
             <div className="overflow-y-auto py-1 h-[calc(100vh-500px)]">
-              {records.length > 0 ? (
+              {!isLoading ? (
+                records.length > 0 ? (
                 records.map((record, index) => (
                   <div
                     key={record.uid}
@@ -276,6 +282,13 @@ export default function StatisticsOverview() {
               ) : (
                 <div className="text-center flex py-4 h-full items-center justify-center">
                   <p className="font-bold">No records found</p>
+                </div>
+              )) : (
+                <div>
+                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
+                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
+                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
+                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
                 </div>
               )}
             </div>
