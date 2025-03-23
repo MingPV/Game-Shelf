@@ -387,13 +387,31 @@ export const updateRentalRequestRating = async (
 ) => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  await supabase
     .from("rental_requests")
     .update({
       rating: rating,
     })
     .eq("id", rental_id)
     .select();
+}
+
+export const updateProviderRating = async (
+  provider_id: string,
+  rating: number,
+  averageRating: number,
+  cnt: number,
+) => {
+  const supabase = await createClient();
+
+  await supabase
+    .from("users")
+    .update({
+      rating:  (averageRating*cnt + rating) / (cnt+1),
+      rating_count: cnt+1,
+    })
+    .eq("uid",provider_id)
+    .select()
 }
 
 export const selectReviewByProviderId = async (userId: string) => {

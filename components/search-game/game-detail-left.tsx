@@ -25,6 +25,7 @@ export default function GameDetailLeft({
   const [endDate, setEndDate] = useState("");
   const [totalDate, setTotalDate] = useState<number>(0);
   const [isSending, setIsSending] = useState(false);
+  const [errorText, setErrorText] = useState("")
 
   const router = useRouter();
 
@@ -62,26 +63,26 @@ export default function GameDetailLeft({
     const end = new Date(endDate);
     const todayDate = new Date(today);
 
+    if (!startDate || !endDate) {
+      setErrorText("No date selected.");
+      return;
+    }
+
     if (start < todayDate || end < todayDate) {
-      alert("Dates cannot be in the past.");
+      setErrorText("Dates cannot be in the past.");
       return;
     }
 
     // Validation: End date must be after start date
     if (end <= start) {
-      alert("End date must be after the start date.");
+      setErrorText("End date must be after the start date.");
       return;
     }
 
-    if (!startDate || !endDate) {
-      alert("No date selected.");
-      return;
-    }
+    setErrorText("")
 
     console.log(startDate);
     console.log(endDate);
-
-    // alert("confirm!");
 
     if (!myData || !provider) {
       return;
@@ -231,20 +232,23 @@ export default function GameDetailLeft({
 
             <div className="flex flex-col md:flex-row w-full">
               <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Date :</p>
-              <div className="flex flex-col md:flex-row gap-0 md:gap-2 lg:gap-4">
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
-                />
-                <p>to</p>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
-                />
+              <div className="flex flex-col space-y-0.5">
+                <div className="flex flex-col md:flex-row gap-0 md:gap-2 lg:gap-4">
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                  />
+                  <p>to</p>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                  />
+                </div>
+                <p className="text-red-500 text-xs lg:text-sm text-center">{errorText}</p>
               </div>
             </div>
 

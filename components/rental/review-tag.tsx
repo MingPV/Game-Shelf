@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { UserData } from "@/app/types/user";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createReviewAction, getMyUserData, updateRentalRequestRating } from "@/app/(user-pages)/actions";
+import { createReviewAction, getMyUserData, selectUserById, updateProviderRating, updateRentalRequestRating } from "@/app/(user-pages)/actions";
 
 export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore: number | null, bg: Boardgame, rental_id:number}) {
 
@@ -21,7 +21,7 @@ export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore
     const adjustHeight = () => {
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto"; // Reset height
-            textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 20)}px`; // Recalculate height
+            textareaRef.current.style.height = `${Math.max(textareaRef.current.scrollHeight, 120)}px`; // Recalculate height
         }
     };
 
@@ -77,11 +77,15 @@ export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore
               rental_id
             );
 
-            await updateRentalRequestRating(rental_id,rating);
-
             if (!error) {
               setIsSending(false);
               setOpenDialog(false);
+
+              await updateRentalRequestRating(rental_id,rating);
+
+              const fetchedProvider = await selectUserById(bg.provider_id)
+              await updateProviderRating(bg.provider_id,rating,fetchedProvider[0].rating,fetchedProvider[0].rating_count)
+
             } else {
               setIsSending(false);
               Swal.fire({
@@ -136,10 +140,13 @@ export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore
                             <img
                                 src={bg.bg_picture}
                                 alt={bg.bg_name}
-                                className="rounded-xl w-full max-w-48 h-auto md:w-2/5 lg:w-1/2 md:h-auto md:max-w-full"
+                                className="rounded-xl w-full self-center object-contain max-w-48 h-fit md:w-2/5 lg:w-1/2 md:max-w-full"
                             />
-                            <div className="flex flex-col space-y-2 md:space-y-4 md:ml-6 lg:space-y-6">
-                                <p className="font-semibold text-sm md:text-base lg:text-lg">{bg.bg_name}</p>
+                            <div className="flex flex-col space-y-2 md:space-y-3 md:ml-6 lg:space-y-4">
+                                <div className="flex flex-col">
+                                  <p className="font-semibold text-sm md:text-base lg:text-lg">{bg.bg_name}</p>
+                                  <p className="font-extralight text-xs md:text-sm lg:text-base">{bg.description}</p>
+                                </div>
                                 <div className="flex flex-col text-sm md:text-base lg:text-lg">
                                     <p>Rating</p>
                                     <div className="flex flex-row rating">
@@ -154,6 +161,8 @@ export default function ReviewTag({ initialScore, bg, rental_id}: { initialScore
                                         ))}
                                     </div>
                                 </div>
+
+                                <p className="text-sm md:text-base lg:text-lg">price : {bg.price} Bath/Day</p>
                             </div>
                         </div>
 
