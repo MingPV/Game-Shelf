@@ -19,7 +19,6 @@ export interface UserData {
   is_banned: boolean;
   ban_start: string;
   ban_until: string;
-  ban_start: string;
 }
 
 export interface verificationRequests {
