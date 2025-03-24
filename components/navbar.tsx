@@ -36,8 +36,8 @@ export const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/support" prefetch={true}>
-                    Support
+                  <Link href="/report-form" prefetch={true}>
+                    Report
                   </Link>
                 </li>
                 <li>
@@ -85,8 +85,8 @@ export const Navbar = () => {
                     </Link>
                   </li>
                   <li className="border-b-[0.1px]">
-                    <Link href="/support" prefetch={true}>
-                      ➙ Support{" "}
+                    <Link href="/report-form" prefetch={true}>
+                      ➙ Report{" "}
                     </Link>
                   </li>
                   <li className="border-b-[0.1px]">

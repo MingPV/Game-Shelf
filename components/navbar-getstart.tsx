@@ -25,7 +25,7 @@ export const NavbarGetStarted = () => {
                   <Link href="/providers">Provider</Link>
                 </li>
                 <li>
-                  <Link href="/support">Support</Link>
+                  <Link href="/report-form">Report</Link>
                 </li>
                 <li>
                   <Link href="/contact">Contact</Link>
