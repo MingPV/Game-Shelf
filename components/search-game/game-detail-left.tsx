@@ -25,7 +25,7 @@ export default function GameDetailLeft({
   const [endDate, setEndDate] = useState("");
   const [totalDate, setTotalDate] = useState<number>(0);
   const [isSending, setIsSending] = useState(false);
-  const [errorText, setErrorText] = useState("")
+  const [errorText, setErrorText] = useState("");
 
   const router = useRouter();
 
@@ -79,12 +79,12 @@ export default function GameDetailLeft({
       return;
     }
 
-    setErrorText("")
+    setErrorText("");
 
     console.log(startDate);
     console.log(endDate);
 
-    if (!myData || !provider) {
+    if (!myData || !provider || myData.isProvider || myData.is_banned) {
       return;
     }
 
@@ -185,7 +185,11 @@ export default function GameDetailLeft({
         <button
           className="w-full font-semibold text-sm px-4 rounded-xl py-2 self-end border border-white border-opacity-0 hover:border-opacity-80 bg-gs_purple_gradient"
           onClick={handleModal}
-          disabled={myData?.isProvider || boardgame.status == "unavailable"}
+          disabled={
+            myData?.isProvider ||
+            myData?.is_banned ||
+            boardgame.status == "unavailable"
+          }
         >
           {myData?.isProvider ? (
             <div className="text-xs text-white text-opacity-50 font-serif">
@@ -193,6 +197,10 @@ export default function GameDetailLeft({
             </div>
           ) : boardgame.quantity == boardgame.renting ? (
             <div>out of stock</div>
+          ) : myData?.is_banned ? (
+            <div className="text-xs text-white font-serif">
+              your account is banned.
+            </div>
           ) : (
             <div>Rent</div>
           )}
@@ -248,7 +256,9 @@ export default function GameDetailLeft({
                     className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
                   />
                 </div>
-                <p className="text-red-500 text-xs lg:text-sm text-center">{errorText}</p>
+                <p className="text-red-500 text-xs lg:text-sm text-center">
+                  {errorText}
+                </p>
               </div>
             </div>
 

@@ -74,30 +74,55 @@ export default function HomeList() {
           </div>
           <div className="flex flex-row gap-2">
             <div>Role : </div>
-            <div className="text-opacity-60 text-white">
-              {userData?.isProvider ? (
-                <>
-                  <div className="flex flex-row gap-2">
-                    <div>Provider</div>
-                    {userData.is_verified ? (
-                      <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
-                        Account verified ✓
+            {userData?.is_banned ? (
+              <div className="text-opacity-60 text-white">
+                {userData?.isProvider ? (
+                  <>
+                    <div className="flex flex-row gap-2">
+                      <div>Provider</div>
+
+                      <div className="bg-red-600 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                        Account is banned until{" "}
+                        {formatDateRange(userData.ban_until)}
                       </div>
-                    ) : (
-                      <Link
-                        href="/provider-form"
-                        prefetch={true}
-                        className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
-                      >
-                        Verify your account ✎
-                      </Link>
-                    )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-row gap-2">
+                    <div>Player</div>
+                    <div className="bg-red-600 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                      Account is banned until{" "}
+                      {formatDateRange(userData.ban_until)}
+                    </div>
                   </div>
-                </>
-              ) : (
-                "Player"
-              )}
-            </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-opacity-60 text-white">
+                {userData?.isProvider ? (
+                  <>
+                    <div className="flex flex-row gap-2">
+                      <div>Provider</div>
+                      {userData.is_verified ? (
+                        <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                          Account verified ✓
+                        </div>
+                      ) : (
+                        <Link
+                          href="/provider-form"
+                          prefetch={true}
+                          className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
+                        >
+                          Verify your account ✎
+                        </Link>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  "Player"
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

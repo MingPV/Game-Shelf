@@ -5,20 +5,25 @@ import RequestCard from "./rental-request-card";
 import { RentingRequest } from "@/app/types/game";
 import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
 import LoadingCard from "./rental-request-loading";
+import { UserData } from "@/app/types/user";
+import { getMyUserData } from "@/app/(user-pages)/actions";
 
 export default function RentalRequestList() {
+  const [myData, setMyData] = useState<UserData>();
   const [requests, setRequests] = useState<RentingRequest[]>([]);
   const [isLoadingReq, setIsLoadingReq] = useState(true);
   const [isLoadingPrice, setIsLoadingPrice] = useState(true);
 
   useEffect(() => {
-    async function fetchRequest() {
+    async function fetchData() {
       const res = await selectMyRentingRequest();
+      const res2 = await getMyUserData();
       setRequests(res || []);
+      setMyData(res2);
       setIsLoadingReq(false);
     }
 
-    fetchRequest();
+    fetchData();
   }, []);
 
   return (
@@ -43,13 +48,18 @@ export default function RentalRequestList() {
               </div>
             </div>
             <div className="flex flex-col gap-4 w-full items-center">
-              {requests.length > 0 ? (
+              {requests.length > 0 && myData ? (
                 requests?.map((item) =>
                   item.status == "pending" ? (
-                    <RequestCard rentalRequest={item} key={item.id} setRequests={setRequests} />
+                    <RequestCard
+                      rentalRequest={item}
+                      key={item.id}
+                      setRequests={setRequests}
+                      provider={myData}
+                    />
                   ) : null
                 )
-              ) : isLoadingReq ? (
+              ) : isLoadingReq || !myData ? (
                 <>
                   <LoadingCard />
                   <LoadingCard />

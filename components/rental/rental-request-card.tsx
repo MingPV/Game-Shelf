@@ -22,11 +22,13 @@ import Swal from "sweetalert2";
 interface RequestCardProps {
   rentalRequest: RentingRequest;
   setRequests: Dispatch<SetStateAction<RentingRequest[]>>;
+  provider: UserData;
 }
 
 export default function RequestCard({
   rentalRequest,
   setRequests,
+  provider,
 }: RequestCardProps) {
   const [profileURL, setProfileURL] = useState("/mock_provider.jpeg");
   const [boardgame, setBoardgame] = useState<Boardgame>();
@@ -35,6 +37,7 @@ export default function RequestCard({
   const [overallPrice, setOverallPrice] = useState<Number>();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDone, setIsDone] = useState(false);
+  const [providerData, setProviderData] = useState(provider);
 
   useEffect(() => {
     //   if (params.users.profilePicture) {
@@ -129,6 +132,11 @@ export default function RequestCard({
     }
     if (!customer || !boardgame) {
       alert("no customer or boardgame.");
+      return;
+    }
+
+    if (providerData.is_banned) {
+      alert("account is banned!");
       return;
     }
 
@@ -298,6 +306,7 @@ export default function RequestCard({
           if (modal) {
             (modal as HTMLDialogElement).showModal();
           }
+          console.log(provider);
         }}
       >
         <div className="flex flex-col gap-4 sm:gap-0 sm:grid sm:grid-flow-col sm:grid-cols-12 items-center ">
@@ -323,7 +332,14 @@ export default function RequestCard({
             {formatDateRange(rentalRequest.start_date)} -{" "}
             {formatDateRange(rentalRequest.end_date)}
           </div>
-          {boardgame?.status == "available" ? (
+          {providerData.is_banned ? (
+            <>
+              <div className="text-red-500 text-sm ">Acoount banned</div>
+              <button className="btn btn-outline btn-sm">
+                <FaXmark />
+              </button>
+            </>
+          ) : boardgame?.status == "available" ? (
             <>
               <div className="col-span-1 text-sm flex gap-2  items-center justify-end">
                 <button className="btn btn-outline btn-sm">
@@ -411,14 +427,28 @@ export default function RequestCard({
               <div>
                 {" "}
                 <div className="col-span-1 text-sm flex gap-2  items-center justify-end ">
-                  {boardgame?.status == "available" ? (
+                  {providerData.is_banned ? (
+                    <>
+                      <div className="text-red-500 ">Acoount banned</div>
+                      <button
+                        className="btn btn-outline btn-sm border border-slate-400 hover:bg-slate-200 "
+                        onClick={handleDeny}
+                      >
+                        <div className="opacity-80 text-slate-400 hidden sm:block">
+                          Deny
+                        </div>
+
+                        <FaXmark className="text-slate-400" />
+                      </button>
+                    </>
+                  ) : boardgame?.status == "available" ? (
                     <>
                       <button
                         className="btn btn-outline btn-sm border border-slate-400 hover:bg-slate-200 "
                         onClick={handleDeny}
                       >
                         <div className="opacity-80 text-slate-400 hidden sm:block">
-                          Denine
+                          Deny
                         </div>
 
                         <FaXmark className="text-slate-400" />
@@ -432,7 +462,9 @@ export default function RequestCard({
                       </button>
                     </>
                   ) : (
-                    <div className="text-red-500 ">boardgame unavailable</div>
+                    <div className="text-red-500 text-sm ">
+                      boardgame unavailable
+                    </div>
                   )}
                 </div>
               </div>
