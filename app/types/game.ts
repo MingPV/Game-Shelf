@@ -30,6 +30,7 @@ export interface RentingRequest {
   after_ship: string;
   before_return: string;
   after_return: string;
+  rating : number;
 }
 
 export interface Boardgame_type {
@@ -78,6 +79,7 @@ export interface RentingRequestJoinBoardgameJoinProvider {
   provider: UserData;
   after_ship: string;
   before_return: string;
+  rating : number;
 }
 
 export interface RentingRequestJoinBoardgameJoinCustomer {

@@ -349,6 +349,71 @@ export const selectProvidersByFilterAction = async (
   return { fetch_data, count_items };
 };
 
+export const createReviewAction = async (
+  customer_id: string,
+  provider_id: string,
+  comment: string,
+  rating: number,
+  bg_id: number,
+  rental_id: number,
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .insert([
+      {
+        customer_id: customer_id,
+        provider_id: provider_id,
+        comment: comment,
+        rating:rating,
+        bg_id: bg_id,
+        rental_id: rental_id
+      },
+    ])
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Failed to create review");
+  }
+
+  return { data, error };
+};
+
+export const updateRentalRequestRating = async (
+  rental_id: number,
+  rating: number,
+) => {
+  const supabase = await createClient();
+
+  await supabase
+    .from("rental_requests")
+    .update({
+      rating: rating,
+    })
+    .eq("id", rental_id)
+    .select();
+}
+
+export const updateProviderRating = async (
+  provider_id: string,
+  rating: number,
+  averageRating: number,
+  cnt: number,
+) => {
+  const supabase = await createClient();
+
+  await supabase
+    .from("users")
+    .update({
+      rating:  (averageRating*cnt + rating) / (cnt+1),
+      rating_count: cnt+1,
+    })
+    .eq("uid",provider_id)
+    .select()
+}
+
 export const selectReviewByProviderId = async (userId: string) => {
   const supabase = await createClient();
 

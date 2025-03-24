@@ -8,6 +8,7 @@ import { LuImagePlus } from "react-icons/lu";
 import { FaRegCheckCircle } from "react-icons/fa";
 import MyRentalModal from "./my-rental-modal";
 import { useState, useEffect } from "react";
+import ReviewTag from "./review-tag";
 
 function StatusTag({ status }: { status: string }) {
   const statusClassMap = new Map<string, string>([
@@ -27,52 +28,6 @@ function StatusTag({ status }: { status: string }) {
       {status}
     </span>
   );
-}
-
-function ReviewTag({ score }: { score: number | null }) {
-  if (!score || score > 5)
-    return (
-      <button className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 my-1">
-        <span className="flex">
-          Review<span className="hidden sm:block pl-1">this boardgame</span>
-        </span>
-      </button>
-    );
-  else
-    return (
-      <div className="rating">
-        <input
-          type="radio"
-          className="mask mask-star-2 bg-yellow-400"
-          checked={score == 1}
-          readOnly
-        />
-        <input
-          type="radio"
-          className="mask mask-star-2 bg-yellow-400"
-          checked={score == 2}
-          readOnly
-        />
-        <input
-          type="radio"
-          className="mask mask-star-2 bg-yellow-400"
-          checked={score == 3}
-          readOnly
-        />
-        <input
-          type="radio"
-          className="mask mask-star-2 bg-yellow-400"
-          checked={score == 4}
-          readOnly
-        />
-        <input
-          type="radio"
-          className="mask mask-star-2 bg-yellow-400"
-          checked={score == 5}
-          readOnly
-        />
-      </div>
-    );
 }
 
 export default function MyRentalCard({
@@ -180,10 +135,10 @@ export default function MyRentalCard({
               <FaRegCheckCircle />
             </div>
           )}
-          {(data.status == "renting" || data.status == "completed") && (
+          {(data.status == "renting" || data.status == "complete") && (
             <div className="flex">
               <div className="font-bold w-24 sm:w-36 pb-1">My rating:</div>
-              <ReviewTag score={data.bg_id % 10} />
+              <ReviewTag initialScore={data.rating} bg={data.boardgames} rental_id={data.id}/>
             </div>
           )}
           {data.status == "unpaid" && (
