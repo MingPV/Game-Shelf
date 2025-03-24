@@ -114,6 +114,7 @@ export default function ReportFormCard() {
     after_ship: "",
     before_return: "",
     after_return: "",
+    rating: 5,
   });
 
   const filteredRentals = rentalRequests.filter((rental) => rental.id);
@@ -237,6 +238,7 @@ export default function ReportFormCard() {
               after_ship: "",
               before_return: "",
               after_return: "",
+              rating: 5,
             });
             setErrors({
               reported: false,
