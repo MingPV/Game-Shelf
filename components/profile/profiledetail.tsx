@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
 import ProviderStat from "./provider-stat";
 import { useRouter } from "next/navigation";
+import Loading from "./loading";
 export default function ProfileDetail() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<UserData>();
@@ -32,10 +33,10 @@ export default function ProfileDetail() {
   }, []);
   console.log(data);
 
-  if (loading || !data) {
+  if ((loading || !data)) {
     return (
       <>
-        <div>Loading . . .</div>
+        <Loading/>
       </>
     );
   } else {

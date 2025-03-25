@@ -16,6 +16,7 @@ import LastBoardgameCard from "@/components/home/last-boardgame-card";
 import { ReviewData } from "@/app/types/review";
 import { Boardgame } from "@/app/types/game";
 import ProviderStat from "@/components/profile/provider-stat";
+import Loading from "@/components/profile/loadingid";
 export default function Home() {
   const { username } = useParams();
   const [data, setData] = useState<UserData>();
@@ -66,7 +67,7 @@ export default function Home() {
   if (isLoading || !data) {
     return (
       <>
-        <div>Loading . . .</div>
+        <Loading/>
       </>
     );
   } else {
