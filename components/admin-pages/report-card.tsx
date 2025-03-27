@@ -23,9 +23,25 @@ export default function ReportCard({
   const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchPlayer() {
-      const res = await selectUserById(dispute.reporter);
-      const res2 = await selectUserById(dispute.report_to);
+      if (!dispute.reporter || !dispute.report_to) {
+        console.log("no reporter or report_to");
+        return;
+      }
+      const { data: res } = await fetchUserByID(dispute.reporter);
+      const { data: res2 } = await fetchUserByID(dispute.report_to);
       if (res.length > 0) {
         setReporter(res[0]);
       }
@@ -36,15 +52,6 @@ export default function ReportCard({
     fetchPlayer();
     setProfileURL(reporter?.profilePicture || "/mock_provider.jpeg");
   }, []);
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0"); // Ensures two digits
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-based
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
 
   const handleSubmit = async () => {
     const formData = new FormData();

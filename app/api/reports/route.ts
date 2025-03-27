@@ -1,19 +1,24 @@
-import {
-  getAllPendingReports,
-  getAllReports,
-} from "@/app/(admin-pages)/actions";
+import { cookies } from "next/headers";
+import { getAllReports } from "@/app/(admin-pages)/actions";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  // อ่าน Cookie จาก request
+  const cookieStore = await cookies();
+  const userToken = cookieStore.get("token")?.value || "No Token";
+
+  console.log(userToken);
+
+  // ดึงข้อมูลรายงานจาก Database
   const reportData = await getAllReports();
 
-  // Create a response with cache headers
+  // สร้าง Response พร้อมส่ง Cookie กลับไปได้
   const res = NextResponse.json(
-    { status: "success", data: reportData },
+    { status: "success", data: reportData, token: userToken },
     { status: 200 }
   );
 
-  // Set cache headers for Vercel Edge cache
+  // ตั้งค่า Cache-Control เพื่อให้ Vercel Edge Cache ทำงาน
   res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
 
   return res;
