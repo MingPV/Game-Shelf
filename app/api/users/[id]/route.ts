@@ -4,7 +4,7 @@ import { selectUserById } from "@/app/(user-pages)/actions";
 // ✅ แก้โครงสร้างพารามิเตอร์ของ API Route ให้ถูกต้อง
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params; // ✅ ดึงค่า id ออกจาก params โดยตรง
 
