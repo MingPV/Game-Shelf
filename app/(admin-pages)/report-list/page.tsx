@@ -17,8 +17,17 @@ export default function ReportList() {
   const [newMyDisputes, setNewMyDisputes] = useState<Dispute[]>([]);
 
   useEffect(() => {
+    const fetchReports = async (): Promise<{ data: Dispute[] }> => {
+      const res = await fetch("/api/reports", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchData() {
-      const res = await getAllReports();
+      const { data: res } = await fetchReports();
+      console.log(res);
+      // return;
       const res2 = await getMyUserData();
       setDisputes(res);
       setMyData(res2);
