@@ -1,10 +1,9 @@
-import { cookies } from "next/headers";
-import { getAllPendingVerifications } from "@/app/(admin-pages)/actions";
+import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   // ดึงข้อมูลรายงานจาก Database
-  const resData = await getAllPendingVerifications();
+  const resData = await selectAllUnverifiedVerificationRequest();
 
   // สร้าง Response พร้อมส่ง Cookie กลับไปได้
   const res = NextResponse.json(

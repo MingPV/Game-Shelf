@@ -112,24 +112,6 @@ export const selectAllUnverifiedVerificationRequest = async () => {
   return data;
 };
 
-export const selectVerificationRequestByPageAction = async (page: number) => {
-  const supabase = await createClient();
-  const itemsPerPage = 30;
-  const from = (page - 1) * itemsPerPage;
-  const to = from + itemsPerPage - 1;
-
-  const { data, error } = await supabase
-    .from("verification_requests")
-    .select("*, users(*)")
-    .range(from, to);
-
-  if (error) {
-    throw new Error("Failed to fetch verification requests.");
-  }
-
-  return data;
-};
-
 export const getAllReports = async () => {
   const supabase = await createClient();
 
@@ -243,26 +225,22 @@ export const countReportsByStatusAndDate = async (formData: FormData) => {
     .from("disputes")
     .select("*", { count: "exact" })
     .eq("status", status)
-    .lt(
-      "created_at",
-      `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
-    ) // Started before the next month
-    .gte(
-      "created_at",
-      `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
-    ); // Ends after the start of the selected month
+    .lt("created_at", `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`) // Started before the next month
+    .gte("created_at", `${curYear}-${curMonth.toString().padStart(2, "0")}-01`); // Ends after the start of the selected month
 
   if (error) {
     throw new Error("Failed to fetch disputes");
   }
 
   return count;
-}
+};
 
 export const getTopReportedUsers = async () => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc("get_top_reported_users_with_types");
+  const { data, error } = await supabase.rpc(
+    "get_top_reported_users_with_types"
+  );
 
   if (error) {
     console.error("Error fetching top reporters:", error);
@@ -272,4 +250,3 @@ export const getTopReportedUsers = async () => {
   console.log(data);
   return data;
 };
-

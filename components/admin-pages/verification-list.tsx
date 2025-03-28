@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import VerificationCard from "@/components/admin-pages/verification-card";
 import { UserData, verificationRequests } from "@/app/types/user";
-import { selectAllUnverifiedVerificationRequest } from "@/app/(admin-pages)/actions";
 import LoadingCard from "./loading-card";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 
 export default function VerificationList() {
   const [admin, setAdmin] = useState<UserData | null>(null);
@@ -13,11 +11,30 @@ export default function VerificationList() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchPendingVerifications = async (): Promise<{
+      data: verificationRequests[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/verifications/pending", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchData() {
-      const fetchData = await getMyUserData();
+      const { data: fetchData } = await fetchMyData();
       setAdmin(fetchData);
 
-      const res = await selectAllUnverifiedVerificationRequest();
+      const { data: res } = await fetchPendingVerifications();
       setRequests(res || []);
       setIsLoading(false);
     }
