@@ -1,15 +1,14 @@
 import { cookies } from "next/headers";
+import { getAllPendingVerifications } from "@/app/(admin-pages)/actions";
 import { NextResponse } from "next/server";
-import { getMyUserData } from "@/app/(user-pages)/actions";
-import { UserData } from "@/app/types/user";
 
 export async function GET() {
   // ดึงข้อมูลรายงานจาก Database
-  const myData: UserData = await getMyUserData();
+  const resData = await getAllPendingVerifications();
 
   // สร้าง Response พร้อมส่ง Cookie กลับไปได้
   const res = NextResponse.json(
-    { status: "success", data: myData },
+    { status: "success", data: resData },
     { status: 200 }
   );
 

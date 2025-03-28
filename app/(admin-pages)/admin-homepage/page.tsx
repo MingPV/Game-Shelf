@@ -1,11 +1,9 @@
 "use client";
 
-import { getMyUserData } from "@/app/(user-pages)/actions";
 import { Dispute } from "@/app/types/admin";
 import { UserData, verificationRequests } from "@/app/types/user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getAllPendingReports, getAllPendingVerifications } from "../actions";
 import VerificationHomeCard from "@/components/admin-pages/verification-homecard";
 
 export default function Home() {
@@ -15,19 +13,47 @@ export default function Home() {
     useState<verificationRequests[]>();
 
   useEffect(() => {
-    const fetchMyData = async () => {
-      const res = await getMyUserData();
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchPendingReports = async (): Promise<{
+      data: Dispute[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/reports/pending", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchPendingVerifications = async (): Promise<{
+      data: verificationRequests[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/verifications/pending", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchUserData = async () => {
+      const { data: res } = await fetchMyData();
       setUserData(res);
     };
     const fetchIncomingData = async () => {
-      const res1 = await getAllPendingReports();
-      const res2 = await getAllPendingVerifications();
+      const { data: res1 } = await fetchPendingReports();
+      const { data: res2 } = await fetchPendingVerifications();
 
       setIncomingReports(res1);
       setIncomingVerifications(res2);
     };
 
-    fetchMyData();
+    fetchUserData();
     fetchIncomingData();
   }, []);
 

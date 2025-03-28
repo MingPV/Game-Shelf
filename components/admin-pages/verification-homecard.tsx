@@ -1,3 +1,5 @@
+"use client";
+
 import { selectUserById } from "@/app/(user-pages)/actions";
 import { UserData, verificationRequests } from "@/app/types/user";
 import Link from "next/link";
@@ -11,8 +13,20 @@ export default function VerificationHomeCard({
   const [provider, setProvider] = useState<UserData>();
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchUser = async () => {
-      const res = await selectUserById(verification.provider_id);
+      const { data: res } = await fetchUserByID(verification.provider_id);
       setProvider(res[0] || null);
     };
 
