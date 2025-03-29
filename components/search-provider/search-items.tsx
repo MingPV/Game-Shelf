@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { selectProvidersByFilterAction } from "@/app/(user-pages)/actions";
 import ProviderCard from "./provider-card";
 import { Input } from "../ui/input";
 // import ItemsPerPageFilter from "./items-per-page-filter";
@@ -25,20 +24,47 @@ export function SearchProviders() {
 
   const [haveProvider, setHaveProvider] = useState<Boolean>(true);
 
-  const fetchGames = useDebouncedCallback(async () => {
+  const fetchProvidersData = async (
+    searchValue: string,
+    page: number,
+    itemsPerPage: number,
+    maxPage: number
+  ): Promise<any> => {
+    // Build the query string
+    const queryString = new URLSearchParams({
+      searchValue,
+      page: page.toString(),
+      itemsPerPage: itemsPerPage.toString(),
+      maxPage: maxPage.toString(),
+    }).toString();
+
+    // Make the GET request
+    const res = await fetch(`/api/users/providers?${queryString}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(`/api/providers?${queryString}`);
+
+    // Parse the JSON response
+    return res.json();
+  };
+
+  const fetchProviders = useDebouncedCallback(async () => {
     setIsFetching(true);
 
     if (page > maxPage) {
       setPage(1);
     }
 
-    const { fetch_data: data, count_items: count_games } =
-      await selectProvidersByFilterAction(
-        searchValue,
-        page,
-        itemsPerPage,
-        maxPage
-      );
+    const { data: fetchData } = await fetchProvidersData(
+      searchValue,
+      page,
+      itemsPerPage,
+      maxPage
+    );
+    const { fetch_data: data, count_items: count_games } = await fetchData;
     setProviders(data || []);
     setCount(count_games || 0);
 
@@ -55,7 +81,7 @@ export function SearchProviders() {
   }, 700);
 
   useEffect(() => {
-    fetchGames();
+    fetchProviders();
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
@@ -64,11 +90,11 @@ export function SearchProviders() {
     setPage(1);
     setMaxPage(1);
     // maxpage will auto change after fetch
-    fetchGames();
+    fetchProviders();
   }, [itemsPerPage, searchValue]);
 
   useEffect(() => {
-    fetchGames();
+    fetchProviders();
   }, []);
 
   return (

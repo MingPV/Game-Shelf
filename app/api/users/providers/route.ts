@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { selectGamesByFilterAction } from "@/app/(game-pages)/actions";
+import { selectProvidersByFilterAction } from "@/app/(user-pages)/actions";
 
 export async function GET(req: Request) {
   try {
@@ -10,29 +11,22 @@ export async function GET(req: Request) {
     // Extract parameters from query string
     const filterParams = {
       searchValue: searchParams.get("searchValue") || "", // Search text
-      minPrice: parseFloat(searchParams.get("minPrice") || "0"), // Parse minPrice
-      maxPrice: parseFloat(searchParams.get("maxPrice") || "99999"), // Parse maxPrice
       page: searchParams.get("page") || "1", // Current page (default 1)
       itemsPerPage: searchParams.get("itemsPerPage") || "10", // Items per page (default 10)
       maxPage: searchParams.get("maxPage") || "1", // Max pages (default 1)
-      selectedTypeFilter: searchParams.get("selectedTypeFilter") || "", // Type filter
     };
 
     console.log("🛢️ Fetching from Database");
-    const filteredBoardGames = await selectGamesByFilterAction(
+    const filteredProviders = await selectProvidersByFilterAction(
       filterParams.searchValue,
-      [filterParams.minPrice, filterParams.maxPrice] as [number, number],
       parseInt(filterParams.page, 10),
       parseInt(filterParams.itemsPerPage, 10),
-      parseInt(filterParams.maxPage, 10),
-      filterParams.selectedTypeFilter
-        ? filterParams.selectedTypeFilter.split(",")
-        : []
+      parseInt(filterParams.maxPage, 10)
     );
 
     // สร้าง Response พร้อมส่ง Cookie กลับไปได้
     const res = NextResponse.json(
-      { status: "success", data: filteredBoardGames },
+      { status: "success", data: filteredProviders },
       { status: 200 }
     );
 
