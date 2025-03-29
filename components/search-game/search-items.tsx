@@ -1,9 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  selectAllBoardgameType,
-  selectGamesByFilterAction,
-} from "@/app/(game-pages)/actions";
+import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import GameCard from "./game-card";
 import { Input } from "../ui/input";
@@ -30,20 +27,13 @@ export function SearchItems() {
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
-  const fetchBoardgames = async (
-    formData: Record<string, any>
-  ): Promise<{
-    data: Boardgame[];
+  const fetchTypes = async (): Promise<{
+    data: Boardgame_type[];
     token: string;
   }> => {
-    const res = await fetch("/api/boardgames/filter", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
+    const res = await fetch("/api/boardgames/types", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
-
     return res.json();
   };
 
@@ -75,6 +65,7 @@ export function SearchItems() {
         "Content-Type": "application/json",
       },
     });
+    console.log(`/api/boardgames?${queryString}`);
 
     // Parse the JSON response
     return res.json();
@@ -116,7 +107,7 @@ export function SearchItems() {
   }, 700);
 
   const getBoardgameType = async () => {
-    const data = await selectAllBoardgameType();
+    const { data: data } = await fetchTypes();
 
     setBoardgameTypes(data);
   };

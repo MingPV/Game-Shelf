@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa6";
 import { UserData } from "@/app/types/user";
-import { selectUserById } from "@/app/(user-pages)/actions";
 type BoardgameType = {
   [key: string]: string;
 };
@@ -18,13 +17,24 @@ export default function GameCard({
   boardgame: Boardgame;
   boardgame_type: BoardgameType;
 }) {
-  const [filled, setFilled] = useState<boolean>(false);
   const router = useRouter();
   const [provider, setProvider] = useState<UserData[]>([]);
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchData = async () => {
-      const data = await selectUserById(boardgame.provider_id); // assuming selectUserById is a function that returns data
+      const { data: data } = await fetchUserByID(boardgame.provider_id); // assuming selectUserById is a function that returns data
       setProvider(data); // set the data returned from the function to the state
     };
 

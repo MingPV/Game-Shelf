@@ -166,7 +166,6 @@ export const selectAllBoardgameType = async () => {
 
   if (error) {
     throw new Error("Failed to fetch boardgame types");
-    console.log(error);
   }
   console.log(error);
 
