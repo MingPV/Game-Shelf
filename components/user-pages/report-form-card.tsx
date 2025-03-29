@@ -3,12 +3,7 @@
 import { use, useEffect, useState, useMemo, useRef } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  createReport,
-  selectUsersByFilterAction,
-  selectRentalRequestsByPlayerId,
-  selectRentalRequestsByProviderId,
-} from "@/app/(user-pages)/actions";
+import { createReport } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
 import { RentingRequest } from "@/app/types/game";
 import {
@@ -18,7 +13,6 @@ import {
   ListboxOptions,
 } from "@headlessui/react";
 import ReportRentalCard from "@/components/user-pages/report-rental-card";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 import { useDebouncedCallback } from "use-debounce";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -51,8 +45,43 @@ export default function ReportFormCard() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const fetchMyData = async () => {
-    const res = await getMyUserData();
+  const fetchMyData = async (): Promise<{
+    data: UserData;
+    token: string;
+  }> => {
+    const res = await fetch("/api/users/me", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchUsersByName = async (
+    username: string
+  ): Promise<{
+    data: UserData[];
+    token: string;
+  }> => {
+    const queryString = new URLSearchParams({
+      searchValue: username,
+    }).toString();
+
+    const res = await fetch(`/api/users/filter?${queryString}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchMyRental = async (): Promise<{
+    data: RentingRequest[];
+  }> => {
+    const res = await fetch("/api/rental/me", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchMyUserData = async () => {
+    const { data: res } = await fetchMyData();
     // console.log("userData loaded:", res);
     setUserData(res);
     setIsLoading(false);
@@ -60,22 +89,18 @@ export default function ReportFormCard() {
 
   const fetchUsers = useDebouncedCallback(async () => {
     // if (!userData) return;
-    const { fetch_data: data } = await selectUsersByFilterAction("");
+
+    const { data } = await fetchUsersByName("");
     console.log("users loaded:", data);
     setUsers(data || []);
   }, 300);
 
   const fetchRentalRequests = useDebouncedCallback(async () => {
     //if (!userData) return;
-    let data;
     if (userData) {
-      if (userData.isProvider) {
-        data = await selectRentalRequestsByProviderId(userData.uid);
-        console.log("rental request provider:", data);
-      } else {
-        data = await selectRentalRequestsByPlayerId(userData.uid);
-        console.log("rental request player:", data);
-      }
+      const { data } = await fetchMyRental();
+      console.log("rental request :", data);
+
       setRentalRequests(data);
     } else {
       console.log("wait for userData");
@@ -256,7 +281,7 @@ export default function ReportFormCard() {
   };
 
   useEffect(() => {
-    fetchMyData();
+    fetchMyUserData();
     setHasSubmitted(false);
   }, []);
 

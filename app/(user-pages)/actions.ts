@@ -673,6 +673,7 @@ export const createReport = async (formData: FormData) => {
 };
 
 export const selectUsersByFilterAction = async (name: string) => {
+  console.log("test");
   const supabase = await createClient();
 
   // Step 1: Get total count first

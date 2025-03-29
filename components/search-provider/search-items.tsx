@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import ProviderCard from "./provider-card";
 import { Input } from "../ui/input";
-// import ItemsPerPageFilter from "./items-per-page-filter";
 import LoadingGameCard from "../search-game/loading-card";
 
 import { useDebouncedCallback } from "use-debounce";

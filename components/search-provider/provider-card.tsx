@@ -4,12 +4,7 @@ import { useState } from "react";
 import { UserData } from "@/app/types/user";
 import Link from "next/link";
 
-type BoardgameType = {
-  [key: string]: string;
-};
-
 export default function ProviderCard({ provider }: { provider: UserData }) {
-  const [filled, setFilled] = useState<boolean>(false);
   return (
     <div className="flex flex-col p-3  w-full md:w-64 bg-white/10 rounded-t-2xl items-center space-y-2 justify-between border-b-2 border-opacity-0  border-white hover:border-opacity-20">
       <div className="flex flex-col gap-1">
