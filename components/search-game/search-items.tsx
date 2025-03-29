@@ -30,6 +30,56 @@ export function SearchItems() {
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
+  const fetchBoardgames = async (
+    formData: Record<string, any>
+  ): Promise<{
+    data: Boardgame[];
+    token: string;
+  }> => {
+    const res = await fetch("/api/boardgames/filter", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    return res.json();
+  };
+
+  const fetchBoardGames = async (
+    searchValue: string,
+    price: [number, number],
+    page: number,
+    itemsPerPage: number,
+    maxPage: number,
+    selectedTypeFilter: string[]
+  ): Promise<any> => {
+    // Convert the price array into a query string like "minPrice=10&maxPrice=50"
+    const priceQuery = `minPrice=${price[0]}&maxPrice=${price[1]}`;
+
+    // Build the query string
+    const queryString = new URLSearchParams({
+      searchValue,
+      page: page.toString(),
+      itemsPerPage: itemsPerPage.toString(),
+      maxPage: maxPage.toString(),
+      selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+      ...Object.fromEntries(new URLSearchParams(priceQuery)),
+    }).toString();
+
+    // Make the GET request
+    const res = await fetch(`/api/boardgames?${queryString}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Parse the JSON response
+    return res.json();
+  };
+
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
@@ -37,23 +87,15 @@ export function SearchItems() {
       setPage(1);
     }
 
-    // console.log("input data");
-    // console.log(searchValue);
-    // console.log(price); 
-    // console.log(page);
-    // console.log(itemsPerPage);
-    // console.log(maxPage);
-    // console.log(selectedTypeFilter);
-
-    const { fetch_data: data, count_items: count_games } =
-      await selectGamesByFilterAction(
-        searchValue,
-        price,
-        page,
-        itemsPerPage,
-        maxPage,
-        selectedTypeFilter
-      );
+    const { data: fetchData } = await fetchBoardGames(
+      searchValue,
+      price,
+      page,
+      itemsPerPage,
+      maxPage,
+      selectedTypeFilter
+    );
+    const { fetch_data: data, count_items: count_games } = await fetchData;
     setGames(data || []);
     setCount(count_games || 0);
 
@@ -208,7 +250,7 @@ export function SearchItems() {
                 ))}
               </div>
             ) : (
-              <NoBoardgameMatch/>
+              <NoBoardgameMatch />
             )}
           </>
         )}

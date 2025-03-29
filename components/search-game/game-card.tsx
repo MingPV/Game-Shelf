@@ -25,7 +25,6 @@ export default function GameCard({
   useEffect(() => {
     const fetchData = async () => {
       const data = await selectUserById(boardgame.provider_id); // assuming selectUserById is a function that returns data
-      console.log("data", data);
       setProvider(data); // set the data returned from the function to the state
     };
 
