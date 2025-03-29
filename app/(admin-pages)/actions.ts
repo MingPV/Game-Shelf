@@ -207,12 +207,16 @@ export const updateReportVerdict = async (formData: FormData) => {
   return data;
 };
 
-export const countReportsByStatusAndDate = async (formData: FormData) => {
+export const countReportsByStatusAndDate = async (
+  month: string,
+  year: string,
+  status: string
+) => {
   const supabase = await createClient();
 
-  const month = formData.get("month")?.toString() || "undefined";
-  const year = formData.get("year")?.toString() || "undefined";
-  const status = formData.get("status")?.toString() || "";
+  // const month = formData.get("month")?.toString() || "undefined";
+  // const year = formData.get("year")?.toString() || "undefined";
+  // const status = formData.get("status")?.toString() || "";
 
   // if (month !== "undefined" && year !== "undefined") {
   const curMonth = parseInt(month) + 1;
@@ -221,7 +225,7 @@ export const countReportsByStatusAndDate = async (formData: FormData) => {
   const nextMonth = curMonth + 1;
   const nextYear = nextMonth === 13 ? curYear + 1 : curYear;
 
-  const { data, count, error } = await supabase
+  const { count, error } = await supabase
     .from("disputes")
     .select("*", { count: "exact" })
     .eq("status", status)

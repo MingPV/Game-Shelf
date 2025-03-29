@@ -1,5 +1,4 @@
 "use client";
-import { getTopReportedUsers } from "@/app/(admin-pages)/actions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import mockProvider from "@/public/mock_provider.jpeg";
@@ -20,9 +19,19 @@ export default function StatisticsMostReported() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const fetchTopReported = async (): Promise<{
+      data: MostReportedUsers[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/reports/topReported", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchData() {
       setIsLoading(true);
-      const res = await getTopReportedUsers();
+      const { data: res } = await fetchTopReported();
       setRecords(res);
       setIsLoading(false);
     }
@@ -115,10 +124,10 @@ export default function StatisticsMostReported() {
                 ) : (
                   <div>
                     <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    {/* <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
                     <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
                     <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
-                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
-                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div>
+                    <div className="bg-black bg-opacity-10 skeleton h-32 w-full rounded-lg"></div> */}
                   </div>
                 )}
               </div>

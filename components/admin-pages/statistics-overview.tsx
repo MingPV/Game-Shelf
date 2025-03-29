@@ -1,10 +1,8 @@
 "use client";
 import {
-  selectBannedUserByDateAndName,
   unbanUserAction,
   createNotificationByUserId,
 } from "@/app/(user-pages)/actions";
-import { countReportsByStatusAndDate } from "@/app/(admin-pages)/actions";
 import { UserData } from "@/app/types/user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -51,25 +49,53 @@ export default function StatisticsOverview() {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  //
+
+  const fetchBannedUsers = async (
+    queryString: string
+  ): Promise<{
+    data: UserData[];
+  }> => {
+    const res = await fetch(`/api/users/banned?${queryString}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
   const fetchRequests = async () => {
     setIsLoading(true);
-    const formData = new FormData();
-    formData.append("month", month.toString().padStart(2, "0"));
-    formData.append("year", year);
-    formData.append("username", username);
 
-    const data = await selectBannedUserByDateAndName(formData);
+    // Build the query string
+    const queryString = new URLSearchParams({
+      month: month.toString().padStart(2, "0"),
+      year: year,
+      username: username,
+    }).toString();
+
+    const { data: data } = await fetchBannedUsers(queryString);
     if (data) setRecords(data);
     setIsLoading(false);
   };
 
-  const fetchCount = async (status: string) => {
-    const formData = new FormData();
-    formData.append("month", month.toString().padStart(2, "0"));
-    formData.append("year", year);
-    formData.append("status", status);
+  const fetchCountStat = async (
+    queryString: string
+  ): Promise<{
+    data: UserData[];
+  }> => {
+    const res = await fetch(`/api/reports/countReports?${queryString}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
 
-    const data = await countReportsByStatusAndDate(formData);
+  const fetchCount = async (status: string) => {
+    const queryString = new URLSearchParams({
+      month: month.toString().padStart(2, "0"),
+      year: year,
+      status: status,
+    }).toString();
+
+    const { data: data } = await fetchCountStat(queryString);
     setCountStatus((prev) => ({ ...prev, [status]: data }));
   };
 
@@ -296,9 +322,9 @@ export default function StatisticsOverview() {
               ) : (
                 <div className="flex flex-col gap-1">
                   <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
+                  {/* <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
                   <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
-                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
-                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div>
+                  <div className="bg-black bg-opacity-10 skeleton h-14 w-full rounded-lg"></div> */}
                 </div>
               )}
             </div>

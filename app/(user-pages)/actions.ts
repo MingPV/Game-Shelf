@@ -355,7 +355,7 @@ export const createReviewAction = async (
   comment: string,
   rating: number,
   bg_id: number,
-  rental_id: number,
+  rental_id: number
 ) => {
   const supabase = await createClient();
 
@@ -366,9 +366,9 @@ export const createReviewAction = async (
         customer_id: customer_id,
         provider_id: provider_id,
         comment: comment,
-        rating:rating,
+        rating: rating,
         bg_id: bg_id,
-        rental_id: rental_id
+        rental_id: rental_id,
       },
     ])
     .select();
@@ -383,7 +383,7 @@ export const createReviewAction = async (
 
 export const updateRentalRequestRating = async (
   rental_id: number,
-  rating: number,
+  rating: number
 ) => {
   const supabase = await createClient();
 
@@ -394,25 +394,25 @@ export const updateRentalRequestRating = async (
     })
     .eq("id", rental_id)
     .select();
-}
+};
 
 export const updateProviderRating = async (
   provider_id: string,
   rating: number,
   averageRating: number,
-  cnt: number,
+  cnt: number
 ) => {
   const supabase = await createClient();
 
   await supabase
     .from("users")
     .update({
-      rating:  (averageRating*cnt + rating) / (cnt+1),
-      rating_count: cnt+1,
+      rating: (averageRating * cnt + rating) / (cnt + 1),
+      rating_count: cnt + 1,
     })
-    .eq("uid",provider_id)
-    .select()
-}
+    .eq("uid", provider_id)
+    .select();
+};
 
 export const selectReviewByProviderId = async (userId: string) => {
   const supabase = await createClient();
@@ -750,7 +750,11 @@ export const selectRentalRequestsByPlayerId = async (playerId: string) => {
   return data;
 };
 
-export const selectBannedUserByDateAndName = async (formData: FormData) => {
+export const selectBannedUserByDateAndName = async (
+  month: string,
+  year: string,
+  username: string
+) => {
   const supabase = await createClient();
 
   const {
@@ -760,10 +764,6 @@ export const selectBannedUserByDateAndName = async (formData: FormData) => {
   if (!user) {
     redirect("/sign-in");
   }
-
-  const month = formData.get("month")?.toString() || "undefined";
-  const year = formData.get("year")?.toString() || "undefined";
-  const username = formData.get("username")?.toString() || "";
 
   // if (month !== "undefined" && year !== "undefined") {
   const curMonth = parseInt(month) + 1;
@@ -776,14 +776,8 @@ export const selectBannedUserByDateAndName = async (formData: FormData) => {
     .from("users")
     .select("*")
     .eq("is_banned", true)
-    .lt(
-      "ban_start",
-      `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`
-    ) // Started before the next month
-    .gt(
-      "ban_until",
-      `${curYear}-${curMonth.toString().padStart(2, "0")}-01`
-    ); // Ends after the start of the selected month
+    .lt("ban_start", `${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`) // Started before the next month
+    .gt("ban_until", `${curYear}-${curMonth.toString().padStart(2, "0")}-01`); // Ends after the start of the selected month
 
   // If username is provided, add it to the query
   if (username != "") {
@@ -792,7 +786,7 @@ export const selectBannedUserByDateAndName = async (formData: FormData) => {
 
   const { data, error } = await query;
   return data;
-}
+};
 
 export const unbanUserAction = async (uid: string) => {
   const supabase = await createClient();
