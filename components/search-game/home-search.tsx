@@ -1,9 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  selectAllBoardgameType,
-  selectGamesByFilterAction,
-} from "@/app/(game-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import GameCard from "./game-card";
 import { Input } from "../ui/input";
@@ -26,6 +22,50 @@ export function HomeSearch() {
   const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
+  const fetchTypes = async (): Promise<{
+    data: Boardgame_type[];
+    token: string;
+  }> => {
+    const res = await fetch("/api/boardgames/types", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchBoardGames = async (
+    searchValue: string,
+    price: [number, number],
+    page: number,
+    itemsPerPage: number,
+    maxPage: number,
+    selectedTypeFilter: string[]
+  ): Promise<any> => {
+    // Convert the price array into a query string like "minPrice=10&maxPrice=50"
+    const priceQuery = `minPrice=${price[0]}&maxPrice=${price[1]}`;
+
+    // Build the query string
+    const queryString = new URLSearchParams({
+      searchValue,
+      page: page.toString(),
+      itemsPerPage: itemsPerPage.toString(),
+      maxPage: maxPage.toString(),
+      selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+      ...Object.fromEntries(new URLSearchParams(priceQuery)),
+    }).toString();
+
+    // Make the GET request
+    const res = await fetch(`/api/boardgames?${queryString}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(`/api/boardgames?${queryString}`);
+
+    // Parse the JSON response
+    return res.json();
+  };
+
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
@@ -33,21 +73,17 @@ export function HomeSearch() {
       setPage(1);
     }
 
-    const { fetch_data: data, count_items: count_games } =
-      await selectGamesByFilterAction(
-        searchValue,
-        price,
-        page,
-        itemsPerPage,
-        maxPage,
-        selectedTypeFilter
-      );
+    const { data: fetchData } = await fetchBoardGames(
+      searchValue,
+      price,
+      page,
+      itemsPerPage,
+      maxPage,
+      selectedTypeFilter
+    );
+    const { fetch_data: data, count_items: count_games } = await fetchData;
     setGames(data || []);
     setCount(count_games || 0);
-
-    console.log("Ming");
-    console.log(count_games);
-    console.log(data);
 
     if (count_games == 0) {
       setPage(1);
@@ -62,7 +98,7 @@ export function HomeSearch() {
   }, 700);
 
   const getBoardgameType = async () => {
-    const data = await selectAllBoardgameType();
+    const { data: data } = await fetchTypes();
 
     setBoardgameTypes(data);
   };
@@ -85,27 +121,6 @@ export function HomeSearch() {
     acc[type.bg_type_id] = type.bg_type;
     return acc;
   }, {});
-
-  const setRange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    type: string
-  ) => {
-    const value = Number(event.target.value);
-    const newPrice = isNaN(value) ? 0 : value;
-    if (type === "max")
-      setPrice([price[0], Math.min(1000, Math.max(price[0], newPrice))]);
-    if (type === "min") setPrice([Math.min(price[1], newPrice), price[1]]);
-    setFiltered(true);
-  };
-
-  const clearFilter = () => {
-    setSearchValue("");
-    setPrice([0, 1000]);
-    setItemPerPage(15);
-    setPage(1);
-    setFiltered(false);
-    setSelectedTypeFilter([]);
-  };
 
   useEffect(() => {
     fetchGames();

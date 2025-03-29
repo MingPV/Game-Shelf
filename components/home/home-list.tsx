@@ -4,7 +4,6 @@ import React from "react";
 
 import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
-import { getMyUserData, selectTopProvider } from "@/app/(user-pages)/actions";
 import Link from "next/link";
 
 export default function HomeList() {
@@ -13,14 +12,34 @@ export default function HomeList() {
   const [isFetchingProvider, setIsFetchingProvider] = useState(true);
 
   useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchTopProviderData = async (): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/topProviders", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchTopProvider = async () => {
-      const fetchData = await selectTopProvider();
+      const { data: fetchData } = await fetchTopProviderData();
       setTopProviders(fetchData);
       setIsFetchingProvider(false);
     };
 
     const fetchUserData = async () => {
-      const fetchedUserData = await getMyUserData();
+      const { data: fetchedUserData } = await fetchMyData();
       setUserData(fetchedUserData);
     };
 
