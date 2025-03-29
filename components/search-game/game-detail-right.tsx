@@ -1,11 +1,9 @@
+"use client";
+
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
-import RentalRequestList from "../rental/rental-request";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa6";
-import { ReviewData } from "@/app/types/review";
-import { selectReviewByProviderId } from "@/app/(user-pages)/actions";
 
 type BoardgameType = {
   [key: string]: string;

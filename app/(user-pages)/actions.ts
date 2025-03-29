@@ -9,6 +9,7 @@ import { randomUUID } from "crypto";
 import { url } from "inspector";
 import { revalidatePath } from "next/cache";
 import { error } from "console";
+import { UserData } from "../types/user";
 
 export const updateProviderAction = async (formData: FormData) => {
   const profile_image = formData.get("profile_image") as File;

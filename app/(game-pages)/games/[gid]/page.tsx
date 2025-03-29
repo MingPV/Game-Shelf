@@ -1,91 +1,125 @@
-'use client'
+"use client";
 
-import { selectAllBoardgameType, selectGameAction } from "../../actions"
 import NoBoardgameMatch from "@/components/search-game/no-match-card";
 import GameDetailLeft from "@/components/search-game/game-detail-left";
 import GameDetailRight from "@/components/search-game/game-detail-right";
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Boardgame } from "@/app/types/game";
+import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
-import LoadingGameCard from "@/components/search-game/loading-card";
 import GameDetailLoading from "@/components/search-game/game-detail-loading";
 
 export default function GameDetails() {
-    const { gid } = useParams();
-    const gameId = Number(gid);
+  const { gid } = useParams();
+  const gameId = Number(gid);
 
-    const [bg, setBg] = useState<Boardgame | null>(null);
-    const [boardgameTypes, setBoardgameTypes] = useState<any[]>([]);
-    const [provider, setProvider] = useState<UserData | null>(null);
-    const [loading, setLoading] = useState(true);
+  const [bg, setBg] = useState<Boardgame | null>(null);
+  const [boardgameTypes, setBoardgameTypes] = useState<any[]>([]);
+  const [provider, setProvider] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (isNaN(gameId)) {
-                console.error("Invalid gameId:", gid);
-                setLoading(false);
-                return;
-            }
+  useEffect(() => {
+    const fetchTypes = async (): Promise<{
+      data: Boardgame_type[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/boardgames/types", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchBoardgameById = async (
+      boardgameID: Number
+    ): Promise<{
+      data: Boardgame;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/boardgames/${boardgameID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
 
-            try {
-                const fetchedBg = await selectGameAction(gameId);
-                if (!fetchedBg) {
-                    console.warn(`No boardgame found for gameId: ${gameId}`);
-                    setLoading(false);
-                    return;
-                }
-                setBg(fetchedBg);
+    const fetchData = async () => {
+      if (isNaN(gameId)) {
+        console.error("Invalid gameId:", gid);
+        setLoading(false);
+        return;
+      }
 
-                const fetchedTypes = await selectAllBoardgameType();
-                setBoardgameTypes(fetchedTypes);
-            } catch (error) {
-                console.log("Error fetching boardgame:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+      try {
+        const { data: fetchedBg } = await fetchBoardgameById(gameId);
+        if (!fetchedBg) {
+          console.warn(`No boardgame found for gameId: ${gameId}`);
+          setLoading(false);
+          return;
+        }
+        setBg(fetchedBg);
 
-        fetchData();
-    }, [gameId]);
+        const { data: fetchedTypes } = await fetchTypes();
+        setBoardgameTypes(fetchedTypes);
+      } catch (error) {
+        console.log("Error fetching boardgame:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    useEffect(() => {
-        if (!bg) return;
+    fetchData();
+  }, [gameId]);
 
-        const fetchProvider = async () => {
-            try {
-                const fetchedProvider = await selectUserById(bg.provider_id);
-                setProvider(fetchedProvider[0] || null);
-            } catch (error) {
-                console.log("Error fetching provider:", error);
-            }
-        };
+  useEffect(() => {
+    if (!bg) return;
 
-        fetchProvider();
-    }, [bg]);
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
 
-    if (loading) {
-        return <GameDetailLoading/>
-    }
+    const fetchProvider = async () => {
+      try {
+        const { data: fetchedProvider } = await fetchUserByID(bg.provider_id);
+        setProvider(fetchedProvider[0] || null);
+      } catch (error) {
+        console.log("Error fetching provider:", error);
+      }
+    };
 
-    if (!bg) {
-        return (
-            <div className="w-full place-items-center">
-                <NoBoardgameMatch />
-            </div>
-        );
-    }
+    fetchProvider();
+  }, [bg]);
 
-    const mappedBoardgameType = boardgameTypes.reduce((acc: any, type: any) => {
-        acc[type.bg_type_id] = type.bg_type;
-        return acc;
-    }, {});
+  if (loading) {
+    return <GameDetailLoading />;
+  }
 
+  if (!bg) {
     return (
-        <div className="flex flex-col md:flex-row w-[90%] space-y-10 md:space-x-10 lg:space-x-20 justify-center self-center">
-            <GameDetailLeft boardgame={bg} provider={provider}/>
-            <GameDetailRight boardgame={bg} boardgame_type={mappedBoardgameType} provider={provider} />
-        </div>
+      <div className="w-full place-items-center">
+        <NoBoardgameMatch />
+      </div>
     );
+  }
+
+  const mappedBoardgameType = boardgameTypes.reduce((acc: any, type: any) => {
+    acc[type.bg_type_id] = type.bg_type;
+    return acc;
+  }, {});
+
+  return (
+    <div className="flex flex-col md:flex-row w-[90%] space-y-10 md:space-x-10 lg:space-x-20 justify-center self-center">
+      <GameDetailLeft boardgame={bg} provider={provider} />
+      <GameDetailRight
+        boardgame={bg}
+        boardgame_type={mappedBoardgameType}
+        provider={provider}
+      />
+    </div>
+  );
 }

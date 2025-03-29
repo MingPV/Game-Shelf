@@ -5,7 +5,6 @@ import HeartButton from "./heart-button";
 import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
 import { useDebouncedCallback } from "use-debounce";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 import { createRentalRequest } from "@/app/(rental-pages)/actions";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
@@ -41,13 +40,23 @@ export default function GameDetailLeft({
   }, 500);
 
   useEffect(() => {
-    const fetchMyData = async () => {
-      const fetchData = await getMyUserData();
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchData = async () => {
+      const { data: fetchData } = await fetchMyData();
       setMyData(fetchData);
       console.log(fetchData);
     };
 
-    fetchMyData();
+    fetchData();
     calculateTotalDate();
   }, [startDate, endDate]);
 
