@@ -1,12 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
+import { useEffect, useState } from "react";
 import { Dispute } from "@/app/types/admin";
-import { getAllReports } from "../actions";
 import ReportCard from "@/components/admin-pages/report-card";
 import { UserData } from "@/app/types/user";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 import MyReportCard from "@/components/admin-pages/my-report-card";
 
 export default function ReportList() {

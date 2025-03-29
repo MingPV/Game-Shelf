@@ -3,22 +3,16 @@
 import {
   banUserAction,
   createNotificationByUserId,
-  selectUserById,
 } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
-import { useEffect, useState, SetStateAction, Dispatch } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Dispute } from "@/app/types/admin";
-import {
-  updateReport,
-  updateReportVerdict,
-  updateTakeReport,
-} from "@/app/(admin-pages)/actions";
+import { updateReportVerdict } from "@/app/(admin-pages)/actions";
 import Link from "next/link";
 import { RentingRequest } from "@/app/types/game";
 import { selectRentalRequestById } from "@/app/(rental-pages)/actions";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function MyReportCard({
   dispute,
@@ -37,12 +31,22 @@ export default function MyReportCard({
   const [isRefund, setIsRefund] = useState(false);
   const [isBan, setIsBan] = useState(false);
 
-  const router = useRouter();
-
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchPlayer() {
-      const res = await selectUserById(dispute.reporter);
-      const res2 = await selectUserById(dispute.report_to);
+      const { data: res } = await fetchUserByID(dispute.reporter);
+      const { data: res2 } = await fetchUserByID(dispute.report_to);
       if (res.length > 0) {
         setReporter(res[0]);
       }
@@ -60,15 +64,6 @@ export default function MyReportCard({
     fetchPlayer();
     setProfileURL(reporter?.profilePicture || "/mock_provider.jpeg");
   }, []);
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0"); // Ensures two digits
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-based
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
 
   const handleSubmit = async () => {
     if (verdict == "") {
@@ -379,31 +374,6 @@ export default function MyReportCard({
                 <option value="365days">365 days</option>
               </select>
             </div>
-            {/* <Label className="col-span-1">Status : </Label> */}
-            {/* <div className="dropdown col-span-4 mr-auto">
-              <div
-                tabIndex={0}
-                role="button"
-                className={`m-1 text-white px-3 py-1 rounded-md 
-              ${status == "waiting" ? "bg-red-500" : ""} ${status == "considering" ? "bg-orange-500" : ""} ${status == "complete" ? "bg-green-500" : ""}`}
-              >
-                {status}
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-white rounded-box z-1 w-52 p-2 shadow-sm"
-              >
-                <li>
-                  <a onClick={() => setStatus("waiting")}>waiting</a>
-                </li>
-                <li>
-                  <a onClick={() => setStatus("considering")}>considering</a>
-                </li>
-                <li>
-                  <a onClick={() => setStatus("complete")}>complete</a>
-                </li>
-              </ul>
-            </div> */}
             <div className="col-span-5 font-bold">
               Verdict :{" "}
               <textarea

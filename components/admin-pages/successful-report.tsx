@@ -1,11 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SuccessfulCard from "./successful-card";
-import { Receipt } from "@/app/types/receipt";
 import LoadingCard from "../payment/income-history-loading";
-import { selectMyReceipts } from "@/app/(payment-pages)/actions";
-import { getAllReports } from "@/app/(admin-pages)/actions";
 import { Dispute } from "@/app/types/admin";
 
 export default function SuccessfulReportList() {
@@ -13,8 +10,18 @@ export default function SuccessfulReportList() {
   const [isLoadingReq, setIsLoadingReq] = useState(true);
 
   useEffect(() => {
+    const fetchAllReports = async (): Promise<{
+      data: Dispute[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/reports", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchReports() {
-      const res = await getAllReports();
+      const { data: res } = await fetchAllReports();
       setDisputes(res || []);
       setIsLoadingReq(false);
       let sum = 0;

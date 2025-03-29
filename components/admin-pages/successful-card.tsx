@@ -27,10 +27,22 @@ export default function SuccessfulCard({ dispute }: DisputeCardProps) {
   const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchUserData() {
-      const res = await selectUserById(dispute.admin_id);
-      const res2 = await selectUserById(dispute.reporter);
-      const res3 = await selectUserById(dispute.report_to);
+      const { data: res } = await fetchUserByID(dispute.admin_id);
+      const { data: res2 } = await fetchUserByID(dispute.reporter);
+      const { data: res3 } = await fetchUserByID(dispute.report_to);
       if (res.length > 0) {
         setAdmin(res[0]);
       }
@@ -44,17 +56,7 @@ export default function SuccessfulCard({ dispute }: DisputeCardProps) {
       }
     }
 
-    // async function fetchBoardgame() {
-    //   const res = await selectBoardgameByReceiptId(dispute.id);
-    //   setBoardgame(res);
-    //   console.log("Banana1123");
-    //   console.log(res);
-    // }
-
-    // fetchPlayer();
-    // fetchBoardgame();
     fetchUserData();
-    // setProfileURL(customer?.profilePicture || "/mock_provider.jpeg");
   }, []);
 
   function formatDateRange(endDateStr: string): string {
