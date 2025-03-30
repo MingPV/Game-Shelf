@@ -7,39 +7,23 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 
 export default function AuthButton() {
-  // const supabase = await createClient();
-
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
-
-  // let profile_url =
-  //   "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
-
-  // const { data: user_data, error } = await supabase
-  //   .from("users")
-  //   .select("*")
-  //   .eq("uid", user?.id);
-
-  // let isProvider = false;
-
-  // if (user_data) {
-  //   if (user_data[0].profilePicture) {
-  //     profile_url = user_data[0].profilePicture;
-  //   }
-  //   if (user_data[0].isProvider) {
-  //     isProvider = true;
-  //   }
-  // }
-
   const [myData, setMyData] = useState<UserData | null>(null);
 
   useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchData = async () => {
-      const fetchData = await getMyUserData();
+      const { data: fetchData } = await fetchMyData();
 
       setMyData(fetchData);
     };

@@ -1,7 +1,6 @@
 "use client";
 
 import { BoardgameItems } from "@/components/payment/to-pay-item";
-import { selectMyToPayBoardGame } from "@/app/(payment-pages)/actions";
 import { useEffect, useState, useCallback } from "react";
 import { UserData } from "@/app/types/user";
 import Skeleton from "./skeleton";
@@ -11,14 +10,24 @@ export default function ToPayList() {
   const [isFetching, setIsFetching] = useState(true);
 
   const fetchUserData = useCallback(async () => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     setIsFetching(true);
 
-    const user_data = await selectMyToPayBoardGame();
+    const { data: user_data } = await fetchMyData();
     //console.log("Fetched data:", user_data);
 
-    if (user_data && user_data.length > 0) {
+    if (user_data) {
       //console.log("Fetched UID:", user_data[0]?.uid);
-      setUserData(user_data[0]);
+      setUserData(user_data);
     }
 
     setIsFetching(false);

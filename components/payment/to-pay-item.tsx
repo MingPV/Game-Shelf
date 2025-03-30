@@ -4,7 +4,6 @@ import { toPayRentingRequest } from "@/app/types/game";
 import BoardGameCard from "./to-pay-card";
 import Skeleton from "./skeleton";
 import { useDebouncedCallback } from "use-debounce";
-import { selectToPayBoardGameById } from "@/app/(payment-pages)/actions";
 
 export function BoardgameItems({ player_id }: { player_id: string }) {
   const [boardgames, setBoardgames] = useState<toPayRentingRequest[]>([]);
@@ -12,12 +11,27 @@ export function BoardgameItems({ player_id }: { player_id: string }) {
   const [isFetching, setIsFetching] = useState(true);
   const [haveBoardgame, setHaveBoardgame] = useState<Boolean>(true);
 
+  const fetchToPay = async (
+    player_id: string
+  ): Promise<{
+    data: toPayRentingRequest[];
+    token: string;
+  }> => {
+    const queryString = new URLSearchParams({
+      player_id: player_id,
+    }).toString();
+    const res = await fetch(`/api/payment/toPay?${queryString}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
     //console.log("player_id: ", player_id);
 
-    const data = await selectToPayBoardGameById(player_id);
+    const { data } = await fetchToPay(player_id);
     console.log(data);
 
     setBoardgames(data || []);

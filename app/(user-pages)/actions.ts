@@ -217,21 +217,13 @@ export const selectProviderBoardgameByFilterAction = async (
   return { data, count };
 };
 
-export const getLast9Notifications = async () => {
+export const getLast9Notifications = async (userId: string) => {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return;
-  }
 
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
-    .eq("receiver_id", user.id) //comment this on test
+    .eq("receiver_id", userId) //comment this on test
     .order("created_at", { ascending: false }) // Ensure latest notifications are fetched first
     .limit(9); // Safer than range(0, 9)
 
@@ -266,21 +258,13 @@ export const updateReadNotification = async () => {
   return data;
 };
 
-export const getAllNotifications = async () => {
+export const getAllNotifications = async (userId: string) => {
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return;
-  }
 
   const { data, error } = await supabase
     .from("notifications")
     .select("*")
-    .eq("receiver_id", user.id)
+    .eq("receiver_id", userId)
     .order("created_at", { ascending: false }); // Ensure latest notifications are fetched first
 
   if (error) {

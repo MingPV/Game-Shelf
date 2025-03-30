@@ -15,15 +15,17 @@ export default function ReviewTag({
   initialScore,
   bg,
   rental_id,
+  userData,
 }: {
   initialScore: number | null;
   bg: Boardgame;
   rental_id: number;
+  userData: UserData;
 }) {
   const [score, setScore] = useState(initialScore);
   const [openDialog, setOpenDialog] = useState(false);
   const [rating, setRating] = useState(5);
-  const [myData, setMyData] = useState<UserData>();
+  const [myData, setMyData] = useState<UserData>(userData);
   const [isSending, setIsSending] = useState(false);
   const [comment, setComment] = useState("");
 
@@ -40,13 +42,16 @@ export default function ReviewTag({
 
   useEffect(() => {
     // Adjust height on window resize
-    const fetchMyData = async () => {
-      const fetchData = await getMyUserData();
-      setMyData(fetchData);
-      console.log(fetchData);
-    };
+    // const fetchMyData = async () => {
+    //   const fetchData = await getMyUserData();
+    //   setMyData(fetchData);
+    //   console.log(fetchData);
+    // };
 
-    fetchMyData();
+    // fetchMyData();
+
+    setMyData(userData);
+
     window.addEventListener("resize", adjustHeight);
     return () => window.removeEventListener("resize", adjustHeight);
   }, []);

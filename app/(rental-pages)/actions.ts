@@ -129,15 +129,15 @@ export const selectPlayerRentingRequest = async () => {
     redirect("/sign-in");
   }
 
-  const { data: user_data, error: getUserError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("uid", user?.id);
+  // const { data: user_data, error: getUserError } = await supabase
+  //   .from("users")
+  //   .select("*")
+  //   .eq("uid", user?.id);
 
-  if (getUserError) {
-    console.log(getUserError);
-    throw new Error("Failed to fetch user");
-  }
+  // if (getUserError) {
+  //   console.log(getUserError);
+  //   throw new Error("Failed to fetch user");
+  // }
 
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
@@ -388,7 +388,11 @@ export const updateUserRentalSuccess = async (rental_id: number) => {
   return updateData;
 };
 
-export const addImagetoRentalRequest = async (img: File, tag: string, request_id: number) => {
+export const addImagetoRentalRequest = async (
+  img: File,
+  tag: string,
+  request_id: number
+) => {
   const supabase = await createClient();
 
   // const {
@@ -415,16 +419,15 @@ export const addImagetoRentalRequest = async (img: File, tag: string, request_id
       return;
     }
 
-    publicImageURL = supabase.storage
-      .from("evidence")
-      .getPublicUrl(randomName).data.publicUrl;
+    publicImageURL = supabase.storage.from("evidence").getPublicUrl(randomName)
+      .data.publicUrl;
 
     console.log("evidence:", publicImageURL);
   }
 
   const { data, error } = await supabase
     .from("rental_requests")
-    .update({ 
+    .update({
       [tag]: publicImageURL,
       [tag + "_timestamp"]: new Date().toISOString(),
     })

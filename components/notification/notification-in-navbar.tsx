@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  getLast9Notifications,
-  updateReadNotification,
-} from "@/app/(user-pages)/actions";
+import { updateReadNotification } from "@/app/(user-pages)/actions";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { IoNotifications } from "react-icons/io5";
@@ -17,8 +14,18 @@ export default function NotificationInNavbar() {
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
+    const fetchLast9Notifications = async (): Promise<{
+      data: Notification[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/notifications/newest/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchNotifications = async () => {
-      const fetchData = await getLast9Notifications();
+      const { data: fetchData } = await fetchLast9Notifications();
       setNotifications(fetchData);
       let countUnRead = 0;
       fetchData?.forEach((element) => {

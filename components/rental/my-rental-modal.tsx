@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, SetStateAction } from "react";
 import { addImagetoRentalRequest } from "@/app/(rental-pages)/actions";
 import { useState } from "react";
@@ -19,7 +21,7 @@ export default function MyRentalModal({
     if (img == null) return;
 
     setShowModal(false);
-    
+
     if (tag == "before_ship" || tag == "after_return") setTag("done");
 
     await addImagetoRentalRequest(img, tag, request_id);
@@ -33,7 +35,7 @@ export default function MyRentalModal({
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
-      onClick={() => setShowModal(false)} 
+      onClick={() => setShowModal(false)}
     >
       <div
         className="fixed inset-0 bg-gray-500/75 transition-opacity"
@@ -42,7 +44,7 @@ export default function MyRentalModal({
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full justify-center p-4 text-center items-center">
-          <form 
+          <form
             className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
             onClick={(e) => e.stopPropagation()}
           >
