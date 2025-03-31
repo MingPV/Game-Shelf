@@ -1,7 +1,6 @@
 "use client";
 
 import { selectBoardgameByReceiptId } from "@/app/(payment-pages)/actions";
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { Boardgame } from "@/app/types/game";
 import { Receipt } from "@/app/types/receipt";
 import { UserData } from "@/app/types/user";
@@ -18,15 +17,46 @@ export default function ReceiptCard({ receipt }: ReceiptCardProps) {
   const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchBoardgameByReceipt = async (
+      receipt_id: string
+    ): Promise<{
+      data: Boardgame;
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        receipt_id: receipt_id,
+      }).toString();
+
+      const res = await fetch(`/api/boardgames/receiptId?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchPlayer() {
-      const res = await selectUserById(receipt.customer_id);
+      const { data: res } = await fetchUserByID(receipt.customer_id);
       if (res.length > 0) {
         setCustomer(res[0]);
       }
     }
 
     async function fetchBoardgame() {
-      const res = await selectBoardgameByReceiptId(receipt.id);
+      // const res = await selectBoardgameByReceiptId(receipt.id);
+      const { data: res } = await fetchBoardgameByReceipt(
+        receipt.id.toString()
+      );
       setBoardgame(res);
       console.log("Banana1123");
       console.log(res);

@@ -1,10 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReceiptCard from "./income-history-card";
 import { Receipt } from "@/app/types/receipt";
 import LoadingCard from "./income-history-loading";
-import { selectMyReceipts } from "@/app/(payment-pages)/actions";
 
 export default function IncomeHistoryList() {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
@@ -12,8 +11,19 @@ export default function IncomeHistoryList() {
   const [sumReceive, setSumReceive] = useState(0);
 
   useEffect(() => {
+    const fetchMyReceipt = async (): Promise<{
+      data: Receipt[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/receipts/income", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchReceipt() {
-      const res = await selectMyReceipts();
+      //
+      const { data: res } = await fetchMyReceipt();
       setReceipts(res || []);
       setIsLoadingReq(false);
       let sum = 0;
