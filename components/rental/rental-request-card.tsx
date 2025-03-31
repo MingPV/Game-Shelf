@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  selectGameAction,
-  updateBaordgameStatus,
-} from "@/app/(game-pages)/actions";
+import { updateBaordgameStatus } from "@/app/(game-pages)/actions";
 import {
   deleteRentingRequest,
   updateRentingRequestStatus,
 } from "@/app/(rental-pages)/actions";
-import {
-  createNotificationByUserId,
-  selectUserById,
-} from "@/app/(user-pages)/actions";
+import { createNotificationByUserId } from "@/app/(user-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
 import Link from "next/link";
@@ -40,12 +34,32 @@ export default function RequestCard({
   const [providerData, setProviderData] = useState(provider);
 
   useEffect(() => {
-    //   if (params.users.profilePicture) {
-    //     setProfileURL(params.users.profilePicture);
-    //   }
+    const fetchBoardgameById = async (
+      boardgameID: Number
+    ): Promise<{
+      data: Boardgame;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/boardgames/${boardgameID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
 
     async function fetchBoardgame() {
-      const res = await selectGameAction(rentalRequest.bg_id);
+      const { data: res } = await fetchBoardgameById(rentalRequest.bg_id);
       setBoardgame(res);
 
       const startDate = new Date(rentalRequest.start_date);
@@ -62,7 +76,7 @@ export default function RequestCard({
     }
 
     async function fetchPlayer() {
-      const res = await selectUserById(rentalRequest.customer_id);
+      const { data: res } = await fetchUserByID(rentalRequest.customer_id);
       if (res.length > 0) {
         setCustomer(res[0]);
       }

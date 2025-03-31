@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import RequestCard from "./rental-request-card";
 import { RentingRequest } from "@/app/types/game";
-import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
 import LoadingCard from "./rental-request-loading";
 import { UserData } from "@/app/types/user";
 
@@ -11,7 +10,6 @@ export default function RentalRequestList() {
   const [myData, setMyData] = useState<UserData>();
   const [requests, setRequests] = useState<RentingRequest[]>([]);
   const [isLoadingReq, setIsLoadingReq] = useState(true);
-  const [isLoadingPrice, setIsLoadingPrice] = useState(true);
 
   useEffect(() => {
     const fetchMyData = async (): Promise<{
@@ -24,8 +22,17 @@ export default function RentalRequestList() {
       return res.json();
     };
 
+    const fetchMyRequest = async (): Promise<{
+      data: RentingRequest[];
+    }> => {
+      const res = await fetch("/api/rental/requests", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchData() {
-      const res = await selectMyRentingRequest();
+      const { data: res } = await fetchMyRequest();
       const { data: res2 } = await fetchMyData();
       setRequests(res || []);
       setMyData(res2);
