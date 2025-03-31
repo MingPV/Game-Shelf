@@ -164,7 +164,11 @@ export const createRentalRequest = async (
   return { data, error };
 };
 
-export const selectMyRentingRequestByStatus = async (formData: FormData) => {
+export const selectMyRentingRequestByStatus = async (
+  status: string,
+  month: string,
+  year: string
+) => {
   const supabase = await createClient();
 
   const {
@@ -175,9 +179,9 @@ export const selectMyRentingRequestByStatus = async (formData: FormData) => {
     redirect("/sign-in");
   }
 
-  const status = formData.get("status")?.toString();
-  const month = formData.get("month")?.toString() || "undefined";
-  const year = formData.get("year")?.toString() || "undefined";
+  // const status = formData.get("status")?.toString();
+  // const month = formData.get("month")?.toString() || "undefined";
+  // const year = formData.get("year")?.toString() || "undefined";
 
   if (month !== "undefined" && year !== "undefined") {
     const curMonth = parseInt(month) + 1;
@@ -225,16 +229,6 @@ export const selectMyRentingRequestByStatus = async (formData: FormData) => {
     console.log(`${nextYear}-${nextMonth.toString().padStart(2, "0")}-01`);
     console.log("----------------------------------------------------");
     return rentalRequests;
-  }
-
-  const { data: user_data, error: getUserError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("uid", user?.id);
-
-  if (getUserError) {
-    console.log(getUserError);
-    throw new Error("Failed to fetch user");
   }
 
   const { data: rentalRequests, error } = await supabase

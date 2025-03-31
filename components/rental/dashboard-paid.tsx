@@ -1,9 +1,5 @@
 "use client";
-import {
-  selectMyRentingRequestByStatus,
-  selectRentalRequestUnpaid,
-  cancelMultipleInvoices,
-} from "@/app/(rental-pages)/actions";
+import { cancelMultipleInvoices } from "@/app/(rental-pages)/actions";
 import { Invoice } from "@/app/types/game";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -103,10 +99,20 @@ export function DashBoardPaid() {
   };
 
   useEffect(() => {
+    const fetchUnpaid = async (): Promise<{
+      data: Invoice[];
+      token: string;
+    }> => {
+      const res = await fetch("/api/rental/unpaid", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchRequests = async () => {
       const formData = new FormData();
       formData.append("status", status);
-      const data = await selectRentalRequestUnpaid();
+      const { data } = await fetchUnpaid();
       setRecords(data);
       console.log(data);
 
