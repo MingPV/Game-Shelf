@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  selectMyRentingRequestByStatus2,
   updateRentingRequestStatus,
   updateUserRentalSuccess,
 } from "@/app/(rental-pages)/actions";
@@ -50,9 +49,21 @@ export default function RentingShippingCard({
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [tag, setTag] = useState<string>("");
 
+  const fetchRentalByStatus = async (
+    rentalStatus: string
+  ): Promise<{
+    data: RentingRequestJoinBoardgameJoinCustomer[];
+    token: string;
+  }> => {
+    const res = await fetch(`/api/rental/requests/${rentalStatus}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
   useEffect(() => {
     async function fetchData() {
-      const res = await selectMyRentingRequestByStatus2(status);
+      const { data: res } = await fetchRentalByStatus(status);
       setRequests(res || []);
       setIsLoading(false);
     }
@@ -64,7 +75,8 @@ export default function RentingShippingCard({
     if (selectedId == null) return;
     const selectedRequest = requests.find((r) => r.id === selectedId);
     setRequests((prev) => prev.filter((r) => r.id !== selectedId));
-    if (setNextRequest && selectedRequest) setNextRequest((prev) => [...prev, selectedRequest]);
+    if (setNextRequest && selectedRequest)
+      setNextRequest((prev) => [...prev, selectedRequest]);
     updateRentingRequestStatus(selectedId, nextStatus);
     if (status == "renting") {
       updateUserRentalSuccess(selectedId);
@@ -87,7 +99,9 @@ export default function RentingShippingCard({
                   <th className="hidden sm:table-cell"></th>
                   <th>Boardgame</th>
                   <th className="hidden sm:table-cell">Username</th>
-                  <th>{status == "reserved" ? "Ship within" : "Return date"}</th>
+                  <th>
+                    {status == "reserved" ? "Ship within" : "Return date"}
+                  </th>
                   <th></th>
                 </tr>
               </thead>
@@ -114,17 +128,21 @@ export default function RentingShippingCard({
                         {item.customer.username}
                       </Link>
                     </td>
-                    <td>{
-                      status === "reserved"
+                    <td>
+                      {status === "reserved"
                         ? dateFormatter.format(new Date(item.start_date))
-                        : dateFormatter.format(new Date(item.end_date))
-                    }</td>
+                        : dateFormatter.format(new Date(item.end_date))}
+                    </td>
                     <th>
                       <button
                         className="btn bg-gs_purple_gradient hover:bg-opacity-60 border-none min-h-7 h-7 lg:min-h-7 lg:h-7 px-2"
                         onClick={() => {
                           setSelectedId(item.id);
-                          setTag(status === "reserved" ? "before_ship" : "after_return");
+                          setTag(
+                            status === "reserved"
+                              ? "before_ship"
+                              : "after_return"
+                          );
                           setShowModal(true);
                         }}
                       >
@@ -136,7 +154,6 @@ export default function RentingShippingCard({
               </tbody>
             </table>
           </div>
-
         </div>
       ) : isLoading ? (
         <RentingShippingLoading />

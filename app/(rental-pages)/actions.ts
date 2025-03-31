@@ -38,18 +38,6 @@ export const selectMyRentingRequestByStatus2 = async (status: string) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: user_data, error: getUserError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("uid", user?.id);
-
-  if (getUserError) {
-    console.log(getUserError);
-    throw new Error("Failed to fetch user");
-  }
-
-  console.log("provider_id:", user?.id);
-
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
     .select(
