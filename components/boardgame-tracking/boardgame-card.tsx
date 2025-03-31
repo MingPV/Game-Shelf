@@ -1,11 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Boardgame, RentingRequest } from "@/app/types/game";
+import { useState } from "react";
+import { Boardgame, Boardgame_type, RentingRequest } from "@/app/types/game";
 import ModalUpdateBg from "../inventory/modal-update-bg";
 import DeleteBoardgame from "../inventory/delete-bg";
 import { TbCurrencyBaht } from "react-icons/tb";
-import { StatusTracking } from "../inventory/status-tracking";
-import { selectLatestBoardgameRequestById } from "@/app/(user-pages)/actions";
 
 type BoardgameType = {
   [key: string]: string;
@@ -14,32 +12,15 @@ type BoardgameType = {
 export default function BoardGameCard({
   boardgame,
   boardgame_type,
+  boardgame_types,
 }: {
   boardgame: Boardgame;
   boardgame_type: BoardgameType;
+  boardgame_types: Boardgame_type[];
 }) {
   const [boardgameData, setBoardgameData] = useState(boardgame);
   const isAvailable = boardgameData.status === "available";
-  const [showProgess, setShowProgess] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
-  const [rentingRequest, setRentingRequest] = useState<RentingRequest[]>([]);
-  const [canShow, setCanShow] = useState(false);
-
-  const getRentingRequest = async () => {
-    const renting_req = await selectLatestBoardgameRequestById(
-      boardgameData.id
-    );
-    setCanShow(true);
-    setRentingRequest(renting_req);
-  };
-
-  useEffect(() => {
-    if (!isAvailable) {
-      getRentingRequest();
-    } else {
-      setCanShow(true);
-    }
-  }, [isAvailable]);
 
   return (
     <div
@@ -60,12 +41,7 @@ export default function BoardGameCard({
           </p>
 
           <button
-            className={`rounded-lg px-5 py-2 transition-transform transform ${isAvailable ? "bg-gs_green" : "bg-gs_red/60"} hover:opacity-80 ${!canShow ? "btn-disabled" : ""}`}
-            onClick={() => {
-              !isAvailable
-                ? setShowProgess(!showProgess)
-                : setShowProgess(false);
-            }}
+            className={`rounded-lg px-5 py-2 transition-transform transform ${isAvailable ? "bg-gs_green" : "bg-gs_red/60"} hover:opacity-80 `}
           >
             {boardgameData.status}
           </button>
@@ -132,20 +108,11 @@ export default function BoardGameCard({
           </div>
         </div>
 
-        <div
-          className={`transition-all duration-500 ease-in-out ${
-            showProgess
-              ? "max-h-screen opacity-100 scale-100 translate-y-0"
-              : "max-h-0 opacity-0 "
-          }`}
-        >
-          {showProgess && <StatusTracking rentingRequest={rentingRequest} />}
-        </div>
-
         <div className="flex justify-center md:justify-end gap-2">
           <ModalUpdateBg
             boardgame={boardgameData}
             setBoardgameData={setBoardgameData}
+            boardgame_types={boardgame_types}
             key={boardgameData.id}
           />
           <DeleteBoardgame boardgameId={boardgameData.id} />

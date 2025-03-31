@@ -6,10 +6,7 @@ import { UserData } from "@/app/types/user";
 import { IoIosArrowForward } from "react-icons/io";
 import ReviewCard from "@/components/home/review-card";
 import ProfileUsernameForm from "@/components/profile/provider-username";
-import {
-  selectProviderBoardgameByFilterAction,
-  selectReviewByProviderId,
-} from "../../actions";
+import { selectReviewByProviderId } from "../../actions";
 import BoardgameCard from "@/components/home/boardgame-card";
 import { BoardgameLoadingCard } from "@/components/home/boardgame-card";
 import LastBoardgameCard from "@/components/home/last-boardgame-card";
@@ -29,6 +26,26 @@ export default function Home() {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
 
   useEffect(() => {
+    const fetchProviderBoardgame = async (
+      searchValue: string,
+      provider_id: string,
+      selectedTypeFilter: string[]
+    ): Promise<{
+      data: Boardgame[];
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        searchValue: searchValue,
+        provider_id: provider_id,
+        selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+      }).toString();
+
+      const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchInfo = async () => {
       if (username) {
         try {
@@ -39,8 +56,14 @@ export default function Home() {
           setIsLoading(false);
           console.log(fetchData); // Log the fetched data
 
-          const { data: fetchBoardgame } =
-            await selectProviderBoardgameByFilterAction("", fetchData.uid, []);
+          const { data: fetchBoardgame } = await fetchProviderBoardgame(
+            "",
+            fetchData.uid,
+            []
+          );
+
+          console.log("testming");
+          console.log(fetchBoardgame);
 
           setBoardgames(fetchBoardgame);
           setIsLoadingBoardgame(false);

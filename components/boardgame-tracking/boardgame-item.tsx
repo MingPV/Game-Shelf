@@ -1,13 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { selectAllBoardgameType } from "@/app/(game-pages)/actions";
-import {
-  getMyUserData,
-  selectProviderBoardgameByFilterAction,
-} from "@/app/(user-pages)/actions";
 import { Boardgame, Boardgame_type } from "@/app/types/game";
 import { Input } from "../ui/input";
-import TypeFilter from "../search-game/type-filter";
 import BoardGameCard from "./boardgame-card";
 import Skeleton from "./skeleton";
 import Link from "next/link";
@@ -28,11 +22,51 @@ export function BoardgameItems() {
 
   const [isFirstFetch, setIsFirstFetch] = useState(true);
 
+  const fetchMyData = async (): Promise<{
+    data: UserData;
+    token: string;
+  }> => {
+    const res = await fetch("/api/users/me", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchTypes = async (): Promise<{
+    data: Boardgame_type[];
+    token: string;
+  }> => {
+    const res = await fetch("/api/boardgames/types", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
+  const fetchProviderBoardgame = async (
+    searchValue: string,
+    provider_id: string,
+    selectedTypeFilter: string[]
+  ): Promise<{
+    data: Boardgame[];
+    token: string;
+  }> => {
+    const queryString = new URLSearchParams({
+      searchValue: searchValue,
+      provider_id: provider_id,
+      selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+    }).toString();
+
+    const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
+  };
+
   const fetchGames = useDebouncedCallback(async () => {
     setIsFetching(true);
 
     if (provider) {
-      const { data, count } = await selectProviderBoardgameByFilterAction(
+      const { data } = await fetchProviderBoardgame(
         searchValue,
         provider?.uid || "",
         selectedTypeFilter
@@ -48,13 +82,13 @@ export function BoardgameItems() {
     setIsFetching(true);
     setIsFirstFetch(false);
 
-    const fetchUserData = await getMyUserData();
+    const { data: fetchUserData } = await fetchMyData();
     setProvider(fetchUserData);
 
     console.log("fetchUserData");
     console.log(fetchUserData);
 
-    const { data, count } = await selectProviderBoardgameByFilterAction(
+    const { data } = await fetchProviderBoardgame(
       searchValue,
       fetchUserData.uid,
       selectedTypeFilter
@@ -66,7 +100,7 @@ export function BoardgameItems() {
   };
 
   const getBoardgameType = async () => {
-    const data = await selectAllBoardgameType();
+    const { data } = await fetchTypes();
 
     setBoardgameTypes(data);
   };
@@ -121,25 +155,7 @@ export function BoardgameItems() {
               Clear
             </button>
           </div>
-          <div className="flex flex-row relative  justify-end gap-2 items-start">
-            {/* <TypeFilter
-              selectedType={selectedTypeFilter}
-              boardgame_type={boardgameTypes}
-              handleChange={(value: string[]) => {
-                setSelectedTypeFilter(value);
-                setFiltered(true);
-              }}
-            />
-            <div className="flex flex-row flex-wrap gap-2 items-end">
-              {selectedTypeFilter?.map((type, index) => {
-                return (
-                  <p key={index} className="px-2 py-1 text-xs bg-gs_white/20">
-                    {mapped_boardgame_type[type]}
-                  </p>
-                );
-              })}
-            </div> */}
-          </div>
+          <div className="flex flex-row relative  justify-end gap-2 items-start"></div>
         </div>
 
         {isFetching ? (
@@ -184,6 +200,7 @@ export function BoardgameItems() {
                     key={index}
                     boardgame={boardgame}
                     boardgame_type={mapped_boardgame_type}
+                    boardgame_types={boardgameTypes}
                   />
                 ))}
               </div>

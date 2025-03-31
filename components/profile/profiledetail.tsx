@@ -1,6 +1,5 @@
 "use client";
 import ProfileHeader from "@/components/profile/profile-header";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 import User from "@/components/profile/user";
 import Provider from "@/components/profile/provider";
 import { useEffect, useState } from "react";
@@ -16,8 +15,18 @@ export default function ProfileDetail() {
   const router = useRouter();
 
   useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchRequest() {
-      const res = await getMyUserData();
+      const { data: res } = await fetchMyData();
       setData(res);
       if (res?.profilePicture) {
         setProfileURL(res.profilePicture);

@@ -1,10 +1,6 @@
 "use client";
 import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
-import {
-  getMyUserData,
-  selectProviderBoardgameByFilterAction,
-  selectReviewByProviderId,
-} from "@/app/(user-pages)/actions";
+import { selectReviewByProviderId } from "@/app/(user-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import { ReviewData } from "@/app/types/review";
 import { UserData } from "@/app/types/user";
@@ -31,11 +27,41 @@ export function ProviderManage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fetchUserData = await getMyUserData();
+      const fetchProviderBoardgame = async (
+        searchValue: string,
+        provider_id: string,
+        selectedTypeFilter: string[]
+      ): Promise<{
+        data: Boardgame[];
+        token: string;
+      }> => {
+        const queryString = new URLSearchParams({
+          searchValue: searchValue,
+          provider_id: provider_id,
+          selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+        }).toString();
+
+        const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const fetchMyData = async (): Promise<{
+        data: UserData;
+        token: string;
+      }> => {
+        const res = await fetch("/api/users/me", {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const { data: fetchUserData } = await fetchMyData();
       setProvider(fetchUserData);
 
       if (fetchUserData) {
-        const { data: fetchData } = await selectProviderBoardgameByFilterAction(
+        const { data: fetchData } = await fetchProviderBoardgame(
           "",
           fetchUserData.uid,
           []

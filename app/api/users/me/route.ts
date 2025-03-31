@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getMyUserData } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";

@@ -1,12 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import RequestCard from "./rental-request-card";
 import { RentingRequest } from "@/app/types/game";
 import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
 import LoadingCard from "./rental-request-loading";
 import { UserData } from "@/app/types/user";
-import { getMyUserData } from "@/app/(user-pages)/actions";
 
 export default function RentalRequestList() {
   const [myData, setMyData] = useState<UserData>();
@@ -15,9 +14,19 @@ export default function RentalRequestList() {
   const [isLoadingPrice, setIsLoadingPrice] = useState(true);
 
   useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchData() {
       const res = await selectMyRentingRequest();
-      const res2 = await getMyUserData();
+      const { data: res2 } = await fetchMyData();
       setRequests(res || []);
       setMyData(res2);
       setIsLoadingReq(false);

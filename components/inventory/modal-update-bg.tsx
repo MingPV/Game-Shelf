@@ -12,9 +12,11 @@ import { Label } from "../ui/label";
 export default function ModalUpdateBg({
   boardgame,
   setBoardgameData,
+  boardgame_types,
 }: {
   boardgame: Boardgame;
   setBoardgameData: Dispatch<SetStateAction<Boardgame>>;
+  boardgame_types: Boardgame_type[];
 }) {
   const [name, setName] = useState<string>(boardgame.bg_name);
   const [description, setDescription] = useState<string>(boardgame.description);
@@ -23,7 +25,8 @@ export default function ModalUpdateBg({
     boardgame.quantity?.toString()
   );
   const [picture, setPicture] = useState<File>();
-  const [boardgameTypes, setBoardgameTypes] = useState<Boardgame_type[]>([]);
+  const [boardgameTypes, setBoardgameTypes] =
+    useState<Boardgame_type[]>(boardgame_types);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]); // Track selected types
   const modalId = `my_modal_6_${boardgame.id}`;
   const [img, setImg] = useState<string>(boardgame.bg_picture);
@@ -104,10 +107,20 @@ export default function ModalUpdateBg({
     });
   };
 
-  const getBoardgameType = async () => {
-    const data = await selectAllBoardgameType();
-    setBoardgameTypes(data);
+  const fetchTypes = async (): Promise<{
+    data: Boardgame_type[];
+    token: string;
+  }> => {
+    const res = await fetch("/api/boardgames/types", {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+    return res.json();
   };
+
+  // const getBoardgameType = async () => {
+  //   const { data } = await fetchTypes();
+  //   setBoardgameTypes(data);
+  // };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
@@ -121,7 +134,7 @@ export default function ModalUpdateBg({
   };
 
   useEffect(() => {
-    getBoardgameType();
+    // getBoardgameType();
     // Set selected types from the existing boardgame
     setSelectedTypes(boardgame.types);
   }, [boardgame]);

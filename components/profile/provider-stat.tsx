@@ -7,12 +7,10 @@ import { UserData } from "@/app/types/user";
 import { ReviewData } from "@/app/types/review";
 import { useState, useEffect } from "react";
 import {
-  getMyUserData,
   selectReceiptsByProviderId,
   selectReviewByProviderId,
 } from "@/app/(user-pages)/actions";
 import { Boardgame } from "@/app/types/game";
-import { selectProviderBoardgameByFilterAction } from "@/app/(user-pages)/actions";
 import { Receipt } from "@/app/types/receipt";
 
 export default function ProviderStat({ user }: { user: UserData }) {
@@ -21,9 +19,29 @@ export default function ProviderStat({ user }: { user: UserData }) {
   const [receiptAmount, setReceiptAmount] = useState<number>(0);
 
   useEffect(() => {
+    const fetchProviderBoardgame = async (
+      searchValue: string,
+      provider_id: string,
+      selectedTypeFilter: string[]
+    ): Promise<{
+      data: Boardgame[];
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        searchValue: searchValue,
+        provider_id: provider_id,
+        selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+      }).toString();
+
+      const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchBoardgame = async () => {
       try {
-        const { data: fetchData } = await selectProviderBoardgameByFilterAction(
+        const { data: fetchData } = await fetchProviderBoardgame(
           "",
           user.uid,
           []

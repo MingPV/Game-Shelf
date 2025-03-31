@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import {
   createReviewAction,
-  getMyUserData,
   selectUserById,
   updateProviderRating,
   updateRentalRequestRating,
@@ -41,15 +40,6 @@ export default function ReviewTag({
   };
 
   useEffect(() => {
-    // Adjust height on window resize
-    // const fetchMyData = async () => {
-    //   const fetchData = await getMyUserData();
-    //   setMyData(fetchData);
-    //   console.log(fetchData);
-    // };
-
-    // fetchMyData();
-
     setMyData(userData);
 
     window.addEventListener("resize", adjustHeight);
