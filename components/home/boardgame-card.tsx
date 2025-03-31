@@ -1,7 +1,6 @@
 "use client";
 
 import { Boardgame } from "@/app/types/game";
-import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 

@@ -1,12 +1,9 @@
 "use client";
-import { selectMyRentingRequest } from "@/app/(rental-pages)/actions";
-import { selectReviewByProviderId } from "@/app/(user-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import { ReviewData } from "@/app/types/review";
 import { UserData } from "@/app/types/user";
 import { useEffect, useState } from "react";
 import BoardgameCard, { BoardgameLoadingCard } from "./boardgame-card";
-import RentalCard from "./rental-card";
 import RequestCard from "./request-card";
 import ReviewCard from "./review-card";
 import LastBoardgameCard from "./last-boardgame-card";
@@ -26,6 +23,21 @@ export function ProviderManage() {
   const [countPendingRequest, setCountPendingRequest] = useState(0);
 
   useEffect(() => {
+    const fetchProviderReview = async (
+      provider_id: string
+    ): Promise<{
+      data: ReviewData[];
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        provider_id: provider_id,
+      }).toString();
+
+      const res = await fetch(`/api/reviews/provider?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
     const fetchData = async () => {
       const fetchProviderBoardgame = async (
         searchValue: string,
@@ -42,6 +54,15 @@ export function ProviderManage() {
         }).toString();
 
         const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const fetchMyRequest = async (): Promise<{
+        data: RentingRequest[];
+      }> => {
+        const res = await fetch("/api/rental/requests", {
           next: { revalidate: 3600 }, // Cache for 1 hour
         });
         return res.json();
@@ -70,7 +91,7 @@ export function ProviderManage() {
         setBoardgames(fetchData);
         setIsLoadingBoardgame(false);
 
-        const rentalsData = await selectMyRentingRequest();
+        const { data: rentalsData } = await fetchMyRequest();
         setRentalRequests(rentalsData || []);
         setIsLoadingRental(false);
 
@@ -81,7 +102,9 @@ export function ProviderManage() {
           }
         });
 
-        const reviewsData = await selectReviewByProviderId(fetchUserData.uid);
+        const { data: reviewsData } = await fetchProviderReview(
+          fetchUserData.uid
+        );
 
         setReviews(reviewsData);
         setIsLoadingReview(false);

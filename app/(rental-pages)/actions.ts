@@ -18,16 +18,6 @@ export const selectMyRentingRequest = async () => {
     redirect("/sign-in");
   }
 
-  const { data: user_data, error: getUserError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("uid", user?.id);
-
-  if (getUserError) {
-    console.log(getUserError);
-    throw new Error("Failed to fetch user");
-  }
-
   const { data: rental_requests, error: getRequestsError } = await supabase
     .from("rental_requests")
     .select("*")

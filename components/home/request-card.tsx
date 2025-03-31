@@ -1,6 +1,5 @@
 "use client";
 
-import { selectGameAction } from "@/app/(game-pages)/actions";
 import { Boardgame, RentingRequest } from "@/app/types/game";
 import React, { useEffect, useState } from "react";
 
@@ -29,8 +28,20 @@ export default function RequestCard({ requestData }: RentalCardProps) {
   }
 
   useEffect(() => {
+    const fetchBoardgameById = async (
+      boardgameID: Number
+    ): Promise<{
+      data: Boardgame;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/boardgames/${boardgameID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchBoardgame = async () => {
-      const fetchData = await selectGameAction(requestData.bg_id);
+      const { data: fetchData } = await fetchBoardgameById(requestData.bg_id);
       setBoardgame(fetchData);
       setIsLoading(false);
     };
