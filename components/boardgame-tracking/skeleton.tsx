@@ -1,25 +1,8 @@
 "use client";
 
 import { TbCurrencyBaht } from "react-icons/tb";
-import ModalUpdateBg from "../inventory/modal-update-bg";
-import DeleteBoardgame from "../inventory/delete-bg";
-import { Boardgame } from "@/app/types/game";
-import { SetStateAction } from "react";
 
 export default function Skeleton() {
-  const boardgame: Boardgame = {
-    id: 1,
-    provider_id: "1",
-    bg_name: "sand",
-    description: "hello mock hello mock hello mock hello mock hello mock",
-    bg_picture: "",
-    price: 120,
-    created_at: "string",
-    status: "available",
-    types: ["1", "2"],
-    quantity: 1, // fix this na
-    renting: 0,
-  };
   return (
     <>
       <div
@@ -93,17 +76,17 @@ export default function Skeleton() {
                     md:justify-end gap-2"
           >
             <div className="bg-white opacity-20 rounded-lg">
-              <ModalUpdateBg
+              {/* <ModalUpdateBg
                 boardgame={boardgame}
                 setBoardgameData={function (
                   value: SetStateAction<Boardgame>
                 ): void {
                   throw new Error("Function not implemented.");
                 }}
-              />
+              /> */}
             </div>
             <div className="bg-white opacity-20 rounded-lg">
-              <DeleteBoardgame boardgameId={boardgame.id} />
+              {/* <DeleteBoardgame boardgameId={boardgame.id} /> */}
             </div>
           </div>
         </div>
