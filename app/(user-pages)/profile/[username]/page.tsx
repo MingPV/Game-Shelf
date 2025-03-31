@@ -1,15 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { selectInfoByUsername } from "../../actions";
 import { UserData } from "@/app/types/user";
-import { IoIosArrowForward } from "react-icons/io";
 import ReviewCard from "@/components/home/review-card";
 import ProfileUsernameForm from "@/components/profile/provider-username";
-import { selectReviewByProviderId } from "../../actions";
 import BoardgameCard from "@/components/home/boardgame-card";
 import { BoardgameLoadingCard } from "@/components/home/boardgame-card";
-import LastBoardgameCard from "@/components/home/last-boardgame-card";
 import { ReviewData } from "@/app/types/review";
 import { Boardgame } from "@/app/types/game";
 import ProviderStat from "@/components/profile/provider-stat";
@@ -46,10 +42,43 @@ export default function Home() {
       return res.json();
     };
 
+    const fetchProviderReview = async (
+      provider_id: string
+    ): Promise<{
+      data: ReviewData[];
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        provider_id: provider_id,
+      }).toString();
+
+      const res = await fetch(`/api/reviews/provider?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchProviderInfo = async (
+      provider_name: string
+    ): Promise<{
+      data: UserData;
+    }> => {
+      const queryString = new URLSearchParams({
+        searchValue: provider_name,
+      }).toString();
+
+      console.log(queryString);
+
+      const res = await fetch(`/api/users/name?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchInfo = async () => {
       if (username) {
         try {
-          const fetchData: UserData = await selectInfoByUsername(
+          const { data: fetchData } = await fetchProviderInfo(
             username.toString()
           ); // Await the API call
           setData(fetchData); // Set the state with the fetched data
@@ -68,7 +97,9 @@ export default function Home() {
           setBoardgames(fetchBoardgame);
           setIsLoadingBoardgame(false);
 
-          const reviewsData = await selectReviewByProviderId(fetchData.uid);
+          const { data: reviewsData } = await fetchProviderReview(
+            fetchData.uid
+          );
 
           setReviews(reviewsData);
           setIsLoadingReview(false);
@@ -204,6 +235,10 @@ export default function Home() {
               </div>
             ) : null}
           </div> */}
+
+          <div className="w-full flex justify-center">
+            <ProviderStat user={data} />
+          </div>
 
           <ProfileUsernameForm user={data} setWindow={setWindow} />
           {data.isProvider && !data.is_admin ? (

@@ -1,7 +1,5 @@
 "use client";
 
-import { selectGameAction } from "@/app/(game-pages)/actions";
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { Boardgame } from "@/app/types/game";
 import { ReviewData } from "@/app/types/review";
 import { UserData } from "@/app/types/user";
@@ -16,12 +14,35 @@ export default function ReviewCard({ reviewData }: ReviewCardProps) {
   const [boardgame, setBoardgame] = useState<Boardgame | null>(null);
 
   useEffect(() => {
+    const fetchUserByID = async (
+      userID: string
+    ): Promise<{
+      data: UserData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/users/${userID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchBoardgameById = async (
+      boardgameID: Number
+    ): Promise<{
+      data: Boardgame;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/boardgames/${boardgameID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchPlayer = async () => {
-      const fetchData = await selectUserById(reviewData.customer_id);
+      const { data: fetchData } = await fetchUserByID(reviewData.customer_id);
       setPlayer(fetchData[0]);
     };
     const fetchBoardgame = async () => {
-      const fetchData = await selectGameAction(reviewData.bg_id);
+      const { data: fetchData } = await fetchBoardgameById(reviewData.bg_id);
       setBoardgame(fetchData);
     };
 

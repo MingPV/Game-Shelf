@@ -406,8 +406,7 @@ export const selectReviewByProviderId = async (userId: string) => {
     .from("reviews")
     .select("*")
     .eq("provider_id", userId)
-    .order("created_at", { ascending: false }) // Order by newest first
-    .limit(10);
+    .order("created_at", { ascending: false }); // Order by newest first
 
   if (error) {
     throw new Error("Failed to fetch top providers.");
@@ -561,6 +560,7 @@ export const selectInfoByUsername = async (username: string) => {
   if (error) {
     throw new Error("Failed to fetch info from username");
   }
+
   return data;
 };
 

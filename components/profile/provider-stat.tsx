@@ -4,12 +4,7 @@ import { IoGameControllerOutline } from "react-icons/io5";
 import { FaRegStar } from "react-icons/fa";
 import { FaBahtSign } from "react-icons/fa6";
 import { UserData } from "@/app/types/user";
-import { ReviewData } from "@/app/types/review";
 import { useState, useEffect } from "react";
-import {
-  selectReceiptsByProviderId,
-  selectReviewByProviderId,
-} from "@/app/(user-pages)/actions";
 import { Boardgame } from "@/app/types/game";
 import { Receipt } from "@/app/types/receipt";
 
@@ -39,6 +34,22 @@ export default function ProviderStat({ user }: { user: UserData }) {
       return res.json();
     };
 
+    const fetchProviderReceipt = async (
+      provider_id: string
+    ): Promise<{
+      data: Receipt[];
+      token: string;
+    }> => {
+      const queryString = new URLSearchParams({
+        provider_id: provider_id,
+      }).toString();
+
+      const res = await fetch(`/api/receipts/provider?${queryString}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     const fetchBoardgame = async () => {
       try {
         const { data: fetchData } = await fetchProviderBoardgame(
@@ -55,7 +66,7 @@ export default function ProviderStat({ user }: { user: UserData }) {
 
     const fetchReceipt = async () => {
       try {
-        const fetchReceipts = await selectReceiptsByProviderId(user.uid);
+        const { data: fetchReceipts } = await fetchProviderReceipt(user.uid);
         setReceipts(fetchReceipts);
       } catch (error) {
         console.log("error fetching receipts");
