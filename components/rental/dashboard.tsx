@@ -1,3 +1,5 @@
+"use client";
+
 import { DashBoardStatus } from "./dashboard-status";
 import { DashBoardPaid } from "./dashboard-paid";
 export default function DashBoard() {

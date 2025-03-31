@@ -45,13 +45,37 @@ export function DashBoardStatus({ status }: { status: string }) {
   );
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      const formData = new FormData();
-      formData.append("status", status);
-      formData.append("month", month.toString().padStart(2, "0"));
-      formData.append("year", year);
+    const fetchRental = async (
+      status: string,
+      month: string,
+      year: string
+    ): Promise<any> => {
+      // Build the query string
+      const queryString = new URLSearchParams({
+        status: status,
+        month: month,
+        year: year,
+      }).toString();
 
-      const data = await selectMyRentingRequestByStatus(formData);
+      // Make the GET request
+      const res = await fetch(`/api/rental/filter?${queryString}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Parse the JSON response
+      return res.json();
+    };
+
+    const fetchRequests = async () => {
+      const { data } = await fetchRental(
+        status,
+        month.toString().padStart(2, "0"),
+        year
+      );
+      //
       setRecords(data);
       console.log("data record status: ", status, data);
     };

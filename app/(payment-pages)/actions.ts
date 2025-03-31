@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { selectRentalRequestById } from "../(rental-pages)/actions";
 import { Receipt } from "../types/receipt";
 import { selectGameAction } from "../(game-pages)/actions";
+import { Boardgame, Invoice, RentingRequest } from "../types/game";
 
 export const selectMyToPayBoardGame = async () => {
   const supabase = await createClient();
@@ -76,21 +77,10 @@ export const selectMyReceipts = async () => {
     return redirect("/sign-in");
   }
 
-  let user_data_value = null;
-
-  const { data: user_data, error: userError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("uid", user?.id);
-
-  if (userError) {
-    throw new Error(`Select user failed: ${userError.message}`);
-  }
-
   const { data, error } = await supabase
     .from("receipts")
     .select("*")
-    .eq("provider_id", user_data[0].uid);
+    .eq("provider_id", user.id);
 
   if (error) {
     throw new Error(`Select receipts failed: ${error.message}`);
@@ -129,6 +119,46 @@ export const selectBoardgameByReceiptId = async (receiptId: number) => {
   if (receiptError) {
     throw new Error(`Select receipts failed: ${receiptError.message}`);
   }
+
+  // const fetchRentalByID = async (
+  //   rentalID: number
+  // ): Promise<{
+  //   data: RentingRequest;
+  //   token: string;
+  // }> => {
+  //   const res = await fetch(`/api/rental/${rentalID}`, {
+  //     next: { revalidate: 3600 }, // Cache for 1 hour
+  //   });
+  //   return res.json();
+  // };
+  // const fetchInvoiceByID = async (
+  //   invoiceID: number
+  // ): Promise<{
+  //   data: Invoice;
+  //   token: string;
+  // }> => {
+  //   const res = await fetch(`/api/invoices/${invoiceID}`, {
+  //     next: { revalidate: 3600 }, // Cache for 1 hour
+  //   });
+  //   return res.json();
+  // };
+  // const fetchBoardgameByID = async (
+  //   boardgameID: number
+  // ): Promise<{
+  //   data: Boardgame;
+  //   token: string;
+  // }> => {
+  //   const res = await fetch(`/api/boardgames/${boardgameID}`, {
+  //     next: { revalidate: 3600 }, // Cache for 1 hour
+  //   });
+  //   return res.json();
+  // };
+
+  // console.log(receiptData);
+
+  // const { data: invoiceData } = await fetchInvoiceByID(receiptData.invoice_id);
+  // const { data: rentalData } = await fetchRentalByID(invoiceData.request_id);
+  // const { data: boardgame } = await fetchBoardgameByID(rentalData.bg_id);
 
   const invoiceData = await selectInvoiceById(receiptData.invoice_id);
   const rentalData = await selectRentalRequestById(invoiceData.request_id);
