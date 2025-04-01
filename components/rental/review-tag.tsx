@@ -76,16 +76,35 @@ export default function ReviewTag({
       if (result.isConfirmed) {
         setIsSending(true);
 
-        const { data, error } = await createReviewAction(
-          myData.uid,
-          bg.provider_id,
-          comment,
-          rating,
-          bg.id,
-          rental_id
-        );
+        // const { data, error } = await createReviewAction(
+        //   myData.uid,
+        //   bg.provider_id,
+        //   comment,
+        //   rating,
+        //   bg.id,
+        //   rental_id
+        // );
 
-        if (!error) {
+        const reviewData = {
+          customer_id: myData.uid,
+          provider_id: bg.provider_id,
+          comment: comment,
+          rating: rating,
+          bg_id: bg.id,
+          rental_id: rental_id,
+        };
+
+        const res = await fetch("/api/reviews", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reviewData),
+        });
+
+        const resData = await res.json();
+
+        if (resData.status != "error") {
           setIsSending(false);
           setOpenDialog(false);
 

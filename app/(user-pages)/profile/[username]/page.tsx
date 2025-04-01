@@ -48,11 +48,7 @@ export default function Home() {
       data: ReviewData[];
       token: string;
     }> => {
-      const queryString = new URLSearchParams({
-        provider_id: provider_id,
-      }).toString();
-
-      const res = await fetch(`/api/reviews/provider?${queryString}`, {
+      const res = await fetch(`/api/reviews/provider/${provider_id}`, {
         next: { revalidate: 3600 }, // Cache for 1 hour
       });
       return res.json();

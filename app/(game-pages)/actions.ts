@@ -317,3 +317,73 @@ export const updateBoardgameRentingCount = async (bg_id: Number) => {
     console.log("Boardgame updated successfully");
   }
 };
+
+export const selectReviewById = async (reviewId: number) => {
+  const supabase = await createClient();
+
+  // Fetch unpaid board game payments
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("id", reviewId)
+    .single();
+
+  if (error) {
+    throw new Error(`Select review failed: ${error.message}`);
+  }
+
+  return data;
+};
+
+export const selectAllReviews = async () => {
+  const supabase = await createClient();
+
+  // Fetch unpaid board game payments
+  const { data, error } = await supabase.from("reviews").select("*");
+
+  if (error) {
+    throw new Error(`Select review failed: ${error.message}`);
+  }
+
+  return data;
+};
+
+// not test yet
+export const updateReviewById = async (
+  reviewId: number,
+  updatedFields: Partial<{
+    customer_id: string;
+    provider_id: string;
+    comment: string;
+    rating: number;
+    bg_id: number;
+    rental_id: number;
+  }>
+) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("reviews")
+    .update(updatedFields)
+    .eq("id", reviewId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Update review failed: ${error.message}`);
+  }
+
+  return data;
+};
+
+export const deleteReviewById = async (reviewId: number) => {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("reviews").delete().eq("id", reviewId);
+
+  if (error) {
+    throw new Error(`Delete review failed: ${error.message}`);
+  }
+
+  return { success: true, message: "Review deleted successfully" };
+};
