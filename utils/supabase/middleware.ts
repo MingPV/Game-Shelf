@@ -106,6 +106,14 @@ export const updateSession = async (request: NextRequest) => {
       }
     }
 
+    if (request.nextUrl.pathname.startsWith("/notifications")) {
+      const token = request.cookies.get("token");
+      if (!token || token.value == "") {
+        await signOutAction2();
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+      }
+    }
+
     // for provider
 
     if (request.nextUrl.pathname.startsWith("/provider-home")) {

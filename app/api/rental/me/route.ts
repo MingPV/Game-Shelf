@@ -11,6 +11,10 @@ export async function GET() {
 
   console.log(userToken);
 
+  if (userToken == "No Token") {
+    return NextResponse.json({ status: "success", data: [] }, { status: 200 });
+  }
+
   const payload = JSON.parse(atob(userToken.split(".")[1]));
   const isProvider = payload.userData.isProvider;
 

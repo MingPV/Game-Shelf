@@ -200,7 +200,6 @@ export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   (await cookies()).set("token", "");
-
   return;
 };
 

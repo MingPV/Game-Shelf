@@ -21,6 +21,8 @@ export default function NotificationInNavbar() {
       const res = await fetch("/api/notifications/newest/me", {
         next: { revalidate: 3600 }, // Cache for 1 hour
       });
+      console.log("res");
+      console.log(res);
       return res.json();
     };
 

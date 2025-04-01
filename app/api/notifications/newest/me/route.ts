@@ -6,7 +6,14 @@ export async function GET() {
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token")?.value || "No Token";
 
+  if (userToken == "No Token") {
+    return NextResponse.json({ status: "success", data: [] }, { status: 200 });
+  }
+
   const payload = JSON.parse(atob(userToken.split(".")[1]));
+
+  console.log("ming");
+  console.log(payload);
 
   const notifications = await getLast9Notifications(payload.userData.uid);
 

@@ -36,7 +36,9 @@ export default function AuthButton() {
   const handleSignOut = async () => {
     setMyData(null);
     router.push("/home");
-    signOutAction();
+    // signOutAction();
+    await fetch("/api/auth/signout", { method: "POST" });
+    window.location.reload(); // บังคับโหลดใหม่เพื่อล้าง cache
   };
 
   if (!hasEnvVars) {
