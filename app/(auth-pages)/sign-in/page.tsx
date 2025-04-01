@@ -32,6 +32,9 @@ export default function Login() {
     setIsLogingIn(true);
     const response = await signInAction(formData);
 
+    console.log("response");
+    console.log(response);
+
     if (response?.status == "success") {
       window.location.reload(); // Reload first
       window.location.href = "/home"; // Then Redirect

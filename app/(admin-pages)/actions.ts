@@ -36,6 +36,10 @@ export const updateVerificationRequest = async (formData: FormData) => {
 
   const supabase = await createClient();
 
+  if (!provider_id) {
+    throw new Error("provider_id is required.");
+  }
+
   const { data, error } = await supabase
     .from("verification_requests")
     .update({
@@ -47,6 +51,24 @@ export const updateVerificationRequest = async (formData: FormData) => {
 
   if (error) {
     encodedRedirect("error", "/home", "Failed to update verification request.");
+  }
+
+  await updateUserVerification(provider_id);
+};
+
+export const updateUserVerification = async (provider_id: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .update({
+      is_verified: true,
+    })
+    .eq("uid", provider_id)
+    .select();
+
+  if (error) {
+    throw new Error("error when verifying user");
   }
 };
 

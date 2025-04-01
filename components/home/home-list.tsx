@@ -3,13 +3,16 @@
 import React from "react";
 
 import { useEffect, useState } from "react";
-import { UserData } from "@/app/types/user";
+import { UserData, verificationRequests } from "@/app/types/user";
 import Link from "next/link";
 
 export default function HomeList() {
   const [topProviders, setTopProviders] = useState<UserData[]>();
   const [userData, setUserData] = useState<UserData>();
   const [isFetchingProvider, setIsFetchingProvider] = useState(true);
+  const [myVerification, setMyVerification] = useState<verificationRequests>();
+
+  //
 
   useEffect(() => {
     const fetchMyData = async (): Promise<{
@@ -17,6 +20,18 @@ export default function HomeList() {
       token: string;
     }> => {
       const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchMyVerification = async (
+      provider_id: string
+    ): Promise<{
+      data: verificationRequests;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/verifications/${provider_id}`, {
         next: { revalidate: 3600 }, // Cache for 1 hour
       });
       return res.json();
@@ -40,6 +55,14 @@ export default function HomeList() {
 
     const fetchUserData = async () => {
       const { data: fetchedUserData } = await fetchMyData();
+
+      if (fetchedUserData) {
+        const { data: res } = await fetchMyVerification(fetchedUserData.uid);
+        setMyVerification(res);
+
+        console.log(res);
+      }
+
       setUserData(fetchedUserData);
     };
 
@@ -125,6 +148,10 @@ export default function HomeList() {
                       {userData.is_verified ? (
                         <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
                           Account verified ✓
+                        </div>
+                      ) : myVerification ? (
+                        <div className="bg-sky-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                          Waiting for verification
                         </div>
                       ) : (
                         <Link

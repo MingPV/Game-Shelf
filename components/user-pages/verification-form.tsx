@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { updateProviderAction } from "@/app/(user-pages)/actions";
 import { addVerificationRequest } from "@/app/(admin-pages)/actions";
+import { UserData } from "@/app/types/user";
 
-export default function ProviderFormCard({
-  providerId,
-}: {
-  providerId: string;
-}) {
+export default function ProviderFormCard() {
+  const [myData, setMyData] = useState<UserData>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,21 +21,43 @@ export default function ProviderFormCard({
 
     const formDataUser = new FormData(event.currentTarget);
 
-    if (providerId) {
-      formDataUser.append("userId", providerId);
+    if (myData) {
+      formDataUser.append("userId", myData.uid);
       formDataUser.append("payment_method", paymentMethod);
       updateProviderAction(formDataUser);
 
       const formDataVerifyReq = new FormData();
-      formDataVerifyReq.append("provider_id", providerId);
+      formDataVerifyReq.append("provider_id", myData.uid);
 
       addVerificationRequest(formDataVerifyReq);
+      setError("");
+    } else {
+      setError("Please try again later.");
     }
   };
   const handleSelect = (option: string) => {
     setPaymentMethod(option);
     setIsOpen(false); // Close the dropdown after selection
   };
+
+  useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const getMyData = async () => {
+      const { data } = await fetchMyData();
+      setMyData(data);
+    };
+    getMyData();
+  }, []);
+
   return (
     <div className="flex justify-center items-center w-full pt-4">
       <div className="card bg-gray-400 bg-opacity-30 w-11/12 md:w-3/5 shadow-2xl">
@@ -102,13 +123,20 @@ export default function ProviderFormCard({
             <Label htmlFor="credentials">Creadentials *</Label>
             <input name="credentials" type="file" required />
 
-            <div className="flex justify-center">
+            <div className="flex flex-col justify-center w-full items-center gap-2">
               <button
                 type="submit"
                 className="btn rounded-full bg-gs_purple_gradient hover:bg-opacity-60 border-none w-min px-16"
               >
-                {isSubmitting ? "Sending.." : "Submit"}
+                {isSubmitting ? (
+                  <span className="loading loading-spinner loading-md"></span>
+                ) : (
+                  "Submit"
+                )}
               </button>
+              {error ? (
+                <span className="text-sm text-red-500">{error}</span>
+              ) : null}
             </div>
           </form>
         </div>
