@@ -7,9 +7,12 @@ export async function GET() {
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token")?.value || "No Token";
 
-  if (userToken == "No Token") {
+  if (userToken != "No Token") {
+    const payload = JSON.parse(atob(userToken.split(".")[1]));
+    const payload_myData = payload.userData;
+
     return NextResponse.json(
-      { status: "success", data: null },
+      { status: "success", data: payload_myData },
       { status: 200 }
     );
   }
