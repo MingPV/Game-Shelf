@@ -11,7 +11,6 @@ import { Dispute } from "@/app/types/admin";
 import { updateReportVerdict } from "@/app/(admin-pages)/actions";
 import Link from "next/link";
 import { RentingRequest } from "@/app/types/game";
-import { selectRentalRequestById } from "@/app/(rental-pages)/actions";
 import Image from "next/image";
 
 export default function MyReportCard({
@@ -44,6 +43,18 @@ export default function MyReportCard({
       return res.json();
     };
 
+    const fetchRentalByID = async (
+      rentalID: string
+    ): Promise<{
+      data: RentingRequest;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/rental/${rentalID}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
     async function fetchPlayer() {
       const { data: res } = await fetchUserByID(dispute.reporter);
       const { data: res2 } = await fetchUserByID(dispute.report_to);
@@ -55,7 +66,7 @@ export default function MyReportCard({
       }
     }
     async function fetchRental() {
-      const res = await selectRentalRequestById(dispute.rental_id);
+      const { data: res } = await fetchRentalByID(dispute.rental_id.toString());
       setRental(res);
     }
     if (dispute.rental_id) {

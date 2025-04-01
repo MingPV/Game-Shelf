@@ -1,6 +1,5 @@
 "use client";
 
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
 import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import Swal from "sweetalert2";

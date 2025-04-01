@@ -1,7 +1,5 @@
 "use client";
 
-import { selectBoardgameByReceiptId } from "@/app/(payment-pages)/actions";
-import { selectUserById } from "@/app/(user-pages)/actions";
 import { Dispute } from "@/app/types/admin";
 import { Boardgame } from "@/app/types/game";
 import { UserData } from "@/app/types/user";
@@ -20,7 +18,6 @@ export default function SuccessfulCard({ dispute }: DisputeCardProps) {
   const [reported_profileURL, setReportedProfileURL] = useState(
     "/mock_provider.jpeg"
   );
-  const [boardgame, setBoardgame] = useState<Boardgame>();
   const [admin, setAdmin] = useState<UserData>();
   const [reporter, setReporter] = useState<UserData>();
   const [reported, setReported] = useState<UserData>();
