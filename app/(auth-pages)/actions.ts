@@ -201,7 +201,7 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   (await cookies()).set("token", "");
 
-  return redirect("/home");
+  return;
 };
 
 export const signOutAction2 = async () => {

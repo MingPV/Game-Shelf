@@ -21,6 +21,7 @@ export default function Signup() {
   const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(
     null
   );
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -51,6 +52,9 @@ export default function Signup() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("isProvider", isProvider.toString());
+
+    setIsRegistering(true);
+
     const { status, message } = await signUpAction(formData);
 
     if (status == "success") {
@@ -60,6 +64,8 @@ export default function Signup() {
     } else {
       setError(message);
     }
+
+    setIsRegistering(false);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -242,7 +248,11 @@ export default function Signup() {
                 type="submit"
                 className="btn bg-gs_black hover:bg-gs_black hover:bg-opacity-60 hover:border-none"
               >
-                Create Account
+                {isRegistering ? (
+                  <span className="loading loading-spinner loading-md"></span>
+                ) : (
+                  "Create Account"
+                )}
               </button>
               <div className="h-12">
                 {error.length > 0 && (

@@ -7,9 +7,12 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { UserData } from "@/app/types/user";
+import { useRouter } from "next/navigation";
 
 export default function AuthButton() {
   const [myData, setMyData] = useState<UserData | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMyData = async (): Promise<{
@@ -32,6 +35,7 @@ export default function AuthButton() {
 
   const handleSignOut = async () => {
     setMyData(null);
+    router.push("/home");
     signOutAction();
   };
 

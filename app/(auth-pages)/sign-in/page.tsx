@@ -1,12 +1,10 @@
 "use client";
 
 import { signInAction } from "@/app/(auth-pages)/actions";
-import { FormMessage, Message } from "@/components/form-message";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
 import { useState } from "react";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
@@ -16,6 +14,8 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [isLogingIn, setIsLogingIn] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -29,6 +29,7 @@ export default function Login() {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
+    setIsLogingIn(true);
     const response = await signInAction(formData);
 
     if (response?.status == "success") {
@@ -36,6 +37,7 @@ export default function Login() {
       window.location.href = "/home"; // Then Redirect
       // use this because we need to reload profile picture
     }
+    setIsLogingIn(false);
 
     console.log(response);
   };
@@ -120,7 +122,11 @@ export default function Login() {
                   type="submit"
                   className="btn rounded-full bg-gs_purple_gradient hover:bg-opacity-60 border-none"
                 >
-                  Sign In
+                  {isLogingIn ? (
+                    <span className="loading loading-spinner loading-md"></span>
+                  ) : (
+                    "Sign In"
+                  )}
                 </button>
               </div>
 
