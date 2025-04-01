@@ -6,10 +6,6 @@ export async function POST() {
 
   const res = new NextResponse(JSON.stringify({ message: "Logged out" }), {
     status: 200,
-    headers: {
-      "Set-Cookie": `token=; Path=/; HttpOnly; Max-Age=0`, // ลบ Token
-      "Cache-Control": "no-store", // ป้องกัน cache
-    },
   });
   return res;
 }
