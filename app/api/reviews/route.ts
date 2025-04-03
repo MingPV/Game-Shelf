@@ -2,6 +2,31 @@ import { NextResponse } from "next/server";
 import { createReviewAction } from "@/app/(user-pages)/actions";
 import { selectAllReviews } from "@/app/(game-pages)/actions";
 
+/**
+ * @swagger
+ * /api/reviews:
+ *   get:
+ *     summary: Get all reviews
+ *     description: Retrieve a list of all reviews.
+ *     responses:
+ *       200:
+ *         description: Successful response with review data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: No reviews found.
+ */
+
 export async function GET() {
   const reviewData = await selectAllReviews();
 
@@ -21,6 +46,53 @@ export async function GET() {
 
   return res;
 }
+
+/**
+ * @swagger
+ * /api/reviews:
+ *   post:
+ *     summary: Create a new review
+ *     description: Submit a new review for a rental.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customer_id
+ *               - provider_id
+ *               - comment
+ *               - rating
+ *               - bg_id
+ *               - rental_id
+ *             properties:
+ *               customer_id:
+ *                 type: string
+ *                 example: "12345"
+ *               provider_id:
+ *                 type: string
+ *                 example: "67890"
+ *               comment:
+ *                 type: string
+ *                 example: "Great service!"
+ *               rating:
+ *                 type: integer
+ *                 example: 5
+ *               bg_id:
+ *                 type: string
+ *                 example: "boardgame_001"
+ *               rental_id:
+ *                 type: string
+ *                 example: "rental_001"
+ *     responses:
+ *       200:
+ *         description: Successfully created the review.
+ *       400:
+ *         description: Missing required fields.
+ *       500:
+ *         description: Internal server error.
+ */
 
 export async function POST(req: Request) {
   try {
