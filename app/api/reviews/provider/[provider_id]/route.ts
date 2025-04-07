@@ -9,7 +9,7 @@ export async function GET(
 
   if (!provider_id) {
     return NextResponse.json(
-      { status: "error", message: "Invoice ID is required" },
+      { status: "error", message: "ProviderID is required" },
       { status: 400 }
     );
   }
@@ -37,3 +37,58 @@ export async function GET(
     );
   }
 }
+
+/**
+ * @swagger
+ * /api/reviews/provider/{providerId}:  
+ *   get:
+ *     summary: Get all reviews for a specific provider
+ *     tags: [Reviews]
+ *     description: Retrieve all provider's reviews by provider ID.
+ *     parameters:
+ *       - in: path
+ *         name: providerId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The provider ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   $ref: '#/components/schemas/Review'
+ *       400:
+ *         description: Provider ID is required
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Provider ID is required
+ *       500:
+ *         description: Failed to fetch reviews
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Failed to fetch reviews
+ */

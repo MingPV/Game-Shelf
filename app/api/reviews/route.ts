@@ -4,27 +4,46 @@ import { selectAllReviews } from "@/app/(game-pages)/actions";
 
 /**
  * @swagger
- * /api/reviews:
- *   get:
- *     summary: Get all reviews
- *     description: Retrieve a list of all reviews.
- *     responses:
- *       200:
- *         description: Successful response with review data.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: success
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *       404:
- *         description: No reviews found.
+ * components:
+ *   schemas:
+ *     Review:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: interger
+ *         customer_id:
+ *           type: string
+ *           format: uuid
+ *         provider_id:
+ *           type: string
+ *           format: uuid
+ *         comment:
+ *           type: string
+ *         rating:
+ *           type: integer
+ *         bg_id:
+ *           type: integer
+ *         rental_id:
+ *           type: integer
+ *         created_at:
+ *           type: string
+ *           format: date-time 
+ *       example:
+ *         id: 1
+ *         customer_id: "5dc22222-fe6d-414e-83c1-3e1a2fedaa5e" 
+ *         provider_id: "453f1dae-8797-41ae-bf56-8dcba006915e" 
+ *         comment: "Great service!"   
+ *         rating: 4
+ *         bg_id: 4
+ *         rental_id: 112
+ *         created_at: "2025-02-20T12:29:45.903542+00:00"
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Reviews
+ *   description: API for managing reviews
  */
 
 export async function GET() {
@@ -50,48 +69,38 @@ export async function GET() {
 /**
  * @swagger
  * /api/reviews:
- *   post:
- *     summary: Create a new review
- *     description: Submit a new review for a rental.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - customer_id
- *               - provider_id
- *               - comment
- *               - rating
- *               - bg_id
- *               - rental_id
- *             properties:
- *               customer_id:
- *                 type: string
- *                 example: "12345"
- *               provider_id:
- *                 type: string
- *                 example: "67890"
- *               comment:
- *                 type: string
- *                 example: "Great service!"
- *               rating:
- *                 type: integer
- *                 example: 5
- *               bg_id:
- *                 type: string
- *                 example: "boardgame_001"
- *               rental_id:
- *                 type: string
- *                 example: "rental_001"
+ *   get:
+ *     summary: Get all reviews
+ *     tags: [Reviews]
+ *     description: Retrieve a list of all reviews.
  *     responses:
  *       200:
- *         description: Successfully created the review.
- *       400:
- *         description: Missing required fields.
- *       500:
- *         description: Internal server error.
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Review'
+ *       404:
+ *         description: Review not found
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Review not found
  */
 
 export async function POST(req: Request) {
@@ -141,3 +150,92 @@ export async function POST(req: Request) {
     );
   }
 }
+
+/**
+ * @swagger
+ * /api/reviews:
+ *   post:
+ *     summary: Create a new review
+ *     tags: [Reviews]
+ *     description: Submit a new review for a rental.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customer_id:
+ *                 type: string
+ *                 format: uuid
+ *               provider_id:
+ *                 type: string
+ *                 format: uuid
+ *               comment:
+ *                 type: string
+ *               rating:
+ *                 type: integer
+ *               bg_id:
+ *                 type: integer
+ *               rental_id:
+ *                 type: integer
+ *           example:
+ *             customer_id: "5dc22222-fe6d-414e-83c1-3e1a2fedaa5e"
+ *             provider_id: "453f1dae-8797-41ae-bf56-8dcba006915e"
+ *             comment: "Great service!"
+ *             rating: 4
+ *             bg_id: 4
+ *             rental_id: 112
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                  type: object
+ *       400:
+ *         description: Missing required fields.
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Missing required fields
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               oneOf:
+ *                 - type: object
+ *                   properties:
+ *                     status:
+ *                       type: string
+ *                       example: error
+ *                     message:
+ *                       type: string 
+ *                       example: Failed to create review
+ *                     error:
+ *                       type: string
+ *                 - type: object
+ *                   properties:
+ *                     status:
+ *                       type: string
+ *                       example: error
+ *                     message:
+ *                       type: string 
+ *                       example: Internal server error
+ *                     error:
+ *                       type: string
+ */

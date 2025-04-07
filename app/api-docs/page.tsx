@@ -18,5 +18,19 @@ export default function ApiDocs() {
 
   if (!spec) return <p>Loading Swagger UI...</p>;
 
-  return <SwaggerUI spec={spec} />;
+  return (
+    <div className="bg-white">
+      <SwaggerUI
+        spec={spec}
+        docExpansion="full"
+        defaultModelsExpandDepth={-1}
+        showExtensions={true}
+        showCommonExtensions={true}
+        filter={false}
+        deepLinking={true}
+        layout="BaseLayout"
+        tryItOutEnabled={true}
+      />
+    </div>
+  );
 }

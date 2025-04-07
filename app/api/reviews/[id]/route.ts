@@ -14,7 +14,7 @@ export async function GET(
 
   if (!id) {
     return NextResponse.json(
-      { status: "error", message: "Invoice ID is required" },
+      { status: "error", message: "Review ID is required" },
       { status: 400 }
     );
   }
@@ -23,7 +23,7 @@ export async function GET(
 
   if (!reviewData) {
     return NextResponse.json(
-      { status: "error", message: "Invoice not found" },
+      { status: "error", message: "Review not found" },
       { status: 404 }
     );
   }
@@ -37,3 +37,58 @@ export async function GET(
 
   return res;
 }
+
+/**
+ * @swagger
+ * /api/reviews/{reviewId}:  
+ *   get:
+ *     summary: Get a review by ID
+ *     tags: [Reviews]
+ *     description: Retrieve a review by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The review ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   $ref: '#/components/schemas/Review'
+ *       400:
+ *         description: Review ID is required
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Review ID is required
+ *       404:
+ *         description: Review not found
+ *         content:
+ *           application/json:  
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string 
+ *                   example: Review not found
+ */
