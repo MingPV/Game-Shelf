@@ -315,7 +315,7 @@ export default function MyReportCard({
                   <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
                     <Image
                       src={
-                        rental?.before_ship ||
+                        rental?.after_ship ||
                         "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
                       }
                       alt={rental?.status || ""}
@@ -331,7 +331,7 @@ export default function MyReportCard({
                   <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
                     <Image
                       src={
-                        rental?.before_ship ||
+                        rental?.before_return ||
                         "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
                       }
                       alt={rental?.status || ""}
@@ -347,7 +347,7 @@ export default function MyReportCard({
                   <div className="flex flex-col items-center  bg-black/10 rounded-md p-1">
                     <Image
                       src={
-                        rental?.before_ship ||
+                        rental?.after_return ||
                         "https://sblvrpkvjbvwvzqaiabr.supabase.co/storage/v1/object/public/user_profiles/8268edbc-70a9-4ca0-954e-0cbcaa823907"
                       }
                       alt={rental?.status || ""}
