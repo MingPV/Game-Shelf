@@ -113,6 +113,99 @@ export function ProviderManage() {
     // fetch reviews
   }, []);
 
+  useEffect(() => {
+    const fetchProviderReview = async (
+      provider_id: string
+    ): Promise<{
+      data: ReviewData[];
+      token: string;
+    }> => {
+      const res = await fetch(`/api/reviews/provider/${provider_id}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+    const fetchData = async () => {
+      const fetchProviderBoardgame = async (
+        searchValue: string,
+        provider_id: string,
+        selectedTypeFilter: string[]
+      ): Promise<{
+        data: Boardgame[];
+        token: string;
+      }> => {
+        const queryString = new URLSearchParams({
+          searchValue: searchValue,
+          provider_id: provider_id,
+          selectedTypeFilter: selectedTypeFilter.join(","), // Join array into a comma-separated string
+        }).toString();
+
+        const res = await fetch(`/api/boardgames/provider?${queryString}`, {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const fetchMyRequest = async (): Promise<{
+        data: RentingRequest[];
+      }> => {
+        const res = await fetch("/api/rental/requests", {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const fetchMyData = async (): Promise<{
+        data: UserData;
+        token: string;
+      }> => {
+        const res = await fetch("/api/users/me", {
+          next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+        return res.json();
+      };
+
+      const { data: fetchUserData } = await fetchMyData();
+      setProvider(fetchUserData);
+
+      if (fetchUserData) {
+        const { data: fetchData } = await fetchProviderBoardgame(
+          "",
+          fetchUserData.uid,
+          []
+        );
+
+        setBoardgames(fetchData);
+        setIsLoadingBoardgame(false);
+
+        const { data: rentalsData } = await fetchMyRequest();
+        setRentalRequests(rentalsData || []);
+        setIsLoadingRental(false);
+
+        // check rental request
+        rentalsData.forEach((element) => {
+          if (element.status === "pending") {
+            setCountPendingRequest(countPendingRequest + 1);
+          }
+        });
+
+        const { data: reviewsData } = await fetchProviderReview(
+          fetchUserData.uid
+        );
+
+        setReviews(reviewsData);
+        setIsLoadingReview(false);
+      }
+    };
+
+    if (!provider) {
+      fetchData();
+    }
+
+    // fetch rental requests
+    // fetch reviews
+  });
+
   return (
     <div className="w-full h-full flex flex-col gap-6 bg-black bg-opacity-10 border border-white border-opacity-10 rounded-md overflow-x-hidden">
       <div className="p-4 w-full h-full gap-8 flex flex-col overflow-x-hidden">

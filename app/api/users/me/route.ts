@@ -3,22 +3,21 @@ import { getMyUserData } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
 import { cookies } from "next/headers";
 
-// ✅ ผูก tag กับ endpoint นี้ เพื่อให้สามารถ revalidate ได้
-export const tags = ["users-me"];
-
 export async function GET() {
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token")?.value || "No Token";
 
-  if (userToken != "No Token") {
-    const payload = JSON.parse(atob(userToken.split(".")[1]));
-    const payload_myData = payload.userData;
+  console.log("userToken", userToken);
 
-    return NextResponse.json(
-      { status: "success", data: payload_myData },
-      { status: 200 }
-    );
-  }
+  // if (userToken != "No Token") {
+  //   const payload = JSON.parse(atob(userToken.split(".")[1]));
+  //   const payload_myData = payload.userData;
+
+  //   return NextResponse.json(
+  //     { status: "success", data: payload_myData },
+  //     { status: 200 }
+  //   );
+  // }
 
   // ดึงข้อมูลรายงานจาก Database
   const myData: UserData = await getMyUserData();
@@ -30,7 +29,7 @@ export async function GET() {
   );
 
   // ตั้งค่า Cache-Control เพื่อให้ Vercel Edge Cache ทำงาน
-  res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
+  // res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
 
   console.log(myData);
 

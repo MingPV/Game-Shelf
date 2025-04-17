@@ -7,9 +7,7 @@ import { UserData } from "@/app/types/user";
 import { updateProviderAction2 } from "@/app/(user-pages)/actions";
 import IconMenu from "./iconmenu";
 import { RiEdit2Line } from "react-icons/ri";
-import useSWR, { mutate } from "swr";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function ProviderForm({
   user,
   setWindow,
@@ -22,14 +20,6 @@ export default function ProviderForm({
   const [location, setLocation] = useState<string>(user.location);
   const [credentials, setCredentials] = useState<string>(user.credentials);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const { data, isLoading, error } = useSWR(
-    `/api/users/${user.username}`,
-    fetcher,
-    {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
 
   const toggleEditMode = () => {
     if (editMode) {
@@ -91,7 +81,6 @@ export default function ProviderForm({
             updateData,
           }),
         });
-        mutate(`/api/users/${user.username}`);
         Swal.fire({
           toast: true,
           position: "top-end",

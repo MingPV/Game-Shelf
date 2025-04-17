@@ -20,9 +20,12 @@ export default function HomeList() {
       token: string;
     }> => {
       const res = await fetch("/api/users/me", {
-        next: { revalidate: 3600 }, // Cache for 1 hour
+        next: { revalidate: 3600, tags: ["users-me"] }, // Cache for 1 hour
       });
-      return res.json();
+      const resJson = res.json();
+      console.log(resJson);
+      // return res.json();
+      return resJson;
     };
 
     const fetchMyVerification = async (
@@ -56,7 +59,7 @@ export default function HomeList() {
     const fetchUserData = async () => {
       const { data: fetchedUserData } = await fetchMyData();
 
-      if (fetchedUserData) {
+      if (fetchedUserData && fetchedUserData.isProvider) {
         const { data: res } = await fetchMyVerification(fetchedUserData.uid);
         setMyVerification(res);
 
@@ -69,6 +72,50 @@ export default function HomeList() {
     fetchUserData();
     fetchTopProvider();
   }, []);
+
+  useEffect(() => {
+    const fetchMyData = async (): Promise<{
+      data: UserData;
+      token: string;
+    }> => {
+      const res = await fetch("/api/users/me", {
+        next: { revalidate: 3600, tags: ["users-me"] }, // Cache for 1 hour
+      });
+      const resJson = res.json();
+      console.log(resJson);
+      // return res.json();
+      return resJson;
+    };
+
+    const fetchMyVerification = async (
+      provider_id: string
+    ): Promise<{
+      data: verificationRequests;
+      token: string;
+    }> => {
+      const res = await fetch(`/api/verifications/${provider_id}`, {
+        next: { revalidate: 3600 }, // Cache for 1 hour
+      });
+      return res.json();
+    };
+
+    const fetchUserData = async () => {
+      const { data: fetchedUserData } = await fetchMyData();
+
+      if (fetchedUserData && fetchedUserData.isProvider) {
+        const { data: res } = await fetchMyVerification(fetchedUserData.uid);
+        setMyVerification(res);
+
+        console.log(res);
+      }
+
+      setUserData(fetchedUserData);
+    };
+
+    if (!userData) {
+      fetchUserData();
+    }
+  });
 
   function formatDateRange(endDateStr: string): string {
     const endDate = new Date(endDateStr);

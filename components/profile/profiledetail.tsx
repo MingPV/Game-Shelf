@@ -20,7 +20,7 @@ export default function ProfileDetail() {
       token: string;
     }> => {
       const res = await fetch("/api/users/me", {
-        next: { revalidate: 3600 }, // Cache for 1 hour
+        // next: { revalidate: 3600 }, // Cache for 1 hour
       });
       return res.json();
     };
