@@ -11,18 +11,18 @@ import {
 
 export default function Home() {
   return (
-    <main className="min-h-screen text-white  font-arcade w-5/6 mx-auto flex flex-col items-center gap-16 pt-16">
+    <main className="min-h-screen text-white  font-arcade w-5/6 mx-auto flex flex-col items-center gap-20 pt-16">
       {/* Heading */}
       <div className="text-4xl md:text-5xl text-left w-full ">
         Get close to US
       </div>
 
       {/* Info Grid */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-16 ">
+      <div className="w-full flex flex-col gap-20 ">
         {/* Left Block */}
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-row gap-16 ">
           {/* Location */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-1/2">
             <div className="text-2xl md:text-3xl font-semibold tracking-wide">
               Location
             </div>
@@ -36,7 +36,7 @@ export default function Home() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-1/2">
             <div className="text-2xl md:text-3xl font-semibold tracking-wide">
               Email
             </div>
@@ -50,9 +50,9 @@ export default function Home() {
         </div>
 
         {/* Right Block */}
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-row gap-16">
           {/* Social Media */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-1/2">
             <div className="text-2xl md:text-3xl font-semibold tracking-wide">
               Social Media
             </div>
@@ -71,7 +71,7 @@ export default function Home() {
           </div>
 
           {/* Telephone */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-1/2">
             <div className="text-2xl md:text-3xl font-semibold tracking-wide">
               Tel
             </div>
