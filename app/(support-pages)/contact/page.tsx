@@ -13,9 +13,7 @@ export default function Home() {
   return (
     <main className="min-h-screen text-white  font-arcade w-5/6 mx-auto flex flex-col items-center gap-20 pt-16">
       {/* Heading */}
-      <div className="text-4xl md:text-5xl text-left w-full ">
-        Get close to US
-      </div>
+      <div className="text-4xl md:text-5xl text-left w-full ">Contact US</div>
 
       {/* Info Grid */}
       <div className="w-full flex flex-col gap-20 ">
@@ -23,7 +21,7 @@ export default function Home() {
         <div className="flex flex-row gap-16 ">
           {/* Location */}
           <div className="flex flex-col gap-4 w-1/2">
-            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide text-white/50">
               Location
             </div>
             <div className="flex items-start gap-4">
@@ -37,7 +35,7 @@ export default function Home() {
 
           {/* Email */}
           <div className="flex flex-col gap-4 w-1/2">
-            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide text-white/50">
               Email
             </div>
             {["contact", "support", "careers"].map((type) => (
@@ -53,7 +51,7 @@ export default function Home() {
         <div className="flex flex-row gap-16">
           {/* Social Media */}
           <div className="flex flex-col gap-4 w-1/2">
-            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide text-white/50">
               Social Media
             </div>
             <div className="flex items-center gap-4">
@@ -72,7 +70,7 @@ export default function Home() {
 
           {/* Telephone */}
           <div className="flex flex-col gap-4 w-1/2">
-            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide text-white/50">
               Tel
             </div>
             {["+1 (123) 456-7890", "+1 (987) 654-3210", "+66 88 888 8888"].map(
