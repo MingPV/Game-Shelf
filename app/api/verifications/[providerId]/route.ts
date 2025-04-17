@@ -32,7 +32,7 @@ export async function GET(
     { status: "success", data: verificationData },
     { status: 200 }
   );
-  res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
+  // res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
 
   return res;
 }
