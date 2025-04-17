@@ -90,6 +90,9 @@ export default function ProviderForm({
           body: JSON.stringify({
             updateData,
           }),
+          next: {
+            tags: ["profile-update"],
+          },
         });
         mutate(`/api/users/${user.username}`);
         Swal.fire({

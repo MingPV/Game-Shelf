@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { selectGamesByFilterAction } from "@/app/(game-pages)/actions";
 import { selectProvidersByFilterAction } from "@/app/(user-pages)/actions";
 import { updateProviderAction2 } from "@/app/(user-pages)/actions";
+import { revalidateTag } from "next/cache";
 
 export async function GET(req: Request) {
   try {
@@ -68,6 +69,7 @@ export async function POST(req: Request) {
       location,
       credentials
     );
+    revalidateTag("profile-update");
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

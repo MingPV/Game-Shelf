@@ -1,110 +1,91 @@
 "use client";
 
+import {
+  FaTwitter,
+  FaInstagram,
+  FaDiscord,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+
 export default function Home() {
   return (
-    <>
-      <main className="flex-1 flex flex-col gap-6 px-4 justify-center items-center mb-32 w-full">
-        <div className="flex flex-col items-center justify-center font-bold w-full">
-          <form className="w-full max-w-xl p-12 rounded-2xl  bg-white/10 space-y-6">
-            <h1 className="text-2xl font-bold text-center text-white/90 bg-transparent w-full">
-              Get in touch
-            </h1>
+    <main className="min-h-screen text-white  font-arcade w-5/6 mx-auto flex flex-col items-center gap-16 pt-16">
+      {/* Heading */}
+      <div className="text-4xl md:text-5xl text-left w-full ">
+        Get close to US
+      </div>
 
-            <div className="flex flex-col space-y-2">
-              <label
-                htmlFor="frm-email"
-                className="text-sm font-medium text-white/90 bg-transparent"
-              >
-                Email
-              </label>
-              <input
-                id="frm-email"
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-                className="px-4 py-2 border border-white/90 bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+      {/* Info Grid */}
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-16 ">
+        {/* Left Block */}
+        <div className="flex flex-col gap-16">
+          {/* Location */}
+          <div className="flex flex-col gap-4">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+              Location
             </div>
-
-            <div className="flex flex-col space-y-2">
-              <label
-                htmlFor="frm-phone"
-                className="text-sm font-medium text-white/90 bg-transparent"
-              >
-                Phone
-              </label>
-              <input
-                id="frm-phone"
-                type="text"
-                name="phone"
-                autoComplete="tel"
-                required
-                className="px-4 py-2 border border-white/90 bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+            <div className="flex items-start gap-4">
+              <FaMapMarkerAlt className="w-5 h-5 mt-1" />
+              <span>
+                Arcadia Headquarters, Tower B, Level 17, 123 Pixel Street, Cyber
+                City District, Neo Tokyo 2049
+              </span>
             </div>
+          </div>
 
-            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-              <div className="flex flex-col space-y-2 w-full">
-                <label
-                  htmlFor="frm-first"
-                  className="text-sm font-medium text-white/90 bg-transparent"
-                >
-                  First Name
-                </label>
-                <input
-                  id="frm-first"
-                  type="text"
-                  name="first"
-                  autoComplete="given-name"
-                  required
-                  className="px-4 py-2 border border-white/90 bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+          {/* Email */}
+          <div className="flex flex-col gap-4">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+              Email
+            </div>
+            {["contact", "support", "careers"].map((type) => (
+              <div className="flex items-center gap-4" key={type}>
+                <FaEnvelope className="w-5 h-5" />
+                {type}@arcadeverse.com
               </div>
-              <div className="flex flex-col space-y-2 w-full">
-                <label
-                  htmlFor="frm-last"
-                  className="text-sm font-medium text-white/90 bg-transparent"
-                >
-                  Last Name
-                </label>
-                <input
-                  id="frm-last"
-                  type="text"
-                  name="last"
-                  autoComplete="family-name"
-                  required
-                  className="px-4 py-2 border border-white/90 bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col space-y-2">
-              <label
-                htmlFor="frm-message"
-                className="text-sm font-medium text-white/90 bg-transparent"
-              >
-                Message
-              </label>
-              <textarea
-                id="frm-message"
-                name="message"
-                rows={4}
-                className="px-4 py-2 border border-white/90 bg-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              ></textarea>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="w-full btn btn-outline border-white opacity-80 text-white font-bold  py-2 px-4 rounded-md "
-              >
-                <p>Submit</p>
-              </button>
-            </div>
-          </form>
+            ))}
+          </div>
         </div>
-      </main>
-    </>
+
+        {/* Right Block */}
+        <div className="flex flex-col gap-16">
+          {/* Social Media */}
+          <div className="flex flex-col gap-4">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+              Social Media
+            </div>
+            <div className="flex items-center gap-4">
+              <FaTwitter className="w-5 h-5" />
+              @ArcadeVerse
+            </div>
+            <div className="flex items-center gap-4">
+              <FaInstagram className="w-5 h-5" />
+              @arcadeverse.official
+            </div>
+            <div className="flex items-center gap-4">
+              <FaDiscord className="w-5 h-5" />
+              arcade.gg/invite
+            </div>
+          </div>
+
+          {/* Telephone */}
+          <div className="flex flex-col gap-4">
+            <div className="text-2xl md:text-3xl font-semibold tracking-wide">
+              Tel
+            </div>
+            {["+1 (123) 456-7890", "+1 (987) 654-3210", "+66 88 888 8888"].map(
+              (number) => (
+                <div className="flex items-center gap-4" key={number}>
+                  <FaPhoneAlt className="w-5 h-5" />
+                  {number}
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
