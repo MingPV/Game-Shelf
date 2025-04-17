@@ -38,6 +38,7 @@
     "react-select": "^5.10.1",
     "stripe": "^17.6.0",
     "sweetalert2": "^11.16.0",
+    "swr": "^2.3.3",
     "tsconfig-paths": "^4.2.0",
     "use-debounce": "^10.0.4",
     "zustand": "^5.0.3"

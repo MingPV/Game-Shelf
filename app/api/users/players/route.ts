@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
-import { updateReportVerdict } from "@/app/(admin-pages)/actions";
-import { report } from "process";
+import { selectGamesByFilterAction } from "@/app/(game-pages)/actions";
+import { selectProvidersByFilterAction } from "@/app/(user-pages)/actions";
+import { updateUserAction } from "@/app/(user-pages)/actions";
+
 export async function POST(req: Request) {
   try {
-    console.log("hereeeeeee");
     const body = await req.json();
 
-    const { reportId, verdict } = body;
-    console.log(body);
-    console.log(reportId, verdict);
+    const { id, username, phoneNumber, location } = body.updateData;
 
-    if (!reportId || !verdict) {
+    if (!id) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    await updateReportVerdict(reportId, verdict);
+    await updateUserAction(id, username, phoneNumber, location);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

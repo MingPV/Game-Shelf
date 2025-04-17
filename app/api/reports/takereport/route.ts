@@ -1,23 +1,20 @@
 import { NextResponse } from "next/server";
-import { updateReportVerdict } from "@/app/(admin-pages)/actions";
-import { report } from "process";
+import { updateTakeReport } from "@/app/(admin-pages)/actions";
 export async function POST(req: Request) {
   try {
     console.log("hereeeeeee");
     const body = await req.json();
 
-    const { reportId, verdict } = body;
-    console.log(body);
-    console.log(reportId, verdict);
+    const { id, status, admin_id } = body;
 
-    if (!reportId || !verdict) {
+    if (!id || !status || !admin_id) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    await updateReportVerdict(reportId, verdict);
+    await updateTakeReport(id, status, admin_id);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

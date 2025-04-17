@@ -195,24 +195,28 @@ export const updateReport = async (formData: FormData) => {
     .select();
 };
 
-export const updateTakeReport = async (formData: FormData) => {
-  const id = formData.get("id")?.toString();
-  const admin_id = formData.get("admin_id")?.toString();
-
+export const updateTakeReport = async (
+  id: string,
+  status: string,
+  admin_id: string
+) => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("disputes")
-    .update({ status: "considering", admin_id: admin_id })
+    .update({ status: status, admin_id: admin_id })
     .eq("id", id)
     .select();
 
   return data;
 };
 
-export const updateReportVerdict = async (formData: FormData) => {
-  const id = formData.get("id")?.toString();
-  const verdict = formData.get("verdict")?.toString();
+export const updateReportVerdict = async (
+  reportId: string,
+  verdict: string
+) => {
+  // const id = formData.get("id")?.toString();
+  // const verdict = formData.get("verdict")?.toString();
 
   const supabase = await createClient();
 
@@ -223,7 +227,7 @@ export const updateReportVerdict = async (formData: FormData) => {
       verdict: verdict,
       verdict_timestamp: new Date().toISOString(),
     })
-    .eq("id", id)
+    .eq("id", reportId)
     .select();
 
   return data;

@@ -1,15 +1,19 @@
 "use client";
 import { deleteGameAction } from "@/app/(game-pages)/actions";
+import { Router } from "lucide-react";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 export default function DeleteBoardgame({
   boardgameId,
 }: {
   boardgameId: number;
 }) {
+  const router = useRouter();
+
   const handleDelete = () => {
-    const formData = new FormData();
-    formData.append("id", boardgameId.toString());
+    // const formData = new FormData();
+    // formData.append("id", boardgameId.toString());
 
     Swal.fire({
       title: "Are you sure?",
@@ -27,7 +31,17 @@ export default function DeleteBoardgame({
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteGameAction(formData);
+        await deleteGameAction(boardgameId.toString());
+        // await fetch("/api/boardgames", {
+        //   method: "DELETE",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     boardgameId: boardgameId.toString(),
+        //   }),
+        // });
+        router.refresh();
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",

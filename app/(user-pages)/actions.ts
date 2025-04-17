@@ -415,12 +415,13 @@ export const selectReviewByProviderId = async (userId: string) => {
   return data;
 };
 
-export const updateUserAction = async (formData: FormData) => {
+export const updateUserAction = async (
+  id: string,
+  username: string,
+  phoneNumber: string,
+  location: string
+) => {
   const supabase = await createClient();
-  const id = formData.get("id")?.toString();
-  const username = formData.get("username")?.toString();
-  const phoneNumber = formData.get("phoneNumber")?.toString();
-  const location = formData.get("location")?.toString();
 
   const { data, error } = await supabase
     .from("users")
@@ -466,13 +467,14 @@ export const banUserAction = async (uid: string, ban_until: string) => {
   return;
 };
 
-export const updateProviderAction2 = async (formData: FormData) => {
+export const updateProviderAction2 = async (
+  id: string,
+  username: string,
+  phoneNumber: string,
+  location: string,
+  credentials: string
+) => {
   const supabase = await createClient();
-  const id = formData.get("id")?.toString();
-  const username = formData.get("username")?.toString();
-  const phoneNumber = formData.get("phoneNumber")?.toString();
-  const location = formData.get("location")?.toString();
-  const credentials = formData.get("credentials")?.toString();
 
   const { data, error } = await supabase
     .from("users")

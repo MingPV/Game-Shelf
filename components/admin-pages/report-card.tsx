@@ -76,7 +76,21 @@ export default function ReportCard({
       if (result.isConfirmed) {
         setIsHidden(true);
         setMyDispute((prev) => [...prev, dispute]);
-        await updateTakeReport(formData);
+        // await updateTakeReport(formData);
+
+        const adminData = {
+          id: dispute.id.toString(),
+          status: "considering",
+          admin_id: myData.uid.toString(),
+        };
+        // console.log(verdict);
+        await fetch("/api/reports/takereport", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(adminData),
+        });
 
         Swal.fire({
           toast: true,

@@ -7,7 +7,9 @@ import { UserData } from "@/app/types/user";
 import { updateProviderAction2 } from "@/app/(user-pages)/actions";
 import IconMenu from "./iconmenu";
 import { RiEdit2Line } from "react-icons/ri";
+import useSWR, { mutate } from "swr";
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function ProviderForm({
   user,
   setWindow,
@@ -20,6 +22,14 @@ export default function ProviderForm({
   const [location, setLocation] = useState<string>(user.location);
   const [credentials, setCredentials] = useState<string>(user.credentials);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const { data, isLoading, error } = useSWR(
+    `/api/users/${user.username}`,
+    fetcher,
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
 
   const toggleEditMode = () => {
     if (editMode) {
@@ -64,7 +74,24 @@ export default function ProviderForm({
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await updateProviderAction2(formData);
+        // await updateProviderAction2(formData);
+        const updateData = {
+          id: user.uid.toString(),
+          username: username,
+          phoneNumber: phoneNumber,
+          location: location,
+          credentials: credentials,
+        };
+        await fetch("/api/users/providers", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            updateData,
+          }),
+        });
+        mutate(`/api/users/${user.username}`);
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -166,7 +193,7 @@ export default function ProviderForm({
             name="location"
             placeholder="Location"
             value={location}
-            className={` w-full font-normal bg-transparent col-span-8 border-white border-opacity-60 bg-transparent ${editMode ? "border border-white rounded-md" : "resize-none border-none bg-transparent"} py-2 px-3`}
+            className={` w-full font-normal bg-transparent col-span-8 border-white border-opacity-60  ${editMode ? "border border-white rounded-md" : "resize-none border-none bg-transparent"} py-2 px-3`}
             disabled={!editMode}
             style={{ color: "white", opacity: 1 }}
             onChange={(e) => {

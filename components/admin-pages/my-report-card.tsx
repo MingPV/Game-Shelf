@@ -119,17 +119,19 @@ export default function MyReportCard({
     }).then(async (result) => {
       if (result.isConfirmed) {
         setIsHidden(true);
-        await updateReportVerdict(formData);
-        // await fetch("/api/reports/verdict", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     id: dispute.id.toString(),
-        //     verdict: verdict,
-        //   }),
-        // });
+        // await updateReportVerdict(formData);
+        const verdictData = {
+          reportId: dispute.id.toString(),
+          verdict: verdict,
+        };
+        console.log(verdict);
+        await fetch("/api/reports/verdict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(verdictData),
+        });
         if (reported?.uid) {
           await banUserAction(reported.uid, datestring);
         } else {

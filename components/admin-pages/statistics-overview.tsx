@@ -143,7 +143,17 @@ export default function StatisticsOverview() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         setRecords(records.filter((record) => record.uid !== uid));
-        await unbanUserAction(uid);
+
+        // await unbanUserAction(uid);
+        await fetch("/api/users/banned", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uid: uid,
+          }),
+        });
 
         const message = `Your account has been unbanned by the admin.`;
         await createNotificationByUserId(uid, message);

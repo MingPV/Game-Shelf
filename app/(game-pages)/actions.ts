@@ -140,15 +140,15 @@ export const updateGameAction = async (formData: FormData) => {
   return;
 };
 
-export const deleteGameAction = async (formData: FormData) => {
+export const deleteGameAction = async (boardgameId: string) => {
   const supabase = await createClient();
 
-  const id = formData.get("id")?.toString();
+  // const id = formData.get("id")?.toString();
 
   const { data, error } = await supabase
     .from("boardgames")
     .delete()
-    .eq("id", id);
+    .eq("id", boardgameId);
 
   if (error) {
     encodedRedirect("error", "/home", "Failed to delete boardgame.");

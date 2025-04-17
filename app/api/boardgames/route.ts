@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { selectGamesByFilterAction } from "@/app/(game-pages)/actions";
-
+import { deleteGameAction } from "@/app/(game-pages)/actions";
+import { updateGameAction } from "@/app/(game-pages)/actions";
 export async function GET(req: Request) {
   try {
     // Parse URL query parameters
@@ -51,3 +52,68 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const { id, boardgame_name, description, price, bg_picture, quantity } =
+      body;
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("boardgame_name", boardgame_name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("bg_picture", bg_picture as File);
+    formData.append("quantity", quantity);
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    await updateGameAction(formData);
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Error handling request:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+// export async function DELETE(req: Request) {
+//   try {
+//     // Parse URL query parameters
+//     const body = await req.json();
+//     const { boardgameId } = body;
+
+//     // Extract the ID of the board game to delete
+
+//     if (!boardgameId) {
+//       return NextResponse.json(
+//         { status: "error", message: "Game ID is required" },
+//         { status: 400 }
+//       );
+//     }
+
+//     console.log(`🗑️ Deleting board game with ID: ${boardgameId}`);
+
+//     // Call your delete action or database logic here
+//     const deleteResult = await deleteGameAction(boardgameId);
+
+//     return NextResponse.json(
+//       { status: "success", message: "Board game deleted successfully" },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     console.error("❌ Error deleting board game:", error);
+//     return NextResponse.json(
+//       { status: "error", message: "Failed to delete board game" },
+//       { status: 500 }
+//     );
+//   }
+// }

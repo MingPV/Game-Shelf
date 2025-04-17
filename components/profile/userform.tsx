@@ -61,7 +61,22 @@ export default function UserForm({
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await updateUserAction(formData);
+        // await updateUserAction(formData);
+        const updateData = {
+          id: user.uid.toString(),
+          username: username,
+          phoneNumber: phoneNumber,
+          location: location,
+        };
+        await fetch("/api/users/players", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            updateData,
+          }),
+        });
         Swal.fire({
           toast: true,
           position: "top-end",

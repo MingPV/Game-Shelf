@@ -85,7 +85,31 @@ export default function ModalUpdateBg({
     }).then(async (result) => {
       if (result.isConfirmed) {
         setBoardgameData(boardgameTmp);
-        await updateGameAction(formData);
+        // await updateGameAction(formData);
+        const updateData = {
+          id: boardgame.id.toString(),
+          boardgame_name: name,
+          description: description,
+          price: price,
+          bg_picture: picture,
+          quantity: quantity,
+        };
+        const modalCheckbox = document.getElementById(
+          modalId
+        ) as HTMLInputElement;
+        if (modalCheckbox) {
+          modalCheckbox.checked = false;
+        }
+        await fetch("/api/boardgames", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            updateData,
+          }),
+        });
+
         Swal.fire({
           title: "Updated!",
           toast: true,
@@ -100,14 +124,7 @@ export default function ModalUpdateBg({
             title: "custom-swal-title",
             confirmButton: "custom-swal-confirm-button",
           },
-        }).then(() => {
-          const modalCheckbox = document.getElementById(
-            modalId
-          ) as HTMLInputElement;
-          if (modalCheckbox) {
-            modalCheckbox.checked = false;
-          }
-        });
+        }).then(() => {});
       }
     });
   };
