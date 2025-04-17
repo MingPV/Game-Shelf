@@ -3,6 +3,9 @@ import { getMyUserData } from "@/app/(user-pages)/actions";
 import { UserData } from "@/app/types/user";
 import { cookies } from "next/headers";
 
+// ✅ ผูก tag กับ endpoint นี้ เพื่อให้สามารถ revalidate ได้
+export const tags = ["users-me"];
+
 export async function GET() {
   const cookieStore = await cookies();
   const userToken = cookieStore.get("token")?.value || "No Token";
@@ -27,7 +30,7 @@ export async function GET() {
   );
 
   // ตั้งค่า Cache-Control เพื่อให้ Vercel Edge Cache ทำงาน
-  //   res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
+  res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
 
   console.log(myData);
 
