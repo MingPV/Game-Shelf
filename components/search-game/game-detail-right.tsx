@@ -19,7 +19,7 @@ export default function GameDetailRight({
   provider: UserData | null;
 }) {
   return (
-    <div className="w-[90%] md:w-1/2 flex flex-col space-y-4 md:space-y-6 lg:space-y-8">
+    <div className="w-[90%] md:w-1/2 flex flex-col space-y-4 md:space-y-6 lg:space-y-8 ">
       <div>
         <p className="text-sm md:text-base text-gs_white/50">Board Game Name</p>
         <p className="text-2xl md:text-4xl font-bold">{boardgame.bg_name}</p>

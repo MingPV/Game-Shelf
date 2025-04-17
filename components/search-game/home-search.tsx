@@ -95,7 +95,7 @@ export function HomeSearch() {
     }
 
     setIsFetching(false);
-  }, 700);
+  }, 300);
 
   const getBoardgameType = async () => {
     const { data: data } = await fetchTypes();
@@ -140,7 +140,7 @@ export function HomeSearch() {
             <Input
               placeholder="Search Board game by name"
               value={searchValue}
-              className="px-4 py-6 rounded-full border border-neutral-200 border-opacity-30 hover:border-gs_white hover:border-opacity-40 text-white text-opacity-40"
+              className="px-4 py-6 rounded-full border border-neutral-200 border-opacity-60 hover:border-gs_white hover:border-opacity-80 text-white text-opacity-80"
               type="text"
               onChange={(e) => {
                 setSearchValue(e.target.value);

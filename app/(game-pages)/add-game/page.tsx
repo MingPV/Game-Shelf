@@ -61,12 +61,12 @@ function AddGameForm(props: { searchParams: Promise<Message> }) {
 
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "You can delete it  later.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#359368",
       cancelButtonColor: "#FF2525",
-      confirmButtonText: "Yes, update it!",
+      confirmButtonText: "Yes, add it!",
       customClass: {
         popup: "custom-swal-popup",
         title: "custom-swal-title",
@@ -75,26 +75,30 @@ function AddGameForm(props: { searchParams: Promise<Message> }) {
       },
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await addGameAction(formData);
+        setName("");
+        setPrice("");
+        setQuantity("");
+        setDescription("");
+        setPicture(undefined);
+        setSelectedTypes([]);
+        setImg("");
+        resetImage();
         Swal.fire({
-          title: "Updated!",
-          text: "Your file has been updated.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          title: "Added!",
+          text: "Your file has been added.",
           icon: "success",
           customClass: {
             popup: "custom-swal-popup",
             title: "custom-swal-title",
             confirmButton: "custom-swal-confirm-button",
           },
-        }).then(() => {
-          setName("");
-          setPrice("");
-          setQuantity("");
-          setDescription("");
-          setPicture(undefined);
-          setSelectedTypes([]);
-          setImg("");
-          resetImage;
         });
+        await addGameAction(formData);
       }
     });
   };
@@ -207,6 +211,7 @@ function AddGameForm(props: { searchParams: Promise<Message> }) {
                       <div key={index} className="flex items-center gap-2">
                         <input
                           type="checkbox"
+                          className="checkbox checkbox-sm"
                           name="boardgame_type"
                           value={type.bg_type_id}
                           checked={selectedTypes.includes(

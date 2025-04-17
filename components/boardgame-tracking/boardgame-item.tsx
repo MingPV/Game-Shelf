@@ -76,7 +76,7 @@ export function BoardgameItems() {
     }
 
     setIsFetching(false);
-  }, 700);
+  }, 300);
 
   const firstFetchGames = async () => {
     setIsFetching(true);

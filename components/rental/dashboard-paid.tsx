@@ -77,6 +77,11 @@ export function DashBoardPaid() {
             title: "Canceled!",
             text: "Your file has been canceled.",
             icon: "success",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
             customClass: {
               popup: "custom-swal-popup",
               title: "custom-swal-title",

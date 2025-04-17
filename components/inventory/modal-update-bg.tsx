@@ -88,6 +88,11 @@ export default function ModalUpdateBg({
         await updateGameAction(formData);
         Swal.fire({
           title: "Updated!",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           text: "Your file has been updated.",
           icon: "success",
           customClass: {

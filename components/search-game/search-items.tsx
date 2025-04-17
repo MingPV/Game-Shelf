@@ -104,7 +104,7 @@ export function SearchItems() {
     }
 
     setIsFetching(false);
-  }, 700);
+  }, 300);
 
   const getBoardgameType = async () => {
     const { data: data } = await fetchTypes();

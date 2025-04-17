@@ -232,6 +232,11 @@ export default function ReportFormCard() {
             title: "Report accepted",
             text: "This report has been accepted.",
             icon: "success",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
             customClass: {
               popup: "custom-swal-popup",
               title: "custom-swal-title",

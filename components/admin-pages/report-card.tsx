@@ -79,6 +79,11 @@ export default function ReportCard({
         await updateTakeReport(formData);
 
         Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           title: "Report accepted",
           text: "The report has been taken to my responsibilities.",
           icon: "success",

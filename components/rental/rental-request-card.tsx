@@ -185,6 +185,11 @@ export default function RequestCard({
         );
         if (error) {
           Swal.fire({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
             title: "Can not accept this request.",
             text: "Please try again later.",
             icon: "error",
@@ -198,6 +203,25 @@ export default function RequestCard({
           });
           return;
         }
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          title: "Canceled!",
+          text: "This request has been accepted.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
         await updateRentingRequestStatus(rentalRequest.id, "unpaid");
 
         if (overallPrice !== undefined) {
@@ -225,19 +249,6 @@ export default function RequestCard({
 
         setIsUpdating(false);
         setIsHidden(true);
-
-        Swal.fire({
-          title: "Request accepted",
-          text: "This request has been accepted.",
-          icon: "success",
-          customClass: {
-            popup: "custom-swal-popup",
-            title: "custom-swal-title",
-            confirmButton: "custom-swal-confirm-button",
-          },
-        }).then(() => {
-          // Close the modal
-        });
       }
     });
   };
@@ -270,6 +281,25 @@ export default function RequestCard({
     }).then(async (result) => {
       if (result.isConfirmed) {
         setIsUpdating(true);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          title: "Canceled!",
+          text: "Your file has been canceled.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: "custom-swal-popup",
+            title: "custom-swal-title",
+            confirmButton: "custom-swal-confirm-button",
+          },
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
         await deleteRentingRequest(rentalRequest.id);
         // send notification and insert it and send email
         const message = `Your rental request for the board game ${boardgame?.bg_name} has been denied. We're sorry for the inconvenience.`;
@@ -278,19 +308,6 @@ export default function RequestCard({
         }
         setIsUpdating(false);
         setIsHidden(true);
-
-        Swal.fire({
-          title: "Canceled!",
-          text: "Your file has been canceled.",
-          icon: "success",
-          customClass: {
-            popup: "custom-swal-popup",
-            title: "custom-swal-title",
-            confirmButton: "custom-swal-confirm-button",
-          },
-        }).then(() => {
-          // Close the modal
-        });
       }
     });
   };
@@ -356,12 +373,10 @@ export default function RequestCard({
           ) : boardgame?.status == "available" ? (
             <>
               <div className="col-span-1 text-sm flex gap-2  items-center justify-end">
-                <button className="btn btn-outline btn-sm">
-                  <FaXmark />
-                </button>
-                <button className="btn btn-success btn-sm">
+                <button className="btn btn-outline btn-sm">Manage</button>
+                {/* <button className="btn btn-success btn-sm">
                   <FaCheck />
-                </button>
+                </button> */}
               </div>
             </>
           ) : (

@@ -47,6 +47,11 @@ export default function ProfileHeader({ user }: { user: UserData }) {
         console.log("update");
         await updateProfilePicAction(formData);
         Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           title: "Updated!",
           text: "Your file has been updated.",
           icon: "success",

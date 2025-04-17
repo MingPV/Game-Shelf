@@ -73,105 +73,103 @@ export default function HomeList() {
   function formatDateRange(endDateStr: string): string {
     const endDate = new Date(endDateStr);
 
-    const options: Intl.DateTimeFormatOptions = {
+    return endDate.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
-    };
-
-    const endStr = endDate.toLocaleDateString("en-GB", options);
-    const year = endDate.getFullYear();
-
-    return `${endStr} ${year}`;
+      year: "numeric",
+    });
   }
 
   return (
     <div className="hidden md:flex flex-col gap-6 ml-12">
-      <div className="card  bg-neutral-800 bg-opacity-40 w-full border border-white border-opacity-20">
-        <div className="card-body">
-          <div className="flex flex-row gap-4">
-            <div className="w-10 rounded-full mb-2">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src={userData?.profilePicture || "/mock_provider.jpeg"}
-                className="rounded-full"
-              />
+      {userData ? (
+        <div className="card  bg-neutral-800 bg-opacity-40 w-full border border-white border-opacity-20">
+          <div className="card-body">
+            <div className="flex flex-row gap-4">
+              <div className="w-10 rounded-full mb-2">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src={userData?.profilePicture || "/mock_provider.jpeg"}
+                  className="rounded-full"
+                />
+              </div>
+              <h2 className="card-title mb-2">
+                {userData?.username || "Username"}
+              </h2>
             </div>
-            <h2 className="card-title mb-2">
-              {userData?.username || "Username"}
-            </h2>
-          </div>
-          <div className="flex flex-row gap-2">
-            <div>Email : </div>
-            <div className="text-opacity-60 text-white">
-              {userData?.email || "user@gmail.com"}
-            </div>
-          </div>
-          <div className="flex flex-row gap-2">
-            <div>Member since : </div>
-            <div className="text-opacity-60 text-white">
-              {userData?.created_at
-                ? formatDateRange(userData.created_at)
-                : "1 Jan 2025"}
-            </div>
-          </div>
-          <div className="flex flex-row gap-2">
-            <div>Role : </div>
-            {userData?.is_banned ? (
+            <div className="flex flex-row gap-2">
+              <div>Email : </div>
               <div className="text-opacity-60 text-white">
-                {userData?.isProvider ? (
-                  <>
-                    <div className="flex flex-row gap-2">
-                      <div>Provider</div>
+                {userData?.email || "user@gmail.com"}
+              </div>
+            </div>
+            <div className="flex flex-row gap-2">
+              <div>Member since : </div>
+              <div className="text-opacity-60 text-white">
+                {userData?.created_at
+                  ? formatDateRange(userData.created_at)
+                  : "1 Jan 2025"}
+              </div>
+            </div>
+            <div className="flex flex-row gap-2">
+              <div>Role : </div>
+              {userData?.is_banned ? (
+                <div className="text-opacity-60 text-white">
+                  {userData?.isProvider ? (
+                    <>
+                      <div className="flex flex-row gap-2">
+                        <div>Provider</div>
 
+                        <div className="bg-red-600 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                          Account is banned until{" "}
+                          {formatDateRange(userData.ban_until)}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-row gap-2">
+                      <div>Player</div>
                       <div className="bg-red-600 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
                         Account is banned until{" "}
                         {formatDateRange(userData.ban_until)}
                       </div>
                     </div>
-                  </>
-                ) : (
-                  <div className="flex flex-row gap-2">
-                    <div>Player</div>
-                    <div className="bg-red-600 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
-                      Account is banned until{" "}
-                      {formatDateRange(userData.ban_until)}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-opacity-60 text-white">
-                {userData?.isProvider ? (
-                  <>
-                    <div className="flex flex-row gap-2">
-                      <div>Provider</div>
-                      {userData.is_verified ? (
-                        <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
-                          Account verified ✓
-                        </div>
-                      ) : myVerification ? (
-                        <div className="bg-sky-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
-                          Waiting for verification
-                        </div>
-                      ) : (
-                        <Link
-                          href="/provider-form"
-                          prefetch={true}
-                          className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
-                        >
-                          Verify your account ✎
-                        </Link>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  "Player"
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              ) : (
+                <div className="text-opacity-60 text-white">
+                  {userData?.isProvider ? (
+                    <>
+                      <div className="flex flex-row gap-2">
+                        <div>Provider</div>
+                        {userData.is_verified ? (
+                          <div className="bg-lime-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                            Account verified ✓
+                          </div>
+                        ) : myVerification ? (
+                          <div className="bg-sky-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs">
+                            Waiting for verification
+                          </div>
+                        ) : (
+                          <Link
+                            href="/provider-form"
+                            prefetch={true}
+                            className="bg-amber-400 bg-opacity-70 p-1 rounded-lg text-white font-bold text-xs"
+                          >
+                            Verify your account ✎
+                          </Link>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    "Player"
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
       <div className="card glass w-full">
         <div className="card-body w-full">
           <h2 className="card-title font-black">Updated</h2>

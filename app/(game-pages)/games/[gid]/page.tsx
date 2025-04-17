@@ -113,13 +113,15 @@ export default function GameDetails() {
   }, {});
 
   return (
-    <div className="flex flex-col md:flex-row w-[90%] space-y-10 md:space-x-10 lg:space-x-20 justify-center self-center">
-      <GameDetailLeft boardgame={bg} provider={provider} />
-      <GameDetailRight
-        boardgame={bg}
-        boardgame_type={mappedBoardgameType}
-        provider={provider}
-      />
+    <div className="flex flex-col md:flex-row w-[90%] space-y-10 md:space-x-10 lg:space-x-20 justify-center self-center items-center min-h-screen absolute top-0">
+      <div className="flex flex-row items-start justify-center gap-10">
+        <GameDetailLeft boardgame={bg} provider={provider} />
+        <GameDetailRight
+          boardgame={bg}
+          boardgame_type={mappedBoardgameType}
+          provider={provider}
+        />
+      </div>
     </div>
   );
 }

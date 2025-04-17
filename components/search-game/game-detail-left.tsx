@@ -8,6 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { createRentalRequest } from "@/app/(rental-pages)/actions";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { error } from "console";
 
 export default function GameDetailLeft({
   boardgame,
@@ -37,7 +38,7 @@ export default function GameDetailLeft({
     const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
     setTotalDate(differenceInDays);
-  }, 500);
+  }, 300);
 
   useEffect(() => {
     const fetchMyData = async (): Promise<{
@@ -114,6 +115,9 @@ export default function GameDetailLeft({
         cancelButton: "custom-swal-cancel-button",
       },
     }).then(async (result) => {
+      setStartDate("");
+      setEndDate("");
+      setTotalDate(0);
       if (result.isConfirmed) {
         setIsSending(true);
 
@@ -130,31 +134,33 @@ export default function GameDetailLeft({
         } else {
           setIsSending(false);
           Swal.fire({
-            title: "This boardgame is not available!",
-            text: "Please try again later.",
+            toast: true,
+            position: "top-end",
             icon: "error",
-            customClass: {
-              popup: "custom-swal-popup",
-              title: "custom-swal-title",
-              confirmButton: "custom-swal-confirm-button",
+            title: "This boardgame is not available!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
             },
-          }).then(() => {
-            // Close the modal
           });
+
           return;
         }
-
         Swal.fire({
-          title: "Requested",
-          text: "Rental request was sent!",
+          toast: true,
+          position: "top-end",
           icon: "success",
-          customClass: {
-            popup: "custom-swal-popup",
-            title: "custom-swal-title",
-            confirmButton: "custom-swal-confirm-button",
+          title: "Rental request was sent!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
           },
-        }).then(() => {
-          // Close the modal
         });
       }
     });
@@ -164,8 +170,19 @@ export default function GameDetailLeft({
     setOpenDialog(true);
   };
 
+  const convertToDate = (date: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    };
+    return new Date(date)
+      .toLocaleDateString("en-US", options)
+      .replace(/^0/, "");
+  };
+
   return (
-    <div className="flex flex-col p-4 md:p-6 lg:p-10 bg-white/10 rounded-xl items-center justify-between gap-3 lg:gap-6 w-80 self-center lg:w-96 md:h-auto">
+    <div className="flex flex-col p-4 md:p-6 lg:p-6 bg-white/10 rounded-xl items-center justify-center gap-3 lg:gap-6 w-80 self-center lg:max-w-2xl md:h-auto">
       <div className="w-4/5 md:w-[90%] rounded-xl">
         <img
           src={boardgame.bg_picture}
@@ -187,10 +204,6 @@ export default function GameDetailLeft({
       </div>
 
       <div className="flex flex-row w-full gap-2">
-        <HeartButton
-          filled={filled}
-          onChange={(filled: boolean) => setFilled(filled)}
-        />
         <button
           className="w-full font-semibold text-sm px-4 rounded-xl py-2 self-end border border-white border-opacity-0 hover:border-opacity-80 bg-gs_purple_gradient"
           onClick={handleModal}
@@ -216,18 +229,25 @@ export default function GameDetailLeft({
         </button>
       </div>
       {boardgame.quantity == boardgame.renting ? (
-        <div className="w-full flex justify-end text-sm font-bold text-slate-300 text-opacity-50">
+        <div className="w-full flex justify-center text-sm font-bold text-slate-300 text-opacity-50">
           out of stock
         </div>
       ) : (
-        <div className="w-full flex justify-end text-sm font-bold text-slate-300 text-opacity-50">
+        <div className="w-full flex justify-center text-sm font-bold text-slate-300 text-opacity-50">
           {boardgame.quantity - boardgame.renting} boardgames in stock
         </div>
       )}
 
       <dialog open={openDialog} className="modal">
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="modal-box bg-slate-50 w-1/2  flex flex-col text-black space-y-5 shadow-none">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setOpenDialog(false);
+            }
+          }}
+          className="fixed inset-0 flex items-center justify-center bg-black/50"
+        >
+          <div className="modal-box bg-slate-50 w-1/2  flex flex-col text-black space-y-6 shadow-none">
             <p className="font-bold text-lg md:text-xl lg:text-2xl">
               Booking Request
             </p>
@@ -238,57 +258,78 @@ export default function GameDetailLeft({
             </div>
 
             <div className="flex flex-col md:flex-row w-full">
-              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Store :</p>
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">
+                Provider :
+              </p>
               <p>{provider ? provider.username : "N/A"}</p>
             </div>
 
-            <div className="flex flex-col md:flex-row w-full">
+            {/* <div className="flex flex-col md:flex-row w-full">
               <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Price :</p>
-              <p>{boardgame.price} Bath/Day</p>
-            </div>
+              <p className="">{boardgame.price} Bath/Day</p>
+            </div> */}
 
             <div className="flex flex-col md:flex-row w-full">
               <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Date :</p>
-              <div className="flex flex-col space-y-0.5">
+              <div className="flex flex-col space-y-0.5 gap-1">
                 <div className="flex flex-col md:flex-row gap-0 md:gap-2 lg:gap-4">
                   <input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                    className="bg-black/10 border-none px-2 text-black text-xs lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
                   />
                   <p>to</p>
                   <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-white text-black text-sm lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
+                    className="bg-black/10 border-none px-2 text-black text-xs lg:text-base border-slate-700 text-center rounded-md border black-calendar-icon"
                   />
                 </div>
-                <p className="text-red-500 text-xs lg:text-sm text-center">
-                  {errorText}
-                </p>
+                {errorText && (
+                  <p className="text-red-500 text-xs lg:text-sm text-left  py-1 px-2 bg-red-100 rounded-md">
+                    {errorText}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row w-full">
-              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">Total :</p>
-              <p className={`${totalDate < 0 ? "text-red-600 font-bold" : ""}`}>
-                {totalDate < 0
-                  ? "Invalid date"
-                  : `${totalDate} Days (${boardgame.price * totalDate} Bath in Total)`}
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold">
+                Duration :
               </p>
+              <p
+                className={`${totalDate < 0 ? "text-red-600 font-bold" : "text-yellow-500 font-bold"}`}
+              >
+                {totalDate < 0 ? "Invalid date" : `${totalDate} Days `}
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row w-full">
+              <p className="w-full md:w-1/5 lg:w-1/4 font-semibold bg-slate-100">
+                Cost :
+              </p>
+              <div className="flex flex-row w-full md:w-4/5 lg:w-3/4 justify-between items-center">
+                <p
+                  className={`${totalDate < 0 ? "text-red-600 font-bold" : "text-gs_green font-bold"}`}
+                >
+                  {totalDate < 0 ? "" : `${boardgame.price * totalDate} Baht`}
+                </p>
+                <p className="text-xs text-black/50 text-right">
+                  ({boardgame.price}฿ per day)
+                </p>
+              </div>
             </div>
 
             <div className="w-full flex flex-row justify-between text-white h-9 gap-4 my-6">
               <button
                 onClick={() => setOpenDialog(false)}
-                className="w-1/2 border rounded-xl bg-red-500"
+                className="w-1/2 border rounded-xl bg-red-500 hover:bg-red-700 transition-all duration-300"
               >
                 cancel
               </button>
               <button
-                className="w-1/2 border rounded-xl bg-green-500"
+                className="w-1/2 border rounded-xl bg-green-500 hover:bg-green-700 transition-all duration-300"
                 onClick={checkOK}
               >
                 confirm

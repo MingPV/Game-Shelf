@@ -66,6 +66,11 @@ export default function ProviderForm({
       if (result.isConfirmed) {
         await updateProviderAction2(formData);
         Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           title: "Updated!",
           text: "Your profile has been updated.",
           icon: "success",

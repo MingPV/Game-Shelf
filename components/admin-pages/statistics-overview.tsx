@@ -101,7 +101,7 @@ export default function StatisticsOverview() {
 
   const debouncedFetchRequests = useDebouncedCallback(() => {
     fetchRequests();
-  }, 500);
+  }, 300);
 
   useEffect(() => {
     // fetchRequests();
@@ -149,6 +149,11 @@ export default function StatisticsOverview() {
         await createNotificationByUserId(uid, message);
 
         Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           title: "Unban Successful",
           text: "The user has been successfully unbanned.",
           icon: "success",

@@ -77,7 +77,7 @@ export function SearchProviders() {
     }
 
     setIsFetching(false);
-  }, 700);
+  }, 300);
 
   useEffect(() => {
     fetchProviders();

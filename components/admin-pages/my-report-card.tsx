@@ -78,7 +78,8 @@ export default function MyReportCard({
 
   const handleSubmit = async () => {
     if (verdict == "") {
-      alert("verdict is missing.");
+      // alert("verdict is missing.");
+      Swal.fire("Verdict is missing.");
       return;
     }
 
@@ -119,6 +120,16 @@ export default function MyReportCard({
       if (result.isConfirmed) {
         setIsHidden(true);
         await updateReportVerdict(formData);
+        // await fetch("/api/reports/verdict", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     id: dispute.id.toString(),
+        //     verdict: verdict,
+        //   }),
+        // });
         if (reported?.uid) {
           await banUserAction(reported.uid, datestring);
         } else {
@@ -132,6 +143,11 @@ export default function MyReportCard({
 
         Swal.fire({
           title: "Judgment completed",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
           text: "The decision has been made and a message has been sent to the reporter and the reported person.",
           icon: "success",
           customClass: {
