@@ -80,6 +80,9 @@ export default function ProviderForm({
           body: JSON.stringify({
             updateData,
           }),
+          next: {
+            tags: ["profile-update"],
+          },
         });
         Swal.fire({
           toast: true,
