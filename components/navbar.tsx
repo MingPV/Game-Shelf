@@ -10,7 +10,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="navbar bg-transparent z-[99]">
+      <div className="navbar bg-transparent">
         <div className="flex-1">
           <Link className="btn btn-ghost text-xl" href="/home" prefetch={true}>
             GameShelf
