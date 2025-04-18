@@ -52,9 +52,9 @@ export default function GameDetailRight({
             {provider ? provider.username : "N/A"}
             <span className="flex flex-row w-full text-gs_white/80">
               <FaStar className=" text-gs_yellow mr-2 text-2xl " />{" "}
-              {provider?.rating.toString() == "0"
+              {provider?.rating?.toString() == "0"
                 ? "N/A"
-                : provider?.rating.toString()}
+                : provider?.rating?.toString()}
             </span>
           </p>
         </Link>

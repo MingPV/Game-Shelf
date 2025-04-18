@@ -79,9 +79,9 @@ export default function GameCard({
       <div className="flex flex-row w-full gap-2 items-center">
         <span className="flex flex-row w-1/2 text-gs_white/80">
           <FaStar className=" text-gs_yellow mr-2 text-xl " />{" "}
-          {provider[0]?.rating.toString() == "0"
+          {provider[0]?.rating?.toString() == "0"
             ? "N/A"
-            : provider[0]?.rating.toString()}
+            : provider[0]?.rating?.toString()}
         </span>
         <button
           className="w-full font-semibold text-xs md:text-sm px-4 rounded-xl py-2 self-end hover:border bg-gs_purple_gradient"
