@@ -107,7 +107,7 @@ export default function ProviderStat({ user }: { user: UserData }) {
             <FaRegStar className="text-3xl" />
           </div>
           <div className="stat-value text-3xl">
-            {user.rating == 0 ? "N/A" : user.rating.toString()}
+            {user.rating == 0 ? "N/A" : user?.rating?.toString()}
           </div>
           <div className="stat-desc text-center">rating</div>
         </div>
