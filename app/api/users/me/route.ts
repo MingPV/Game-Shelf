@@ -9,15 +9,15 @@ export async function GET() {
 
   console.log("userToken", userToken);
 
-  if (userToken != "No Token") {
-    const payload = JSON.parse(atob(userToken.split(".")[1]));
-    const payload_myData = payload.userData;
+  // if (userToken != "No Token") {
+  //   const payload = JSON.parse(atob(userToken.split(".")[1]));
+  //   const payload_myData = payload.userData;
 
-    return NextResponse.json(
-      { status: "success", data: payload_myData },
-      { status: 200 }
-    );
-  }
+  //   return NextResponse.json(
+  //     { status: "success", data: payload_myData },
+  //     { status: 200 }
+  //   );
+  // }
 
   // ดึงข้อมูลรายงานจาก Database
   const myData: UserData = await getMyUserData();
