@@ -84,7 +84,7 @@ export const signInAction = async (formData: FormData) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
+    return { status: "error", message: "Incorrect password or email" };
   }
 
   let getUserData;
@@ -98,7 +98,10 @@ export const signInAction = async (formData: FormData) => {
 
     if (error) {
       console.error("Error fetching user data:", error.message);
-      return;
+      return {
+        status: error,
+        message: "Something went wrong please try again",
+      };
     }
 
     getUserData = data;

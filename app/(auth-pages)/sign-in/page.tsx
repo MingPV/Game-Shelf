@@ -16,6 +16,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const [isLogingIn, setIsLogingIn] = useState(false);
+  const [error, setError] = useState("");
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -40,7 +41,13 @@ export default function Login() {
       window.location.href = "/home"; // Then Redirect
       // use this because we need to reload profile picture
     }
+    if (response.status == "error") {
+      setError(response.message || "Please try again later.");
+      setIsLogingIn(false);
+      return;
+    }
     setIsLogingIn(false);
+    setError("");
 
     console.log(response);
   };
@@ -155,8 +162,11 @@ export default function Login() {
                   <span className="ml-2 max-xs2:ml-1">Continue With Apple</span>
                 </button>
               </div>
-              {/* 
-              <FormMessage message={searchParams} /> */}
+              {error ? (
+                <span className="text-red-500 text-sm ml-4 mt-4">{error}</span>
+              ) : (
+                ""
+              )}
             </form>
           </div>
         </div>
