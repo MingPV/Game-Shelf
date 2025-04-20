@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { headers, cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignJWT, importJWK } from "jose";
+import { createClient as createClient2 } from "@/utils/supabase/client";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();

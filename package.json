@@ -4,7 +4,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "cross-env NODE_ENV=test jest",
+    "test": "cross-env NODE_ENV=test jest --coverage",
     "test:cucumber": "cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require features/step_definitions/**/*.ts"
   },
   "dependencies": {

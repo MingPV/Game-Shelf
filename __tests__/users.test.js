@@ -1,36 +1,107 @@
-import { createClient } from "@/utils/supabase/client";
-import { randomUUID } from "crypto";
+/**
+ * @jest-environment jsdom
+ */
 
+// Mock jose
+jest.mock("jose", () => ({
+  SignJWT: class {
+    protectedHeader;
+    issuedAt;
+    payload;
 
-describe("API /api/users", () => {
+    constructor(payload) {
+      this.payload = payload;
+    }
 
-    let supabase;
+    setProtectedHeader(header) {
+      this.protectedHeader = header;
+      return this;
+    }
 
-    beforeAll(() => {
-      // Initialize Supabase client before all tests
-      supabase = createClient();
+    setIssuedAt() {
+      this.issuedAt = Date.now();
+      return this;
+    }
+
+    async sign() {
+      return "mocked.jwt.token";
+    }
+  },
+  importJWK: jest.fn(() => "mock-secret-key"), // ✅ mock this function too
+  jwtVerify: jest.fn(() => ({
+    payload: { sub: "mock-user-id" },
+  })),
+}));
+
+jest.mock("next/headers", () => ({
+  cookies: jest.fn(() => ({
+    set: jest.fn(),
+  })),
+}));
+
+// Mock Supabase client and behavior
+jest.mock("../utils/supabase/server", () => ({
+  createClient: jest.fn(() => ({
+    auth: {
+      signInWithPassword: jest.fn(() => ({
+        data: null,
+        error: { message: "Invalid login credentials" },
+      })),
+    },
+  })),
+}));
+
+import { signInAction } from "../app/(auth-pages)/actions_test";
+
+describe("signInAction", () => {
+  it("should return success if email or password is correct", async () => {
+    const formData = new FormData();
+    formData.set("email", "player888@gmail.com");
+    formData.set("password", "12345678");
+
+    const result = await signInAction(formData);
+
+    expect(result).toEqual({
+      status: "success",
     });
-  
-    beforeEach(async () => {
-      // Clean up the users table before each test if needed
-      await supabase.from("users").delete().neq('email','delete')
-    });  
-
-  it("should return a list of users", async () => {
-    const supabase = createClient();
-    // const { data, error } = await supabase
-    //     .from('users')
-    //     .insert([
-    //       {  
-    //         uid: "1eb9f688-2d62-41f3-87b3-ea08e4cacbb2",
-    //         email: "test@gmail.com",
-    //         username: "username",
-    //         isProvider: "true",
-    //       },
-    //     ])
-    // console.log(error)
-    expect("res").toEqual("res");
-    
   });
 
+  it("should return error if email or password is incorrect", async () => {
+    const formData = new FormData();
+    formData.set("email", "player888@gmail.com");
+    formData.set("password", "wrong1234");
+
+    const result = await signInAction(formData);
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Incorrect password or email",
+    });
+  });
+
+  it("should return error if email is empty", async () => {
+    const formData = new FormData();
+    formData.set("email", "");
+    formData.set("password", "12345678");
+
+    const result = await signInAction(formData);
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Incorrect password or email",
+    });
+  });
+
+  it("should return error if password is empty", async () => {
+    const formData = new FormData();
+    formData.set("email", "player888@gmail.com");
+    formData.set("password", "");
+
+    const result = await signInAction(formData);
+
+    expect(result).toEqual({
+      status: "error",
+      message: "Incorrect password or email",
+    });
+  });
 });
