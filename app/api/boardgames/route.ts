@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const { id, boardgame_name, description, price, bg_picture, quantity } =
-      body;
+      body.updateData;
     const formData = new FormData();
     formData.append("id", id);
     formData.append("boardgame_name", boardgame_name);
@@ -73,6 +73,11 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    console.log("ming");
+    console.log(formData);
+    console.log(bg_picture);
+    console.log(body.updateData);
 
     await updateGameAction(formData);
 

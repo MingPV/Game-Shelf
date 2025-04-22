@@ -94,6 +94,8 @@ export default function ModalUpdateBg({
           bg_picture: picture,
           quantity: quantity,
         };
+        console.log(updateData);
+        console.log("mingming");
         const modalCheckbox = document.getElementById(
           modalId
         ) as HTMLInputElement;
@@ -106,7 +108,7 @@ export default function ModalUpdateBg({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            updateData,
+            updateData: updateData,
           }),
         });
 
