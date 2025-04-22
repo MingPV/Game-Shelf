@@ -3,6 +3,7 @@ import { cancelMultipleInvoices } from "@/app/(rental-pages)/actions";
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+    console.log("formData", formData);
 
     // Extract the list of invoice IDs
     const invoiceIds = formData.getAll("invoice_ids[]"); // gets all ids as array

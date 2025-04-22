@@ -73,14 +73,9 @@ export function DashBoardPaid() {
         if (result.isConfirmed) {
           setIsCanceled(true);
           // await cancelMultipleInvoices(formData);
-          await fetch("/api/boardgames", {
+          await fetch("/api/rental/unpaid", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              formData,
-            }),
+            body: formData,
           });
           Swal.fire({
             title: "Canceled!",
