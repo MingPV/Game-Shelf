@@ -102,15 +102,16 @@ export default function ModalUpdateBg({
         if (modalCheckbox) {
           modalCheckbox.checked = false;
         }
-        await fetch("/api/boardgames", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            updateData: updateData,
-          }),
-        });
+        // await fetch("/api/boardgames", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     updateData,
+        //   }),
+        // });
+        await updateGameAction(formData);
 
         Swal.fire({
           title: "Updated!",
