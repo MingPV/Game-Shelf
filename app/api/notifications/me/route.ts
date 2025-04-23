@@ -17,7 +17,7 @@ export async function GET() {
   );
 
   // ตั้งค่า Cache-Control เพื่อให้ Vercel Edge Cache ทำงาน
-  res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
+  // res.headers.set("Cache-Control", "s-maxage=3600, stale-while-revalidate=60");
 
   return res;
 }
